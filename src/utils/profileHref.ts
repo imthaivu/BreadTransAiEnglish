@@ -1,4 +1,4 @@
-/** Client-side profile URL for a user (same rules as QuizStoriesView). */
+/** Client-side profile URL for a user. */
 export function profilePathForUserId(
   targetUserId: string,
   currentUserId?: string | null

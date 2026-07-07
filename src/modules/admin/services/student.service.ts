@@ -39,7 +39,6 @@ export interface UpdateStudentData {
   parentPhone?: string;
   address?: string;
   addressDetail?: string;
-  totalBanhRan?: number;
   streakCount?: number;
   quizAccuracy?: number;
   speakingAccuracy?: number;

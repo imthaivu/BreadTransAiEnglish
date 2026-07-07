@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/Button";
 import { IProfile } from "@/types";
 import { useState, useEffect } from "react";
-import { FiEdit, FiUser, FiCopy, FiShoppingBag } from "react-icons/fi";
+import { FiEdit, FiUser, FiCopy } from "react-icons/fi";
 import {
   AdminForm,
   AdminFormField,
@@ -14,7 +14,6 @@ import {
 import { useStudentManagement } from "../hooks/useStudentManagement";
 import { readAchievementsFromUser } from "@/modules/user/services";
 import { useAuth } from "@/lib/auth/context";
-import { useCreateCurrencyTransaction } from "../hooks/useCurrencyManagement";
 import { useClasses } from "../hooks/useClassManagement";
 import toast from "react-hot-toast";
 import { SafeImage as Image } from "@/components/ui/SafeImage";
@@ -23,13 +22,10 @@ import { ref, uploadBytes, getDownloadURL, deleteObject, listAll } from "firebas
 import { UpdateStudentData } from "../services/student.service";
 import { compressAndResizeImage } from "@/utils/image";
 import { ImageCropModal } from "@/components/ui/ImageCropModal";
-import { BankInfoDisplay } from "@/components/profile/BankInfoDisplay";
-
 type StudentWithExtras = IProfile & {
   phone?: string;
   address?: string;
   addressDetail?: string;
-  totalBanhRan?: number;
   streakCount?: number;
   parentEmail?: string;
   parentPhone?: string;
@@ -53,20 +49,8 @@ type StudentWithExtras = IProfile & {
   nextExamDate?: string;
 };
 
-// Transaction form data type
-type CurrencyTxFormData = {
-  type: "add" | "subtract";
-  amount: number;
-  reason: string;
-};
-
 export default function AdminStudents() {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [isCreateTxModalOpen, setIsCreateTxModalOpen] = useState(false);
-  const [isShopeeModalOpen, setIsShopeeModalOpen] = useState(false);
-  const [shopeeAmountK, setShopeeAmountK] = useState<string>("");
-  const [selectedStudentForShopee, setSelectedStudentForShopee] =
-    useState<StudentWithExtras | null>(null);
   const [selectedStudent, setSelectedStudent] =
     useState<StudentWithExtras | null>(null);
 
@@ -117,24 +101,6 @@ export default function AdminStudents() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [students, isDetailEditOpen, activeStudent?.id]);
 
-  // Copy to clipboard function
-  const copyToClipboard = async (text: string, label: string) => {
-    if (!text || text === "-" || text === "(chưa có)") {
-      toast.error(`Không có ${label} để copy`);
-      return;
-    }
-    try {
-      await navigator.clipboard.writeText(text);
-      toast.success(`Đã copy ${label}`);
-    } catch (error) {
-      console.error("Failed to copy:", error);
-      toast.error("Không thể copy");
-    }
-  };
-
-  // Currency transaction mutation - only fetch mutation, not all transactions
-  const { mutateAsync: createTransaction, isPending: isCreating } = useCreateCurrencyTransaction();
-
   const handleUpdateStudent = async (studentData: {
     displayName?: string;
     email?: string;
@@ -143,7 +109,6 @@ export default function AdminStudents() {
     addressDetail?: string;
     parentPhone?: string;
     avatarUrl?: string;
-    totalBanhRan?: number | string;
     streakCount?: number | string;
     speakingAccuracy?: number | string;
     quizAccuracy?: number | string;
@@ -163,12 +128,6 @@ export default function AdminStudents() {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const updateData: any = { ...studentData };
 
-      // Convert totalBanhRan and streakCount to numbers if they are strings
-      if (updateData.totalBanhRan !== undefined) {
-        updateData.totalBanhRan = typeof updateData.totalBanhRan === 'string'
-          ? Number(updateData.totalBanhRan)
-          : updateData.totalBanhRan;
-      }
       if (updateData.streakCount !== undefined) {
         updateData.streakCount = typeof updateData.streakCount === 'string'
           ? Number(updateData.streakCount)
@@ -227,109 +186,6 @@ export default function AdminStudents() {
       setSelectedStudent(null);
     } catch (error) {
       console.error("Error deleting student:", error);
-    }
-  };
-
-  const handleCreateTransaction = async (
-    transactionData: CurrencyTxFormData
-  ) => {
-    if (!selectedStudent) return;
-
-    if (
-      !session?.user?.id ||
-      !session?.user?.name ||
-      !profile
-    ) {
-      toast.error("Bạn không có quyền thực hiện hành động này.");
-      return;
-    }
-
-    try {
-      const currentBalance = selectedStudent.totalBanhRan || 0;
-      if (
-        transactionData.type === "subtract" &&
-        currentBalance < transactionData.amount
-      ) {
-        toast.error(
-          `Không thể trừ ${transactionData.amount} bánh mì. Số dư hiện tại chỉ có ${currentBalance} bánh mì.`
-        );
-        return;
-      }
-
-      // Get classId from student (first class if multiple)
-      const studentClassId = selectedStudent.classIds && selectedStudent.classIds.length > 0
-        ? selectedStudent.classIds[0]
-        : undefined;
-
-      await createTransaction({
-        studentId: selectedStudent.id,
-        studentName:
-          selectedStudent.displayName || selectedStudent.phone || "Chưa có tên",
-        amount: transactionData.amount,
-        reason: transactionData.reason,
-        type: transactionData.type,
-        userId: session.user.id,
-        userName: session.user.name || session.user.phone || "Unknown",
-        userRole: profile.role,
-        classId: studentClassId,
-      });
-
-      setIsCreateTxModalOpen(false);
-      setSelectedStudent(null);
-    } catch (error) {
-      console.error("Error creating transaction:", error);
-    }
-  };
-
-  const handleShopeePayment = async (amountK: number) => {
-    if (!selectedStudentForShopee) return;
-
-    if (
-      !session?.user?.id ||
-      !session?.user?.name ||
-      !profile
-    ) {
-      toast.error("Bạn không có quyền thực hiện hành động này.");
-      return;
-    }
-
-    const amountBanh = Math.ceil((amountK * 100) / 15);
-    const currentBalance = selectedStudentForShopee.totalBanhRan || 0;
-
-    if (currentBalance < amountBanh) {
-      toast.error(
-        `Không thể trừ ${amountBanh} bánh mì. Số dư hiện tại chỉ có ${currentBalance} bánh mì.`
-      );
-      return;
-    }
-
-    try {
-      const studentClassId =
-        selectedStudentForShopee.classIds &&
-          selectedStudentForShopee.classIds.length > 0
-          ? selectedStudentForShopee.classIds[0]
-          : undefined;
-
-      await createTransaction({
-        studentId: selectedStudentForShopee.id,
-        studentName:
-          selectedStudentForShopee.displayName ||
-          selectedStudentForShopee.phone ||
-          "Chưa có tên",
-        amount: amountBanh,
-        reason: `Thanh toán Shopee ${amountK}K`,
-        type: "shopee",
-        userId: session.user.id,
-        userName: session.user.name || session.user.phone || "Unknown",
-        userRole: profile.role,
-        classId: studentClassId,
-      });
-
-      setIsShopeeModalOpen(false);
-      setSelectedStudentForShopee(null);
-      setShopeeAmountK("");
-    } catch (error) {
-      console.error("Error creating Shopee transaction:", error);
     }
   };
 
@@ -497,59 +353,6 @@ export default function AdminStudents() {
         );
       },
     },
-    {
-      key: "shopee",
-      title: "Shopee",
-      render: (_, student) => {
-        const fullAddress = [
-          student.address,
-          (student as { addressDetail?: string })?.addressDetail,
-        ]
-          .filter(Boolean)
-          .join(", ")
-          .trim() || "(chưa có)";
-        const targetPhone = student.isSelfClaimed ? student.phone : (student.parentPhone || student.phone);
-        const allInfo = [
-          student.displayName || "Chưa có tên",
-          targetPhone || "-",
-          fullAddress !== "(chưa có)" ? fullAddress : "-",
-        ].join(" | ");
-
-        return (
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              copyToClipboard(allInfo, "thông tin học sinh");
-              setSelectedStudentForShopee(student);
-              setIsShopeeModalOpen(true);
-            }}
-            title="Thanh toán Shopee (tự động copy thông tin)"
-            className="p-3 min-w-[44px] min-h-[44px] flex items-center justify-center text-orange-500 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
-          >
-            <FiShoppingBag className="w-6 h-6" />
-          </button>
-        );
-      },
-    },
-    {
-      key: "totalBanhRan",
-      title: "Bánh mì",
-      render: (_, student) => (
-        <div className="flex items-center gap-1">
-          <span className="text-xs sm:text-sm font-medium text-orange-600 whitespace-nowrap">
-            {student.totalBanhRan || 0}
-          </span>
-          <Image
-            src="/assets/images/dorayaki.png"
-            alt="bánh mì"
-            width={20}  // tương đương w-5
-            height={20} // tương đương h-5
-            className="inline-block sm:w-5 sm:h-5 w-4 h-4"
-          />
-        </div>
-      ),
-    },
   ];
 
   // Edit form fields (full student information)
@@ -640,17 +443,6 @@ export default function AdminStudents() {
       },
     ],
     [
-      {
-        name: "totalBanhRan",
-        label: "Bánh mì",
-        type: "number",
-        validation: {
-          min: {
-            value: 0,
-            message: "Số lượng bánh mì không thể âm",
-          },
-        },
-      },
       {
         name: "streakCount",
         label: "Streak",
@@ -743,80 +535,6 @@ export default function AdminStudents() {
       type: "textarea",
       rows: 4,
       placeholder: "Nhập thành tích học sinh...",
-    },
-  ];
-
-  // Transaction form fields
-  const txFormFields: AdminFormField[] = [
-    {
-      name: "type",
-      label: "Loại",
-      type: "select",
-      required: true,
-      validation: {
-        required: "Vui lòng chọn loại",
-      },
-      options: [
-        { value: "add", label: "Cộng bánh mì" },
-        { value: "subtract", label: "Trừ bánh mì" },
-      ],
-    },
-    {
-      name: "amount",
-      label: "Số lượng",
-      type: "number",
-      required: true,
-      validation: {
-        required: "Số lượng là bắt buộc",
-        min: {
-          value: 1,
-          message: "Số lượng phải lớn hơn 0",
-        },
-        max: {
-          value: 1000,
-          message: "Số lượng không thể quá 1000",
-        },
-      },
-      after: ({ setValue, watch }) => {
-        const amount = watch("amount");
-        const presets = [1, 2, 3, 5, 10, 15, 20, 25, 30, 40, 50];
-        return (
-          <div className="mt-2">
-            <div className="text-xs text-gray-600 mb-1.5">
-              Chọn nhanh:
-            </div>
-            <div className="flex flex-wrap gap-1.5 sm:gap-2">
-              {presets.map((n) => (
-                <button
-                  key={n}
-                  type="button"
-                  className={`px-2 sm:px-2.5 py-1 rounded-md border text-xs sm:text-sm transition-colors ${Number(amount) === n
-                    ? " bg-primary text-white border-primary"
-                    : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
-                    }`}
-                  onClick={() => setValue("amount", n)}
-                  aria-label={`Chọn ${n}`}
-                >
-                  {n}
-                </button>
-              ))}
-            </div>
-          </div>
-        );
-      },
-    },
-    {
-      name: "reason",
-      label: "Lý do",
-      type: "text",
-      required: true,
-      validation: {
-        required: "Lý do là bắt buộc",
-        minLength: {
-          value: 2,
-          message: "Lý do phải có ít nhất 2 ký tự",
-        },
-      },
     },
   ];
 
@@ -985,7 +703,6 @@ export default function AdminStudents() {
               avatarUrl: activeStudent?.avatarUrl || "",
               birthYear: activeStudent?.birthYear ?? "",
               nextExamDate: activeStudent?.nextExamDate || "",
-              totalBanhRan: activeStudent?.totalBanhRan || 0,
               streakCount: activeStudent?.streakCount || 0,
               quizAccuracy: activeStudent?.quizAccuracy ?? 50,
               speakingAccuracy: activeStudent?.speakingAccuracy ?? 50,
@@ -1009,7 +726,6 @@ export default function AdminStudents() {
                 addressDetail?: string;
                 parentPhone?: string;
                 avatarUrl?: string;
-                totalBanhRan?: number | string;
                 streakCount?: number | string;
                 quizAccuracy?: number | string;
                 speakingAccuracy?: number | string;
@@ -1056,146 +772,6 @@ export default function AdminStudents() {
             >
               {isDeleting ? "Đang xóa..." : "Xóa"}
             </Button>
-          </div>
-        </AdminModal>
-      )}
-
-      {/* Create Transaction Modal */}
-      {selectedStudent && (
-        <AdminModal
-          isOpen={isCreateTxModalOpen}
-          onClose={() => {
-            setIsCreateTxModalOpen(false);
-            setSelectedStudent(null);
-          }}
-          title="Tạo giao dịch bánh mì"
-          subtitle={
-            <span>
-              {selectedStudent.displayName || selectedStudent.phone || "Chưa có tên"} — Số dư:{" "}
-              {selectedStudent.totalBanhRan || 0}{" "}
-              <Image
-                src="/assets/images/dorayaki.png"
-                alt="bánh mì"
-                width={20}
-                height={20}
-                className="inline-block w-4 h-4 sm:w-5 sm:h-5"
-              />
-            </span>
-          }
-          size="md"
-        >
-          <div className="space-y-4">
-            <AdminForm
-              fields={txFormFields}
-              defaultValues={{ type: "add", amount: 1, reason: "" }}
-              onSubmit={async (data: CurrencyTxFormData) => {
-                await handleCreateTransaction(data);
-              }}
-              isLoading={isCreating}
-              onCancel={() => {
-                setIsCreateTxModalOpen(false);
-                setSelectedStudent(null);
-              }}
-              submitText="Tạo giao dịch"
-            />
-          </div>
-        </AdminModal>
-      )}
-
-      {/* Shopee Payment Modal */}
-      {selectedStudentForShopee && (
-        <AdminModal
-          isOpen={isShopeeModalOpen}
-          onClose={() => {
-            setIsShopeeModalOpen(false);
-            setSelectedStudentForShopee(null);
-            setShopeeAmountK("");
-          }}
-          title="Thanh toán Shopee"
-          subtitle={<span className="text-green-600">Đã copy thông tin người dùng</span>}
-          size="lg"
-        >
-          <div className="space-y-3">
-            <BankInfoDisplay
-              info={{
-                bankQrUrl: selectedStudentForShopee.bankQrUrl,
-                bankName: selectedStudentForShopee.bankName,
-                bankBin: selectedStudentForShopee.bankBin,
-                bankAccountNumber: selectedStudentForShopee.bankAccountNumber,
-                bankAccountName: selectedStudentForShopee.bankAccountName,
-              }}
-              onCopyAccount={(account) => copyToClipboard(account, "số tài khoản")}
-            />
-            {(() => {
-              const balance = selectedStudentForShopee?.totalBanhRan || 0;
-              const maxAllowedK = Math.floor((balance * 15) / 100);
-              const sliderMax = Math.min(500, maxAllowedK);
-              const currentVal = Math.min(sliderMax, Math.max(0, Number(shopeeAmountK) || 0));
-              const clampAndSet = (v: number) => setShopeeAmountK(String(Math.min(sliderMax, Math.max(0, v))));
-              const trừ = shopeeAmountK && Number(shopeeAmountK) > 0 ? Math.ceil((Number(shopeeAmountK) * 100) / 15) : 0;
-              const còn = Math.max(0, balance - trừ);
-              return (
-                <>
-                  <div className="flex items-center justify-between gap-4">
-                    <span className="text-blue-600 font-medium truncate">
-                      {selectedStudentForShopee?.displayName || selectedStudentForShopee?.phone || "—"}
-                    </span>
-                    <div className="flex items-center gap-2 flex-shrink-0">
-                      <input
-                        type="number"
-                        min={0}
-                        max={sliderMax}
-                        value={shopeeAmountK}
-                        onChange={(e) => clampAndSet(Number(e.target.value) || 0)}
-                        placeholder="0"
-                        disabled={sliderMax === 0}
-                        className="w-16 text-center text-base font-semibold px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-orange-500 disabled:bg-gray-100"
-                      />
-                      <span className="text-gray-500">K</span>
-                    </div>
-                  </div>
-                  <input
-                    type="range"
-                    min={0}
-                    max={sliderMax}
-                    step={1}
-                    value={currentVal}
-                    onChange={(e) => setShopeeAmountK(e.target.value)}
-                    disabled={sliderMax === 0}
-                    className="w-full h-2 bg-gray-200 rounded appearance-none cursor-pointer accent-orange-500 disabled:opacity-60"
-                  />
-                  <div className="flex justify-between text-xs text-gray-400">
-                    <span>0</span>
-                    <span className={sliderMax < 500 ? "text-red-600 font-medium" : ""}>{sliderMax}K</span>
-                  </div>
-                  <div className="flex items-center justify-between py-1.5 px-2.5 bg-gray-50 rounded text-sm">
-                    <span>{balance}</span>
-                    <span className="text-gray-400">→</span>
-                    <span className="text-orange-600">−{trừ}</span>
-                    <span className="text-gray-400">→</span>
-                    <span className="font-medium">{còn} bánh</span>
-                  </div>
-                </>
-              );
-            })()}
-            <div className="flex gap-2 pt-0.5">
-              <Button variant="outline" onClick={() => { setIsShopeeModalOpen(false); setSelectedStudentForShopee(null); setShopeeAmountK(""); }} className="flex-1">
-                Hủy
-              </Button>
-              <Button
-                onClick={() => {
-                  const balance = selectedStudentForShopee?.totalBanhRan || 0;
-                  const maxK = Math.min(500, Math.floor((balance * 15) / 100));
-                  const k = Math.min(maxK, Math.max(0, Number(shopeeAmountK) || 0));
-                  if (k < 1) { toast.error("Số tiền ≥ 1K"); return; }
-                  handleShopeePayment(k);
-                }}
-                disabled={isCreating || Number(shopeeAmountK || 0) < 1}
-                className="flex-1 bg-orange-500 hover:bg-orange-600"
-              >
-                {isCreating ? "..." : "Thanh toán"}
-              </Button>
-            </div>
           </div>
         </AdminModal>
       )}

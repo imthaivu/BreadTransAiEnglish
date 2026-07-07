@@ -11,7 +11,6 @@ import {
   runTransaction,
   increment,
 } from "firebase/firestore";
-import { createCurrencyTransaction } from "@/modules/admin/services/currency.service";
 import { UserRole } from "@/lib/auth/types";
 
 const USERS_COLLECTION = "users";
@@ -27,17 +26,10 @@ export interface AdmirationMessageItem {
   value: number;
   time: Date | Timestamp;
   fromStudentId?: string;
-  type?: "admiration" | "reactStory" | "speakingGrade" | "gameInvite";
+  type?: "admiration" | "speakingGrade";
   classId?: string;
-  /** Cho reactStory: để cập nhật message khi user đổi reaction (lấy lượt cuối) */
-  storyId?: string;
-  storyOwnerId?: string;
-  /** Cho speakingGrade: `${bookId}_${lessonId}` — resolve tên sách/bài giống story */
+  /** Cho speakingGrade: `${bookId}_${lessonId}` */
   speakingId?: string;
-  /** Cho gameInvite: lời mời đấu solo khi người nhận đang học */
-  gameId?: string;
-  roomId?: string;
-  inviteId?: string;
 }
 
 export interface IAdmiration {
@@ -51,13 +43,8 @@ export interface IAdmiration {
   createdAt: Date;
   reactionType?: AdmirationReactionType;
   reactionValue?: number;
-  type?: "admiration" | "reactStory" | "speakingGrade" | "gameInvite";
-  storyId?: string;
-  storyOwnerId?: string;
+  type?: "admiration" | "speakingGrade";
   speakingId?: string;
-  gameId?: string;
-  roomId?: string;
-  inviteId?: string;
 }
 
 export interface SendAdmirationData {
@@ -158,12 +145,7 @@ function messageToAdmiration(
     reactionType: msg.reactionType,
     reactionValue: msg.value,
     type: msg.type ?? "admiration",
-    storyId: msg.storyId,
-    storyOwnerId: msg.storyOwnerId,
     speakingId: msg.speakingId,
-    gameId: msg.gameId,
-    roomId: msg.roomId,
-    inviteId: msg.inviteId,
   };
 }
 
@@ -178,43 +160,20 @@ function getUserAdmirations(userData: Record<string, unknown>, toStudentId: stri
 }
 
 /**
- * Send admiration to another student
- * - Append message vào users[toStudentId].admirationsMessage
- * - Cộng bánh cho recipient
- * (Không giới hạn lượt/ngày - chỉ story reaction dùng admirationsSentStoryToday)
+ * Send admiration to another student — append message vào users[toStudentId].admirationsMessage
  */
 export async function sendAdmiration(data: SendAdmirationData): Promise<IAdmiration> {
   try {
-    const reactionValue = typeof data.reactionValue === "number" ? data.reactionValue : 1;
-
-    // Resolve sender role: ưu tiên giá trị truyền vào, fallback đọc từ Firestore
-    let senderRole: string | undefined = data.fromUserRole;
-    if (!senderRole && data.fromStudentId) {
-      try {
-        const senderSnap = await getDoc(doc(db, USERS_COLLECTION, data.fromStudentId));
-        if (senderSnap.exists()) {
-          senderRole = senderSnap.data()?.role as string | undefined;
-        }
-      } catch {
-        // ignore
-      }
-    }
-    const senderIsTeacher = senderRole === UserRole.TEACHER || senderRole === UserRole.ADMIN;
-
     const recipientRef = doc(db, USERS_COLLECTION, data.toStudentId);
 
     let admirationResult: IAdmiration | null = null;
 
-    // HS reaction nhau: vẫn lưu thông báo nhưng value = 0 (không thưởng bánh)
-    const effectiveValue = senderIsTeacher ? reactionValue : 0;
-
     await runTransaction(db, async (transaction) => {
-      // 1. Tạo message item (dùng Timestamp.now() vì serverTimestamp() không hỗ trợ trong arrays)
       const msgItem: AdmirationMessageItem = {
         fromStudentAvatarUrl: data.fromStudentAvatarUrl,
         name: data.fromStudentName,
         reactionType: data.reactionType,
-        value: effectiveValue,
+        value: 0,
         time: Timestamp.now(),
         fromStudentId: data.fromStudentId,
         type: "admiration",
@@ -244,25 +203,10 @@ export async function sendAdmiration(data: SendAdmirationData): Promise<IAdmirat
         classId: data.classId,
         createdAt: new Date(),
         reactionType: data.reactionType,
-        reactionValue: effectiveValue,
+        reactionValue: 0,
         type: "admiration",
       };
     });
-
-    // Chỉ tạo currency khi người gửi là giáo viên/admin
-    if (senderIsTeacher && effectiveValue > 0) {
-      await createCurrencyTransaction({
-        studentId: data.toStudentId,
-        studentName: data.toStudentName,
-        userId: data.fromStudentId,
-        userName: data.fromStudentName,
-        userRole: (senderRole as UserRole) ?? UserRole.TEACHER,
-        amount: effectiveValue,
-        reason: `Nhận ngưỡng mộ (${data.reactionType ?? "heart"}) từ ${data.fromStudentName}`,
-        type: "add",
-        classId: data.classId,
-      });
-    }
 
     return admirationResult!;
   } catch (error) {
@@ -272,58 +216,24 @@ export async function sendAdmiration(data: SendAdmirationData): Promise<IAdmirat
 }
 
 /**
- * Get count of story reactions sent by a student today (đọc từ users.admirationsSentStoryToday)
- */
-export async function getTodayStoryReactionCount(studentId: string): Promise<number> {
-  try {
-    if (!studentId) return 0;
-
-    const userRef = doc(db, USERS_COLLECTION, studentId);
-    const userSnap = await getDoc(userRef);
-    if (!userSnap.exists()) return 0;
-
-    const data = userSnap.data();
-    const sent = data.admirationsSentStoryToday;
-    const todayKey = getTodayDateKey();
-    if (!sent || sent.dateKey !== todayKey) return 0;
-    return typeof sent.count === "number" ? sent.count : 0;
-  } catch (error) {
-    console.error("Error getting today story reaction count:", error);
-    return 0;
-  }
-}
-
-/**
- * Append admiration message to a user (dùng bởi reactStory)
- * Cập nhật cả admirationsSentStoryToday cho sender
+ * Append admiration message to a user inbox.
  */
 export async function appendAdmirationToUser(
   toStudentId: string,
   toStudentName: string,
   msg: Omit<AdmirationMessageItem, "time"> & { time?: Date | Timestamp },
-  options?: { fromStudentId?: string; isStoryReaction?: boolean; skipIncrementSenderCount?: boolean }
+  _options?: { fromStudentId?: string; skipIncrementSenderCount?: boolean }
 ): Promise<void> {
   void toStudentName;
   const recipientRef = doc(db, USERS_COLLECTION, toStudentId);
   const msgItem: AdmirationMessageItem = {
     ...msg,
+    value: 0,
     time: msg.time ?? Timestamp.now(),
   };
 
-  const senderId = options?.fromStudentId ?? msg.fromStudentId;
-  const isStoryReaction = options?.isStoryReaction ?? msg.type === "reactStory";
-  const skipIncrementSenderCount = options?.skipIncrementSenderCount ?? false;
-
   await runTransaction(db, async (transaction) => {
-    // BẮT BUỘC: Tất cả reads trước khi có write
     const recipientSnap = await transaction.get(recipientRef);
-    let senderSnap = null;
-    if (isStoryReaction && senderId) {
-      const senderRef = doc(db, USERS_COLLECTION, senderId);
-      senderSnap = await transaction.get(senderRef);
-    }
-
-    // Writes (sau khi đã read xong)
     const data = recipientSnap.exists() ? recipientSnap.data() : {};
     const existing = (data.admirationsMessage ?? []) as AdmirationMessageItem[];
     const trimmed = keepMessagesInLastDays([...existing, msgItem]);
@@ -341,108 +251,6 @@ export async function appendAdmirationToUser(
         updatedAt: serverTimestamp(),
       });
     }
-
-    if (isStoryReaction && senderId && senderSnap && !skipIncrementSenderCount) {
-      const senderRef = doc(db, USERS_COLLECTION, senderId);
-      const senderData = senderSnap.exists() ? senderSnap.data() : {};
-      const sentToday = senderData.admirationsSentStoryToday;
-      const todayKey = getTodayDateKey();
-      const currentCount =
-        sentToday && sentToday.dateKey === todayKey
-          ? (typeof sentToday.count === "number" ? sentToday.count : 0)
-          : 0;
-
-      transaction.update(senderRef, {
-        admirationsSentStoryToday: { dateKey: todayKey, count: currentCount + 1 },
-        updatedAt: serverTimestamp(),
-      });
-    }
-  });
-}
-
-export interface AppendGameInviteMessageParams {
-  toStudentId: string;
-  toStudentName: string;
-  fromStudentId: string;
-  fromStudentName: string;
-  fromStudentAvatarUrl?: string | null;
-  gameId: string;
-  roomId: string;
-  inviteId: string;
-}
-
-/**
- * Ghi lời mời đấu solo vào admirationsMessage khi người nhận đang học.
- * Không cộng bánh / countHeart — chỉ thông báo trong Messages.
- */
-export async function appendGameInviteMessage(
-  params: AppendGameInviteMessageParams
-): Promise<void> {
-  const {
-    toStudentId,
-    fromStudentId,
-    fromStudentName,
-    fromStudentAvatarUrl,
-    gameId,
-    roomId,
-    inviteId,
-  } = params;
-
-  const recipientRef = doc(db, USERS_COLLECTION, toStudentId);
-  const msgItem: AdmirationMessageItem = {
-    fromStudentAvatarUrl: fromStudentAvatarUrl ?? undefined,
-    name: fromStudentName,
-    value: 0,
-    time: Timestamp.now(),
-    fromStudentId,
-    type: "gameInvite",
-    gameId,
-    roomId,
-    inviteId,
-  };
-
-  await runTransaction(db, async (transaction) => {
-    const recipientSnap = await transaction.get(recipientRef);
-    const data = recipientSnap.exists() ? recipientSnap.data() : {};
-    const existing = (data.admirationsMessage ?? []) as AdmirationMessageItem[];
-    const withoutSameRoom = existing.filter(
-      (m) => !(m.type === "gameInvite" && m.roomId === roomId)
-    );
-    const trimmed = keepMessagesInLastDays([...withoutSameRoom, msgItem]);
-
-    if (recipientSnap.exists()) {
-      transaction.update(recipientRef, {
-        admirationsMessage: trimmed,
-        updatedAt: serverTimestamp(),
-      });
-    } else {
-      transaction.set(recipientRef, {
-        admirationsMessage: trimmed,
-        updatedAt: serverTimestamp(),
-      });
-    }
-  });
-}
-
-/** Xoá tin gameInvite đã xử lý khỏi admirationsMessage. */
-export async function removeGameInviteMessage(
-  studentId: string,
-  roomId: string
-): Promise<void> {
-  if (!studentId || !roomId) return;
-  const userRef = doc(db, USERS_COLLECTION, studentId);
-  await runTransaction(db, async (transaction) => {
-    const snap = await transaction.get(userRef);
-    if (!snap.exists()) return;
-    const existing = (snap.data().admirationsMessage ?? []) as AdmirationMessageItem[];
-    const next = existing.filter(
-      (m) => !(m.type === "gameInvite" && m.roomId === roomId)
-    );
-    if (next.length === existing.length) return;
-    transaction.update(userRef, {
-      admirationsMessage: next,
-      updatedAt: serverTimestamp(),
-    });
   });
 }
 

@@ -109,8 +109,6 @@ export function AdmirationNotificationsContent({
             <div className="space-y-1.5 mt-2">
               {admirationsForDate.map((admiration) => {
                 const reactionIcon = getReactionIcon(admiration.reactionType);
-                const value = admiration.reactionValue ?? 1;
-                const isStoryReaction = admiration.type === "reactStory";
                 const isSpeakingGrade = admiration.type === "speakingGrade";
                 const cachedInfo = userInfoCache[admiration.fromStudentId];
                 const avatarUrl = admiration.fromStudentAvatarUrl || cachedInfo?.avatarUrl || "";
@@ -120,12 +118,11 @@ export function AdmirationNotificationsContent({
                 return (
                   <div
                     key={admiration.id}
-                    className={`flex items-center gap-2 p-2 rounded-lg border text-xs ${isStoryReaction
-                      ? "bg-green-50 border-green-200"
-                      : isSpeakingGrade
+                    className={`flex items-center gap-2 p-2 rounded-lg border text-xs ${
+                      isSpeakingGrade
                         ? "bg-sky-50 border-sky-200"
                         : "bg-yellow-50 border-yellow-200"
-                      }`}
+                    }`}
                   >
                     <div className="relative flex-shrink-0">
                       <ProfileAvatarLink
@@ -155,46 +152,14 @@ export function AdmirationNotificationsContent({
                       <div className="flex items-center gap-1.5">
                         <span className="font-medium text-gray-900 truncate">{displayName}</span>
                         <span
-                          className={`shrink-0 text-[10px] px-1.5 py-0.5 rounded ${isStoryReaction
-                            ? "bg-green-100 text-green-600"
-                            : isSpeakingGrade
+                          className={`shrink-0 text-[10px] px-1.5 py-0.5 rounded ${
+                            isSpeakingGrade
                               ? "bg-sky-100 text-sky-700"
-                              : (reactionIcon === "😱" && value > 0)
-                                ? "bg-blue-100 text-blue-600"
-                                : "bg-yellow-100 text-yellow-600"
-                            }`}
+                              : "bg-yellow-100 text-yellow-600"
+                          }`}
                         >
-                          {isStoryReaction
-                            ? "React Story Vocabulary"
-                            : isSpeakingGrade
-                              ? "Chấm Speaking"
-                              : (reactionIcon === "😱" && value > 0)
-                                ? "React Speaking"
-                                : "Donate"}
+                          {isSpeakingGrade ? "Chấm Speaking" : "Ngưỡng mộ"}
                         </span>
-                      </div>
-                      <div className="flex items-center gap-0.5 mt-0.5">
-                        {value > 0 ? (
-                          <>
-                            {Array.from({ length: Math.min(value, 10) }).map((_, i) => (
-                              <Image
-                                key={i}
-                                src="/assets/images/dorayaki.png"
-                                alt="bánh mì"
-                                width={14}
-                                height={14}
-                                className="object-contain"
-                              />
-                            ))}
-                            {value > 10 && (
-                              <span className="text-[10px] text-gray-500 ml-0.5 font-medium">
-                                ... + {value}
-                              </span>
-                            )}
-                          </>
-                        ) : (
-                          <span className="text-[10px] text-gray-500">Đã react</span>
-                        )}
                       </div>
                     </div>
                     <span className="text-[10px] text-gray-400 shrink-0">

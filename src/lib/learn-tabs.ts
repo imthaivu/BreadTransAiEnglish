@@ -15,9 +15,7 @@ export function resolveLearnTab(
 }
 
 export function isLearnRoute(pathname: string): boolean {
-  return (
-    pathname.startsWith("/learn") || pathname.startsWith("/stories")
-  );
+  return pathname.startsWith("/learn");
 }
 
 export function readClientLearnTabParam(): string | null {

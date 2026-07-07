@@ -600,13 +600,6 @@ export const mergeUserData = async (
       updatedAt: new Date(),
     };
 
-    // Merge totalBanhRan (keep the higher value - overwrite, not sum)
-    if (sourceUser.totalBanhRan !== undefined) {
-      const sourceValue = sourceUser.totalBanhRan || 0;
-      const targetValue = targetUser.totalBanhRan || 0;
-      updates.totalBanhRan = Math.max(sourceValue, targetValue);
-    }
-
     // Merge Streak (keep the higher value)
     if (sourceUser.streakCount !== undefined) {
       const sourceValue = sourceUser.streakCount || 0;
@@ -706,7 +699,6 @@ export const mergeUserData = async (
       addressDetail?: string;
     };
     const resetUpdates: Record<string, unknown> = {
-      totalBanhRan: 0,
       streakCount: 0,
       lastStreakUpdate: null,
       classIds: [],

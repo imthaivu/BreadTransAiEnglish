@@ -305,7 +305,6 @@ const USER_FIELD_BLOCK_TITLE: Record<string, string> = {
   loginCount: "Lượt đăng nhập",
   speakingAccuracy: "Speaking (độ chính xác)",
   streakCount: "Streak",
-  totalBanhRan: "Bánh rán",
   "timesVocabXS / timesVocab": "XS / vocab",
 };
 
@@ -572,12 +571,6 @@ function UserFieldDistributionsGrid({ u }: { u: DashboardDeepUserFieldStats }) {
       fieldKey: "speakingAccuracy",
       summary: u.speakingAccuracySummary,
       decimals: 2,
-    },
-    {
-      label: USER_FIELD_BLOCK_TITLE.totalBanhRan,
-      fieldKey: "totalBanhRan",
-      summary: u.totalBanhRanSummary,
-      decimals: 0,
     },
     {
       label: USER_FIELD_BLOCK_TITLE.loginCount,

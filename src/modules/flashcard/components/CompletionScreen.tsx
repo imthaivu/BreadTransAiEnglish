@@ -1,10 +1,8 @@
 import { Button } from "@/components/ui/Button";
 import { Word } from "../types";
-import { useState, useEffect, useMemo, useRef } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useAuth } from "@/lib/auth/context";
-import { useSaveQuizStory } from "@/modules/classes/hooks";
 import { cn } from "@/utils";
-import toast from "react-hot-toast";
 import { CanvasStatText } from "./CanvasStatText";
 import { SafeImage as Image } from "@/components/ui/SafeImage";
 import { FiChevronDown } from "react-icons/fi";
@@ -40,7 +38,6 @@ interface CompletionScreenProps {
   completedLessons?: number[];
   mode?: "flashcard" | "quiz";
   isReviewOnlyMode?: boolean;
-  /** Class ID để up story - nếu không có sẽ dùng classIds[0] từ profile */
   classId?: string;
 }
 
@@ -52,12 +49,9 @@ export const CompletionScreen = ({
   onRestart,
   onClose,
   bookName,
-  bookId,
   selectedLesson,
-  completedLessons = [],
   mode = "flashcard",
   isReviewOnlyMode = false,
-  classId: classIdProp,
 }: CompletionScreenProps) => {
   const accuracy = useMemo(() => {
     const raw =
@@ -71,21 +65,11 @@ export const CompletionScreen = ({
   const [completionTime, setCompletionTime] = useState<string>("");
   const [showDetails, setShowDetails] = useState(false);
 
-  const { session, profile, role } = useAuth();
-  const classId = classIdProp ?? profile?.classIds?.[0];
-  const userId = session?.user?.id;
+  const { session, profile } = useAuth();
   const studentName = session?.user?.name || profile?.displayName || "";
   const avatarUrl = profile?.avatarUrl || session?.user?.image || "";
   const shortName = getLastNameWord(studentName);
   const nameInitial = getNameInitial(studentName);
-  const { mutateAsync: saveQuizStoryAsync } = useSaveQuizStory();
-  const [isUploadingStory, setIsUploadingStory] = useState(false);
-  const autoStoryTriggeredRef = useRef(false);
-  const isStudent = role === "student";
-
-  const completedLessonsSnapshot = useMemo(() => {
-    return [...completedLessons];
-  }, []);
 
   const isQuiz = mode === "quiz";
   const isQuizIncomplete = isQuiz && accuracy < 85;
@@ -103,72 +87,6 @@ export const CompletionScreen = ({
   const buttonClass = isQuiz
     ? "bg-primary hover:bg-primary/90"
     : "bg-amber-500 hover:bg-amber-600";
-
-  const handleShareStory = () => {
-    if (!isStudent) {
-      toast.error("Chỉ học sinh mới có thể up story.");
-      return;
-    }
-
-    if (!classId) {
-      toast.error("Cần tham gia lớp học để up story. Vào lớp học trước nhé!");
-      return;
-    }
-
-    if (!userId || !bookId || selectedLesson == null) {
-      toast.error("Không thể up story. Vui lòng thử lại.");
-      return;
-    }
-
-    if (isUploadingStory) return;
-
-    const isCompleted = accuracy >= 90;
-
-    setIsUploadingStory(true);
-    void (async () => {
-      try {
-        await saveQuizStoryAsync({
-          classId,
-          userId,
-          bookId,
-          bookName,
-          lessonIds: [selectedLesson],
-          score,
-          totalWords: deckLength,
-          accuracy,
-          isCompleted,
-          studentName,
-          avatarUrl,
-        });
-        onClose();
-      } finally {
-        setIsUploadingStory(false);
-      }
-    })();
-  };
-
-  const allLessonsAreNew = useMemo(() => {
-    if (selectedLesson == null) return false;
-    return !completedLessonsSnapshot.includes(selectedLesson);
-  }, [selectedLesson, completedLessonsSnapshot]);
-
-  const canShareStory =
-    isStudent &&
-    isQuiz &&
-    !isReviewOnlyMode &&
-    accuracy >= 90 &&
-    allLessonsAreNew &&
-    classId &&
-    userId &&
-    bookId &&
-    selectedLesson != null;
-
-  useEffect(() => {
-    if (!canShareStory || isUploadingStory || autoStoryTriggeredRef.current) return;
-    autoStoryTriggeredRef.current = true;
-    handleShareStory();
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- chỉ auto một lần khi đủ điều kiện
-  }, [canShareStory, isUploadingStory]);
 
   useEffect(() => {
     const now = new Date();
@@ -353,15 +271,13 @@ export const CompletionScreen = ({
           >
             Học lại
           </Button>
-          {canShareStory && (
-            <Button
-              onClick={handleShareStory}
-              disabled={isUploadingStory}
-              className="px-6 py-2.5 bg-green-600 hover:bg-green-700 text-white w-full sm:w-auto"
-            >
-              {isUploadingStory ? "Đang up..." : "Up Story"}
-            </Button>
-          )}
+          <Button
+            onClick={onClose}
+            variant="outline"
+            className="px-6 py-2.5 w-full sm:w-auto"
+          >
+            Đóng
+          </Button>
         </div>
       </div>
     </div>

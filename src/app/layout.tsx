@@ -3,7 +3,6 @@ import { AppDataProvider } from "@/components/providers/AppDataProvider";
 import { AuthProvider } from "@/lib/auth/context";
 import { PresenceProvider } from "@/components/presence/PresenceProvider";
 import { GlobalPresenceProvider } from "@/modules/presence";
-import { MultiplayerProvider } from "@/modules/games/lobby";
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { Geist, Geist_Mono } from "next/font/google";
@@ -153,7 +152,6 @@ export default function RootLayout({
             <AppDataProvider>
             <PresenceProvider>
               <GlobalPresenceProvider>
-              <MultiplayerProvider>
               <Header />
               <Suspense fallback={null}>
                 <AppNav />
@@ -165,7 +163,6 @@ export default function RootLayout({
               <Footer />
               <ContactPopup />
               <Toaster position="bottom-left" />
-              </MultiplayerProvider>
               </GlobalPresenceProvider>
             </PresenceProvider>
             </AppDataProvider>

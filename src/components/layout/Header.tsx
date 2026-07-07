@@ -275,25 +275,6 @@ function Logo({ onCloseMobileMenu }: LogoProps) {
 //                     {/* Role */}
 //                     <span>- {translateRole(role as string)}</span>
 
-//                     {/* Total bánh mì */}
-//                     {role == "student" && (
-//                       <div className="flex items-center bg-primary text-white text-sm md:text-base font-bold px-3 py-0.5 rounded-full h-10">
-//                         <span className="mr-1 text-gray-600">Có</span>
-//                         <span className="text-black">
-//                           {profile?.totalBanhRan || 0}{" "}
-//                         </span>
-//                         <Image
-//                           src={
-//                             "assets/images/dorayaki.png"
-//                           }
-//                           alt="Bánh mì"
-//                           width={24}
-//                           height={24}
-//                           className="inline-block ml-1"
-//                         />
-//                       </div>
-//                     )}
-
 //                     {/* Streak Count */}
 //                     {profile?.streakCount && profile.streakCount > 0 && (
 //                       <div

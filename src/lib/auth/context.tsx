@@ -351,41 +351,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return;
       }
 
-      // Cập nhật realtime: bánh mì + ví vé game (khi GV cấp vé / trận PvP settle).
-      if (profile) {
-        const currentTotalBanhRan = userData?.totalBanhRan ?? 0;
-        const profileTotalBanhRan = profile.totalBanhRan ?? 0;
-        const currentGameTickets = userData?.gameTickets;
-        const profileGameTickets = profile.gameTickets;
-
-        const totalBanhRanChanged = currentTotalBanhRan !== profileTotalBanhRan;
-        const gameTicketsChanged =
-          JSON.stringify(currentGameTickets ?? null) !==
-          JSON.stringify(profileGameTickets ?? null);
-        const legacyTicketChanged =
-          userData?.allowedTicket !== profile.allowedTicket ||
-          userData?.ticketExpiresAt !== profile.ticketExpiresAt;
-
-        if (totalBanhRanChanged || gameTicketsChanged || legacyTicketChanged) {
-          setProfile((prev) => {
-            if (!prev) return prev;
-            return {
-              ...prev,
-              ...(totalBanhRanChanged && { totalBanhRan: currentTotalBanhRan }),
-              ...(gameTicketsChanged && {
-                gameTickets: currentGameTickets ?? undefined,
-              }),
-              ...(legacyTicketChanged && {
-                allowedTicket: userData?.allowedTicket,
-                ticketExpiresAt: userData?.ticketExpiresAt,
-                ticketGrantedBy: userData?.ticketGrantedBy,
-                ticketGrantedAt: userData?.ticketGrantedAt,
-              }),
-            };
-          });
-        }
-      }
-
       // Get stored session token from sessionStorage
       const storedSessionToken = sessionStorage.getItem(`sessionToken_${user.uid}`);
 

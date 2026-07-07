@@ -9,7 +9,6 @@ import {
 import { APP_NAV_ITEMS } from "@/constants/app-nav.constant";
 import { useAuth } from "@/lib/auth/context";
 import {
-  useHomeStoriesDarkMode,
   useMovieImmersive,
   useImmersiveLight,
 } from "@/lib/homeUiStore";
@@ -41,12 +40,10 @@ export default function AppNav() {
   const [isHydrated, setIsHydrated] = useState(false);
   const isViewingOtherProfile = pathname === "/profile" && !!searchParams.get("viewUserId");
   const { session, profile } = useAuth();
-  const isStoriesActive = useHomeStoriesDarkMode();
   const isMovieImmersive = useMovieImmersive();
   const isImmersiveLight = useImmersiveLight();
   const isLoggedIn = !!session?.user?.id;
-  // Sidebar/bottom nav chỉ chuyển dark mode khi đang ở tab Stories trên Home.
-  const isHomeDarkNav = isLoggedIn && pathname === "/" && isStoriesActive;
+  const isHomeDarkNav = false;
   const avatarUrl = profile?.avatarUrl || session?.user?.image || null;
   const isAdmin = (session?.user?.role ?? profile?.role) === "admin";
   const isStudent = (session?.user?.role ?? profile?.role) === "student";

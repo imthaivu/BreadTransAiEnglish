@@ -16,7 +16,6 @@ export interface AppUserProfile {
   role: UserRole;
   classIds?: string[];
   isActive: boolean;
-  totalBanhRan?: number;
   createdAt: Date;
   updatedAt: Date;
   streakCount?: number;
@@ -31,7 +30,6 @@ export interface AppUserProfile {
   // Admiration notifications - lưu trong users, chỉ giữ 7 ngày gần nhất (FIFO)
   admirationsMessage?: { fromStudentAvatarUrl?: string; name: string; reactionType?: string; value: number; time: Date | unknown }[];
   admirationsSentToday?: { dateKey: string; count: number };
-  admirationsSentStoryToday?: { dateKey: string; count: number };
   timesVocabXS?: number;
   timesVocab?: number;
   /** Tên media đã hoàn thành (phim/nhạc/ngữ pháp) — bỏ qua silent tracking khi xem lại */
@@ -39,13 +37,6 @@ export interface AppUserProfile {
   quizAccuracy?: number;
   speakingAccuracy?: number;
   countHeart?: number;
-  /** Vé chơi game có thưởng bánh — do giáo viên cấp, mỗi vé hết hạn sau 24h. */
-  gameTickets?: { expiresAt: string; grantedBy: string; grantedAt: string }[];
-  /** @deprecated Dùng gameTickets — giữ khi migrate dữ liệu cũ. */
-  allowedTicket?: boolean;
-  ticketExpiresAt?: string;
-  ticketGrantedBy?: string;
-  ticketGrantedAt?: string;
 }
 
 export enum UserRole {

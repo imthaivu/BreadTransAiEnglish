@@ -582,22 +582,6 @@ export async function updateSpeakingScore(
 
     if (rewardValue > 0) {
       try {
-        const { createCurrencyTransaction } = await import("@/modules/admin/services/currency.service");
-        const { UserRole } = await import("@/lib/auth/types");
-
-        // Give the bánh currency
-        await createCurrencyTransaction({
-          studentId,
-          studentName: rewardParams.studentName,
-          userId: rewardParams.teacherId,
-          userName: rewardParams.teacherName,
-          userRole: UserRole.TEACHER,
-          amount: rewardValue,
-          reason: `Được đánh giá bài nói điểm ${speakingScore} (Bài ${lessonId})`,
-          type: "add",
-          classId: rewardParams.classId,
-        });
-
         const speakingId = `${bookId}_${lessonId}`;
         const { appendAdmirationToUser } = await import("@/modules/classes/api/admiration");
         await appendAdmirationToUser(
@@ -608,14 +592,14 @@ export async function updateSpeakingScore(
             name: rewardParams.teacherName,
             fromStudentAvatarUrl: rewardParams.teacherAvatarUrl,
             reactionType: "wow",
-            value: rewardValue,
+            value: 0,
             type: "speakingGrade",
             classId: rewardParams.classId,
             speakingId,
           }
         );
       } catch (error) {
-        console.error("Error creating reward transaction for speaking score:", error);
+        console.error("Error sending speaking grade admiration:", error);
       }
     }
   }

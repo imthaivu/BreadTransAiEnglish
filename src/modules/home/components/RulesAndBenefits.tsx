@@ -16,7 +16,7 @@ export default function RulesAndBenefits() {
     {
       icon: <FiAward className="w-6 h-6" />,
       title: "Được công nhận",
-      description: "Được giáo viên khen, thưởng bánh, nhận sao và thăng hạng khi hoàn thành bài học",
+      description: "Được giáo viên khen, nhận sao và thăng hạng khi hoàn thành bài học",
     },
     {
       icon: <FiUser className="w-6 h-6" />,

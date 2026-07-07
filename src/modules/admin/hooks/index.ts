@@ -2,8 +2,6 @@ export * from "./useUserManagement";
 export * from "./useStudentManagement";
 export * from "./useClassManagement";
 export * from "./useTeacherManagement";
-export * from "./useCurrencyManagement";
 export * from "./useContentManagement";
-export * from "./useGameManagement";
 export * from "./useBrowserNotifications";
 export * from "./useAdminPrefetch";

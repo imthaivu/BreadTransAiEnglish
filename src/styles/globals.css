@@ -49,12 +49,6 @@
   }
 }
 
-/* Ẩn bottom nav mobile khi đang ở tab Games (tối ưu không gian chơi). */
-/* ⚠️ display:none !important — khó override bằng class Tailwind; chỉ dùng khi body có .home-games-active */
-body.home-games-active .app-mobile-bottom-nav {
-  display: none !important;
-}
-
 /* Giới hạn font size tối đa để tránh vỡ layout khi người dùng cài font cực lớn */
 /* Cho phép scale từ 16px (100%) đến tối đa 24px (150%) dựa trên user preference */
 /* Sử dụng clamp để đảm bảo font size luôn trong khoảng hợp lý */

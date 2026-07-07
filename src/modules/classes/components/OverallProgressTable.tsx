@@ -29,8 +29,6 @@ import {
   evaluateSpeakingSubmissionFromUrl,
   updateSpeakingIssue,
 } from "@/modules/speaking-upload/services";
-import { useCreateCurrencyTransaction } from "@/modules/admin/hooks/useCurrencyManagement";
-import { appendAdmirationToUser } from "../api/admiration";
 import { useAuth } from "@/lib/auth/context";
 import { collection, doc, serverTimestamp, writeBatch } from "firebase/firestore";
 import { db } from "@/lib/firebase/client";
@@ -198,7 +196,6 @@ export function OverallProgressTable() {
   const [hoveredAiIssueContent, setHoveredAiIssueContent] = useState<string | null>(null);
   const [isBulkEvaluatingMissingIssues, setIsBulkEvaluatingMissingIssues] = useState(false);
   const [bulkEvaluateProgress, setBulkEvaluateProgress] = useState<{ done: number; total: number; failed: number } | null>(null);
-  const [quickDonateId, setQuickDonateId] = useState<string | null>(null);
   const [evaluatingIssueIds, setEvaluatingIssueIds] = useState<Set<string>>(new Set());
   const [selectedStudents, setSelectedStudents] = useState<Set<string>>(new Set());
   const [isAutoPlayAll, setIsAutoPlayAll] = useState(false);
@@ -259,7 +256,6 @@ export function OverallProgressTable() {
   } | null>(null);
 
   const { profile, session } = useAuth();
-  const { mutate: createTransaction, isPending: isQuickDonating } = useCreateCurrencyTransaction();
 
   const currentStudentId = session?.user?.id;
   const currentStudentName = session?.user?.name || profile?.displayName || "";
@@ -1185,43 +1181,6 @@ export function OverallProgressTable() {
     const aiScore = extractTotalScore(issue);
     return getScoreLevelFromAi(aiScore) > getScoreLevel(speakingScore);
   };
-  const handleQuickDonate = (studentId: string, studentName: string) => {
-    if (!session?.user || !profile || !classId) return;
-    setQuickDonateId(studentId);
-    createTransaction(
-      {
-        studentId,
-        studentName,
-        userId: session.user.id,
-        userName: session.user.name || session.user.phone || "Unknown",
-        userRole: profile.role,
-        amount: 1,
-        reason: "Donate nhanh",
-        type: "add",
-        classId: classId,
-      },
-      {
-        onSuccess: () => {
-          setQuickDonateId(null);
-          appendAdmirationToUser(
-            studentId,
-            studentName,
-            {
-              name: session.user.name || session.user.phone || "Giáo viên",
-              value: 1,
-              reactionType: "heart",
-              fromStudentId: session.user.id,
-              type: "admiration",
-              fromStudentAvatarUrl: profile.avatarUrl || "",
-              classId: classId,
-            },
-            { skipIncrementSenderCount: true }
-          ).catch(console.error);
-        },
-        onError: () => setQuickDonateId(null),
-      }
-    );
-  };
 
   return (
     <>
@@ -1744,18 +1703,6 @@ export function OverallProgressTable() {
                               <div className="absolute -bottom-0.5 -right-0.5 w-1.5 h-1.5 bg-green-500 border border-white dark:border-gray-800 rounded-full z-20"></div>
                             )}
                           </div>
-                          {aiBetterThanManual && (
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleQuickDonate(progress.student.id, progress.student.name)}
-                              disabled={isQuickDonating && quickDonateId === progress.student.id}
-                              title="Donate nhanh 1 bánh mì"
-                              className="p-1 min-w-0 h-7 w-7 hover:bg-green-100 dark:hover:bg-green-900/20"
-                            >
-                              <FiHeart className={cn("h-3.5 w-3.5 text-green-500", isQuickDonating && quickDonateId === progress.student.id && "animate-pulse")} />
-                            </Button>
-                          )}
                           <div className="flex flex-col min-w-0">
                             <span className="truncate leading-tight">{progress.student.name}</span>
                           </div>
@@ -1997,18 +1944,6 @@ export function OverallProgressTable() {
                               <div className="absolute -bottom-0.5 -right-0.5 w-2 h-2 bg-green-500 border-2 border-white dark:border-gray-800 rounded-full z-20"></div>
                             )}
                           </div>
-                          {aiBetterThanManual && (
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleQuickDonate(progress.student.id, progress.student.name)}
-                              disabled={isQuickDonating && quickDonateId === progress.student.id}
-                              title="Donate nhanh 1 bánh mì"
-                              className="p-1 min-w-0 h-7 w-7 hover:bg-green-100 dark:hover:bg-green-900/20"
-                            >
-                              <FiHeart className={cn("h-4 w-4 text-green-500", isQuickDonating && quickDonateId === progress.student.id && "animate-pulse")} />
-                            </Button>
-                          )}
                           <div className="flex flex-col">
                             <span>{progress.student.name}</span>
                             {/* Hide lesson number context on Mobile but allow it to render if we didn't add the new column to desktop yet */}

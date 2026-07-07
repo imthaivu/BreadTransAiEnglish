@@ -10,7 +10,6 @@ export interface IProfile extends AppUserProfile {
   createdAt: Date;
   updatedAt: Date;
   classIds?: string[];
-  totalBanhRan?: number;
   streakCount?: number;
   lastStreakUpdate?: Date;
   isSelfClaimed?: boolean;
@@ -26,7 +25,6 @@ export interface IStudent extends IProfile {
   grade?: string;
   school?: string;
   address?: string;
-  totalBanhRan?: number;
 }
 
 export interface ITeacher extends IProfile {
@@ -61,7 +59,6 @@ export interface IClassMember {
   grade?: string;
   school?: string;
   address?: string;
-  totalBanhRan?: number;
 }
 
 export interface IClass {

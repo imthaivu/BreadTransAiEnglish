@@ -5,8 +5,6 @@ import {
   useStudentClasses,
   useTeacherClasses,
   useAllClassesForInbox,
-  useClassQuizStoriesMany,
-  QUIZ_STORY_WINDOW_HOURS,
 } from "@/modules/classes/hooks";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
@@ -26,7 +24,6 @@ const STUDENT_APP_PATHS = [
   "/",
   "/classes",
   "/learn",
-  "/stories",
   "/grammar",
   "/profile",
   "/flashcard",
@@ -92,12 +89,6 @@ export function AppDataProvider({
   );
 
   useAllClassesForInbox(shouldPrefetchStudentApp && !!userId);
-
-  useClassQuizStoriesMany(
-    enrolledClassIds,
-    QUIZ_STORY_WINDOW_HOURS,
-    shouldPrefetchStudentApp && enrolledClassIds.length > 0
-  );
 
   // Books - shared giữa Từ vựng và Speaking (cả 2 tab trên Home)
   useQuery({

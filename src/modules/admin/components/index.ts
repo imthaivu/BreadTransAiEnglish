@@ -8,9 +8,7 @@ export { default as AdminUsers } from "./AdminUsers";
 export { default as AdminStudents } from "./AdminStudents";
 export { default as AdminClasses } from "./AdminClasses";
 export { default as AdminTeachers } from "./AdminTeachers";
-export { default as AdminCurrency } from "./AdminCurrency";
 export { default as AdminContent } from "./AdminContent";
-export { default as AdminGames } from "./AdminGames";
 export { default as ContentTopicEditor } from "./ContentTopicEditor";
 
 // Common components

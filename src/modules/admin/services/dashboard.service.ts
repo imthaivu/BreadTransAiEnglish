@@ -111,7 +111,7 @@ export interface DashboardDeepNeedArrayStats {
   lengthBuckets: { label: string; count: number }[];
 }
 
-/** Thống kê mô tả trên tập số (HS), dùng cho loginCount, speakingAccuracy, totalBanhRan, % XS/vocab */
+/** Thống kê mô tả trên tập số (HS), dùng cho loginCount, speakingAccuracy, % XS/vocab */
 export interface DashboardDeepNumericSummary {
   n: number;
   max: number;
@@ -124,7 +124,6 @@ export interface DashboardDeepUserFieldStats {
   lastDeviceType: { label: string; count: number }[];
   loginCountSummary: DashboardDeepNumericSummary | null;
   speakingAccuracySummary: DashboardDeepNumericSummary | null;
-  totalBanhRanSummary: DashboardDeepNumericSummary | null;
   /** % làm tròn (timesVocabXS/timesVocab×100), chỉ HS có timesVocab > 0 */
   vocabXsRatioPercentSummary: DashboardDeepNumericSummary | null;
   /** streakCount ≤ 7 (gồm 0) */
@@ -194,7 +193,6 @@ function aggregateUserFieldDistributions(
   const lastDevice = new Map<string, number>();
   const loginValues: number[] = [];
   const accValues: number[] = [];
-  const banhValues: number[] = [];
   const ratioPercents: number[] = [];
   let studentsSampled = 0;
   let streakLte7 = 0;
@@ -226,9 +224,6 @@ function aggregateUserFieldDistributions(
       streakLte7++;
     }
 
-    const br = asFiniteNumber(data.totalBanhRan) ?? 0;
-    banhValues.push(br);
-
     const tv = asFiniteNumber(data.timesVocab) ?? 0;
     const tx = asFiniteNumber(data.timesVocabXS) ?? 0;
     if (tv > 0) {
@@ -240,7 +235,6 @@ function aggregateUserFieldDistributions(
     lastDeviceType: sortLabelCounts(lastDevice),
     loginCountSummary: summarizeNumeric(loginValues),
     speakingAccuracySummary: summarizeNumeric(accValues),
-    totalBanhRanSummary: summarizeNumeric(banhValues),
     vocabXsRatioPercentSummary: summarizeNumeric(ratioPercents),
     streakLte7,
     streakGt7,

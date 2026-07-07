@@ -18,7 +18,6 @@ export function AdmirationNotificationManager() {
 
   const effectProps = useMemo(() => {
     if (!latestAdmiration) return null;
-    if (latestAdmiration.type === "gameInvite") return null;
     const senderInfo = getUserInfoFromLocalStorage(latestAdmiration.fromStudentId);
     const receiverInfo = studentId ? getUserInfoFromLocalStorage(studentId) : null;
     const senderAvatar = latestAdmiration.fromStudentAvatarUrl || senderInfo?.avatarUrl || "";

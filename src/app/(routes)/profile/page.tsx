@@ -3,7 +3,6 @@
 import {
   AvatarCard,
   ChangePasswordButton,
-  MyQuizStoriesCard,
 } from "@/components/profile/ProfileSections";
 import { Button } from "@/components/ui/Button";
 import { Modal } from "@/components/ui/Modal";
@@ -170,11 +169,6 @@ function ProfilePageContent({ viewUserId }: { viewUserId: string | null }) {
                       : null
                   }
                   readOnly={isViewingAnotherUser}
-                />
-                <MyQuizStoriesCard
-                  targetUserId={isViewingAnotherUser ? (viewUserId || undefined) : undefined}
-                  targetAvatarUrl={isViewingAnotherUser ? viewedProfile?.avatarUrl : undefined}
-                  targetClassIds={isViewingAnotherUser ? viewedProfile?.classIds : undefined}
                 />
 
                 <Modal

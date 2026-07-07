@@ -6,15 +6,9 @@ import { FiAlertCircle } from "react-icons/fi";
 import { getFirebaseAuth } from "@/lib/firebase/client";
 import toast from "react-hot-toast";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useQueryClient } from "@tanstack/react-query";
-import {
-  useClassQuizStories,
-  useTeacherClasses,
+import { useTeacherClasses,
   useTeacherPendingSpeakingEvaluations,
-  QUIZ_STORY_WINDOW_HOURS,
 } from "../hooks";
-import { getPendingCountByClass } from "../api/pending-speaking";
-import { addQuizStoryReaction } from "../api/quiz-story";
 import { useBooks } from "@/modules/flashcard/hooks";
 import { Button } from "@/components/ui/Button";
 import {
@@ -24,6 +18,7 @@ import {
 } from "./ClassDetail";
 import { ClassProvider } from "../context/ClassContext";
 import { PendingEvaluationModal } from "./PendingEvaluationModal";
+import { getPendingCountByClass } from "../api/pending-speaking";
 
 export function TeacherClassesList() {
   const { session } = useAuth();
@@ -97,72 +92,6 @@ export function TeacherClassesList() {
     nextParams.set("tab", validTab);
     router.replace(`${pathname}?${nextParams.toString()}`, { scroll: false });
   }, [activeTab, classes, effectiveClassId, pathname, router, searchParams]);
-
-
-  // Tự động thả TIM tất cả story HS trong lớp giáo viên đang mở (mỗi lần đổi lớp).
-  // Bỏ qua các story đã được giáo viên react trước đó để tránh gửi trùng.
-  const queryClient = useQueryClient();
-  const teacherUserId = session?.user?.id;
-  const teacherUserName = session?.user?.name || "";
-  const { data: activeClassStories = [] } = useClassQuizStories(
-    effectiveClassId || undefined,
-    QUIZ_STORY_WINDOW_HOURS
-  );
-  const autoHeartedStoryIdsRef = useRef<Set<string>>(new Set());
-
-  useEffect(() => {
-    if (!effectiveClassId || !teacherUserId) return;
-    if (activeClassStories.length === 0) return;
-
-    const targets = activeClassStories.filter((story) => {
-      if (story.classId !== effectiveClassId) return false;
-      if (story.userId === teacherUserId) return false;
-      if (autoHeartedStoryIdsRef.current.has(story.id)) return false;
-      if (story.userReactionsMap?.[teacherUserId]) {
-        // Đã từng react rồi → đánh dấu để không thử lại trong session này
-        autoHeartedStoryIdsRef.current.add(story.id);
-        return false;
-      }
-      return true;
-    });
-
-    if (targets.length === 0) return;
-
-    for (const story of targets) {
-      autoHeartedStoryIdsRef.current.add(story.id);
-    }
-
-    let cancelled = false;
-    (async () => {
-      for (const story of targets) {
-        if (cancelled) return;
-        try {
-          await addQuizStoryReaction(effectiveClassId, story.userId, story.id, {
-            userId: teacherUserId,
-            userName: teacherUserName,
-            reactionType: "heart",
-          });
-        } catch (err) {
-          console.error("[TeacherClassesList] auto-heart failed", err);
-        }
-      }
-      if (!cancelled) {
-        queryClient.invalidateQueries({
-          queryKey: ["classQuizStories", effectiveClassId, QUIZ_STORY_WINDOW_HOURS],
-        });
-      }
-    })();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [
-    effectiveClassId,
-    activeClassStories,
-    teacherUserId,
-    teacherUserName,
-    queryClient,
-  ]);
 
   // Tự động cleanup speaking_submissions + toast khi giáo viên mở tab Bảng Speaking
   useEffect(() => {

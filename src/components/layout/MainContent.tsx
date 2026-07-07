@@ -4,7 +4,6 @@ import { usePathname } from "next/navigation";
 import { ReactNode } from "react";
 import { useAuth } from "@/lib/auth/context";
 import {
-  useHomeStoriesDarkMode,
   useLearnSessionActive,
   useMovieImmersive,
   useImmersiveLight,
@@ -17,18 +16,13 @@ interface MainContentProps {
 export default function MainContent({ children }: MainContentProps) {
   const pathname = usePathname();
   const { session } = useAuth();
-  const isStoriesActive = useHomeStoriesDarkMode();
   const isMovieImmersive = useMovieImmersive();
   const isImmersiveLight = useImmersiveLight();
   const isLearnSessionActive = useLearnSessionActive();
-  // Cả 2 chế độ đều ẩn sidebar/nav; khác nhau ở theme (movie = tối, light = sáng).
   const isImmersive = isMovieImmersive || isImmersiveLight;
   const isAdminRoute = pathname?.startsWith("/admin");
-  // Grammar tận dụng tối đa khoảng trống: ít padding ngang/dọc hơn các route khác.
   const isGrammarRoute = pathname?.startsWith("/grammar");
-  const isHomeLoggedIn = pathname === "/" && !!session?.user?.id;
-  // Chỉ bật dark mode khi user đang ở tab Stories trên Home.
-  const isHomeDark = isHomeLoggedIn && isStoriesActive;
+  const isHomeDark = false;
   // Khi pathname null (hydrate) vẫn thêm padding để tránh content bị che
   const showAppNav = pathname === null || !pathname.startsWith("/admin");
 

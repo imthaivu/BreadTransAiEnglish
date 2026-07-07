@@ -63,8 +63,6 @@ export interface IClass {
    * Không còn được đọc/ghi; giữ kiểu cho dữ liệu cũ còn sót lại.
    */
   presences?: Record<string, import("firebase/firestore").Timestamp>;
-  /** Stories: userId -> storyId -> story data (học sinh làm quiz và tương tác) */
-  stories?: Record<string, Record<string, import("../classes/types").IClassStory>>;
   /** Bài speaking chưa chấm thủ công — key: studentId_bookId_lessonId */
   pendingEvaluations?: Record<string, IPendingSpeakingEvaluationEntry>;
   createdAt: Date;

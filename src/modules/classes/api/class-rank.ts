@@ -30,7 +30,6 @@ async function fetchStudentRankStats(
     speakingAccuracy:
       typeof d.speakingAccuracy === "number" ? d.speakingAccuracy : 50,
     streakCount: typeof d.streakCount === "number" ? d.streakCount : 0,
-    totalBanhRan: typeof d.totalBanhRan === "number" ? d.totalBanhRan : 0,
   };
 }
 

@@ -6,14 +6,6 @@ import { FAQSection, Timeline } from "@/modules/home/components";
 import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { SITE_CONFIG } from "@/constants/site.config";
-import { QuizStoriesView } from "@/modules/classes/components/QuizStoriesView";
-import {
-  useClassQuizStories,
-  useStudentClasses,
-  useTeacherClasses,
-  QUIZ_STORY_WINDOW_HOURS,
-} from "@/modules/classes/hooks";
-import { GameList } from "@/modules/games";
 import {
   ContentThumbnailGrid,
   GrammarPlayerExerciseRef,
@@ -35,7 +27,6 @@ import { GrammarTopic } from "@/constants/grammar";
 import { resolveThumbnail } from "@/utils/youtube";
 import { MiluLoading } from "@/components/ui/LoadingSpinner";
 import {
-  syncHomeStoriesDarkMode,
   syncMovieImmersive,
   syncImmersiveLight,
 } from "@/lib/homeUiStore";
@@ -48,22 +39,18 @@ import {
 } from "@/modules/grammar/utils/movieProgress";
 import { useStudentMovieWatchTracking } from "@/modules/grammar/hooks/useStudentMovieWatchTracking";
 
-type HomeTabId = "games" | "tiktok" | "movies" | "music";
+type HomeTabId = "movies" | "music";
 
 const HOME_TABS: { id: HomeTabId; label: string; icon: string }[] = [
-  { id: "games", label: "Games", icon: "🎮" },
-  { id: "tiktok", label: "Stories", icon: "❤️" },
   { id: "movies", label: "Movie", icon: "🎬" },
   { id: "music", label: "Singing", icon: "🎵" },
 ];
 
-type HomeTabUrlParam = "games" | "stories" | "movies" | "music";
+type HomeTabUrlParam = "movies" | "music";
 
 const tabFromUrlParam = (param: string | null): HomeTabId => {
-  if (param === "stories" || param === "tiktok") return "tiktok";
-  if (param === "movies") return "movies";
   if (param === "music") return "music";
-  return "games";
+  return "movies";
 };
 
 const resolveHomeTabFromUrl = (params: URLSearchParams): HomeTabId => {
@@ -71,8 +58,7 @@ const resolveHomeTabFromUrl = (params: URLSearchParams): HomeTabId => {
   return tabFromUrlParam(params.get("tab"));
 };
 
-const tabToUrlParam = (tab: HomeTabId): HomeTabUrlParam =>
-  tab === "tiktok" ? "stories" : tab;
+const tabToUrlParam = (tab: HomeTabId): HomeTabUrlParam => tab;
 
 const parseExerciseFromUrl = (
   ep: string | null,
@@ -360,8 +346,8 @@ function HomePageInner() {
         {
           "@type": "HowToStep",
           position: 5,
-          name: "Thi đua và nhận phần thưởng",
-          text: "Tham gia bảng xếp hạng và vòng quay bánh mì để nhận phần thưởng",
+          name: "Theo dõi tiến độ",
+          text: "Xem tiến độ học tập và nhận phản hồi từ giáo viên trong lớp học",
         },
       ],
     };
@@ -472,24 +458,13 @@ function HomePageInner() {
     !isStudent || !movieWatchTrackingQuery.isLoading;
   const pathname = usePathname();
   const prevPathnameRef = useRef<string | null>(null);
-  const { data: teacherClasses = [], isPending: isTeacherPending } = useTeacherClasses(
-    isTeacher ? session?.user?.id : undefined
-  );
-  const { data: studentClasses = [], isPending: isStudentPending } = useStudentClasses(
-    !isTeacher ? session?.user?.id : undefined
-  );
-  const classes = isTeacher ? teacherClasses : studentClasses;
-  const isClassesPending = isTeacher ? isTeacherPending : isStudentPending;
-  const [selectedClassId, setSelectedClassId] = useState<string>("");
   const pendingHomeTabRef = useRef<HomeTabId | null>(null);
   const [activeHomeTab, setActiveHomeTab] = useState<HomeTabId>(() => {
     if (typeof window !== "undefined") {
       return resolveHomeTabFromUrl(new URLSearchParams(window.location.search));
     }
-    return "games";
+    return "movies";
   });
-
-  const [activeGameId, setActiveGameId] = useState<string | null>(null);
   const [selectedContentTopic, setSelectedContentTopic] =
     useState<GrammarTopic | null>(null);
   const [isContentModalOpen, setIsContentModalOpen] = useState(false);
@@ -674,22 +649,6 @@ function HomePageInner() {
   const contentThumbnailItems =
     activeHomeTab === "movies" ? movieThumbnailItems : musicThumbnailItems;
 
-  // Reset game khi rời tab Games.
-  useEffect(() => {
-    if (activeHomeTab !== "games") setActiveGameId(null);
-  }, [activeHomeTab]);
-
-  // Đóng modal & clear topic khi rời các tab Movie/Music.
-  useEffect(() => {
-    if (!isContentTab) {
-      setIsContentModalOpen(false);
-      setSelectedContentTopic(null);
-      setSelectedSongIndex(null);
-      setAutoPlayVideo(false);
-      setInitialExercise(null);
-    }
-  }, [isContentTab]);
-
   const handleExerciseChange = useCallback(
     (exercise: GrammarPlayerExerciseRef | null) => {
       if (activeHomeTab !== "movies" || !selectedContentTopic) return;
@@ -789,14 +748,12 @@ function HomePageInner() {
     setSelectedSongIndex(null);
     setIsContentModalOpen(false);
     setInitialExercise(null);
-    syncHomeStoriesDarkMode(tabId === "tiktok" && isLoggedIn);
     replaceHomeUrl((params) => {
       params.set("tab", tabToUrlParam(tabId));
       params.delete("movie");
       params.delete("song");
       params.delete("ep");
       params.delete("sub");
-      params.delete("game");
     });
   };
 
@@ -884,35 +841,10 @@ function HomePageInner() {
     readCurrentHomeParams,
   ]);
 
-  const isPlayingGame = activeHomeTab === "games" && activeGameId !== null;
-  const isStoriesTab = activeHomeTab === "tiktok";
   const isMoviePlaying =
     activeHomeTab === "movies" && !!selectedContentTopic;
-  // Đã chọn 1 bài hát -> vào player (immersive sáng). Nếu chưa -> hiện grid chọn bài.
   const isMusicPlaying =
     activeHomeTab === "music" && selectedSongIndex != null;
-
-  // Chỉ ẩn bottom nav mobile khi đang chơi 1 game cụ thể (không ẩn ở danh sách Games).
-  useEffect(() => {
-    if (typeof document === "undefined") return;
-    const cls = "home-games-active";
-    if (isPlayingGame && isLoggedIn) {
-      document.body.classList.add(cls);
-    } else {
-      document.body.classList.remove(cls);
-    }
-    return () => {
-      document.body.classList.remove(cls);
-    };
-  }, [isPlayingGame, isLoggedIn]);
-
-  // Đồng bộ dark mode Stories cho layout (MainContent / AppNav).
-  useEffect(() => {
-    syncHomeStoriesDarkMode(isStoriesTab && isLoggedIn);
-    return () => {
-      syncHomeStoriesDarkMode(false);
-    };
-  }, [isStoriesTab, isLoggedIn]);
 
   useEffect(() => {
     syncMovieImmersive(isMoviePlaying && isLoggedIn);
@@ -928,27 +860,6 @@ function HomePageInner() {
       syncImmersiveLight(false);
     };
   }, [isMusicPlaying, isLoggedIn]);
-
-  useEffect(() => {
-    if (classes.length > 0) {
-      const isValid = classes.some((c) => c.id === selectedClassId);
-      if (!selectedClassId || !isValid) {
-        setSelectedClassId(classes[0].id);
-      }
-    }
-  }, [classes, selectedClassId]);
-
-  const effectiveClassId =
-    classes.some((c) => c.id === selectedClassId) ? selectedClassId : classes[0]?.id ?? "";
-  const selectedClass = classes.find((c) => c.id === effectiveClassId);
-  const { data: quizStories = [], refetch: refetchStories } = useClassQuizStories(
-    effectiveClassId || undefined,
-    QUIZ_STORY_WINDOW_HOURS
-  );
-  const classScopedStories = useMemo(
-    () => quizStories.filter((story) => story.classId === effectiveClassId),
-    [quizStories, effectiveClassId]
-  );
 
   // Scroll to top khi quay về menu từ tính năng
   useEffect(() => {
@@ -1013,10 +924,7 @@ function HomePageInner() {
         </>
       )}
       {isLoggedIn && (
-        <section
-          aria-label="Home"
-          className={`rounded-xl ${isStoriesTab ? "bg-black" : ""}`}
-        >
+        <section aria-label="Home" className="rounded-xl">
           <div
             className={`${
               isMoviePlaying
@@ -1026,29 +934,19 @@ function HomePageInner() {
                   : "max-w-6xl lg:px-6"
             } mx-auto`}
           >
-            {!isPlayingGame && !isMoviePlaying && !isMusicPlaying && (
-              <div
-                className={`mb-3 grid w-full grid-cols-4 gap-1 rounded-xl p-1 ${
-                  isStoriesTab
-                    ? "border border-gray-800 bg-black/70"
-                    : "bg-slate-100"
-                }`}
-              >
+            {!isMoviePlaying && !isMusicPlaying && (
+              <div className="mb-3 grid w-full grid-cols-2 gap-1 rounded-xl bg-slate-100 p-1">
                 {HOME_TABS.map((tab) => {
                   const isActive = activeHomeTab === tab.id;
-                  const activeCls = isStoriesTab
-                    ? "bg-white/10 text-blue-400"
-                    : "bg-slate-900 text-white";
-                  const inactiveCls = isStoriesTab
-                    ? "text-gray-400 hover:text-white"
-                    : "text-slate-500 hover:text-slate-900";
                   return (
                     <button
                       key={tab.id}
                       type="button"
                       onClick={() => handleHomeTabChange(tab.id)}
                       className={`w-full min-w-0 truncate rounded-lg px-3 py-1.5 text-center text-xs sm:text-sm font-semibold transition-colors flex items-center justify-center gap-1.5 ${
-                        isActive ? activeCls : inactiveCls
+                        isActive
+                          ? "bg-slate-900 text-white"
+                          : "text-slate-500 hover:text-slate-900"
                       }`}
                       aria-pressed={isActive}
                     >
@@ -1060,87 +958,42 @@ function HomePageInner() {
               </div>
             )}
 
-            {activeHomeTab === "tiktok" ? (
-              isClassesPending ? (
-                <div className="flex justify-center py-12">
-                  <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
-                </div>
-              ) : !classes.length ? (
-                <div className="text-center py-12 text-gray-500">Bạn chưa tham gia lớp học nào</div>
-              ) : (
-                <>
-                  {isTeacher ? (
-                    <div className="mb-3">
-                      <div className="grid w-full gap-1 rounded-xl border border-gray-800 bg-black/70 p-1" style={{ gridTemplateColumns: `repeat(${Math.max(classes.length, 1)}, minmax(0, 1fr))` }}>
-                        {classes.map((classItem) => {
-                          const isActive = classItem.id === effectiveClassId;
-                          return (
-                            <button
-                              key={classItem.id}
-                              type="button"
-                              onClick={() => setSelectedClassId(classItem.id)}
-                              className={`w-full min-w-0 truncate rounded-lg px-3 py-1.5 text-center text-xs sm:text-sm font-medium transition-colors ${isActive
-                                ? "text-blue-400"
-                                : "text-gray-400 hover:text-white"
-                                }`}
-                            >
-                              {classItem.name || "Lớp học"}
-                            </button>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  ) : null}
-                  <QuizStoriesView
-                    key={effectiveClassId}
-                    stories={classScopedStories}
-                    classId={effectiveClassId}
-                    links={selectedClass?.links}
-                    noteProcess={selectedClass?.noteProcess}
-                    onRefetch={() => refetchStories()}
-                  />
-                </>
-              )
-            ) : isContentTab ? (
-              isContentLoading ? (
-                <MiluLoading fullScreen={false} />
-              ) : activeHomeTab === "movies" && selectedContentTopic ? (
-                <MoviePlayerSection
-                  topic={selectedContentTopic}
-                  onClose={handleCloseContentModal}
-                  autoPlayVideo={autoPlayVideo}
-                  initialExercise={initialExercise}
-                  onExerciseChange={handleExerciseChange}
-                />
-              ) : isMusicPlaying ? (
-                <MusicPlayerSection
-                  songs={musicLibraryQuery.data?.songs ?? []}
-                  activeSongIndex={activeSongIndex}
-                  onSongSelect={handleMusicSongSelect}
-                  autoPlay={musicAutoplay}
-                  onClose={handleCloseContentModal}
-                />
-              ) : contentThumbnailItems.length === 0 ? (
-                <div className="rounded-lg border border-dashed border-gray-300 bg-gray-50 py-16 text-center">
-                  <p className="text-sm text-gray-500">
-                    Chưa có nội dung {CONTENT_KIND_LABEL[activeHomeTab].toLowerCase()}.
-                  </p>
-                </div>
-              ) : (
-                <ContentThumbnailGrid
-                  items={contentThumbnailItems}
-                  onSelect={handleContentItemSelect}
-                  groupByVariant={activeHomeTab === "movies"}
-                  searchPlaceholder={
-                    activeHomeTab === "music"
-                      ? "Tìm kiếm bài hát..."
-                      : "Tìm kiếm phim..."
-                  }
-                  emptyMessage={`Chưa có nội dung ${CONTENT_KIND_LABEL[activeHomeTab].toLowerCase()}`}
-                />
-              )
+            {isContentLoading ? (
+              <MiluLoading fullScreen={false} />
+            ) : activeHomeTab === "movies" && selectedContentTopic ? (
+              <MoviePlayerSection
+                topic={selectedContentTopic}
+                onClose={handleCloseContentModal}
+                autoPlayVideo={autoPlayVideo}
+                initialExercise={initialExercise}
+                onExerciseChange={handleExerciseChange}
+              />
+            ) : isMusicPlaying ? (
+              <MusicPlayerSection
+                songs={musicLibraryQuery.data?.songs ?? []}
+                activeSongIndex={activeSongIndex}
+                onSongSelect={handleMusicSongSelect}
+                autoPlay={musicAutoplay}
+                onClose={handleCloseContentModal}
+              />
+            ) : contentThumbnailItems.length === 0 ? (
+              <div className="rounded-lg border border-dashed border-gray-300 bg-gray-50 py-16 text-center">
+                <p className="text-sm text-gray-500">
+                  Chưa có nội dung {CONTENT_KIND_LABEL[activeHomeTab].toLowerCase()}.
+                </p>
+              </div>
             ) : (
-              <GameList onActiveGameChange={setActiveGameId} />
+              <ContentThumbnailGrid
+                items={contentThumbnailItems}
+                onSelect={handleContentItemSelect}
+                groupByVariant={activeHomeTab === "movies"}
+                searchPlaceholder={
+                  activeHomeTab === "music"
+                    ? "Tìm kiếm bài hát..."
+                    : "Tìm kiếm phim..."
+                }
+                emptyMessage={`Chưa có nội dung ${CONTENT_KIND_LABEL[activeHomeTab].toLowerCase()}`}
+              />
             )}
           </div>
         </section>

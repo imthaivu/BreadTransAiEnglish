@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { Button } from "@/components/ui/Button";
 import { useAuth } from "@/lib/auth/context";
@@ -18,7 +18,6 @@ import {
   FiInfo,
   FiCamera,
   FiBookOpen,
-  FiTag,
 } from "react-icons/fi";
 import { SafeImage as Image } from "@/components/ui/SafeImage";
 import toast from "react-hot-toast";
@@ -46,15 +45,12 @@ import {
   getStudentRankPosition,
 } from "../utils/class-rank";
 import { useUpdateClass } from "@/modules/admin/hooks/useClassManagement";
-import { useCreateCurrencyTransaction } from "@/modules/admin/hooks/useCurrencyManagement";
 import { getStudentById, UpdateStudentData } from "@/modules/admin/services/student.service";
 import { AdminTable, AdminTableColumn, AdminModal } from "@/modules/admin/components/common";
 import { Modal } from "@/components/ui/Modal";
 import { useForm } from "react-hook-form";
 import { GrammarTrackingTable } from "./GrammarTrackingTable";
 import { StudentAiCreateButton } from "./StudentAiCreateButton";
-import { useGrantGameTicket } from "@/modules/games/hooks";
-import { collectValidTickets } from "@/lib/games/ticket-utils";
 import {
   formatPresenceRelativeTime,
   formatPresenceShort,
@@ -128,10 +124,10 @@ function NoteCell({ memberId, student }: { memberId: string, student: any }) {
       {
         onSuccess: () => {
           setIsModalOpen(false);
-          toast.success("Đã cập nhật ghi chú!");
+          toast.success("ÄÃ£ cáº­p nháº­t ghi chÃº!");
         },
         onError: () => {
-          toast.error("Cập nhật ghi chú thất bại!");
+          toast.error("Cáº­p nháº­t ghi chÃº tháº¥t báº¡i!");
           setValue(currentNote); // Reset to original value on error
         },
       }
@@ -180,7 +176,7 @@ function NoteCell({ memberId, student }: { memberId: string, student: any }) {
           {/* Tooltip on hover */}
           <div className="absolute z-50 hidden group-hover:block bottom-full left-1/2 -translate-x-1/2 mb-1 px-2 py-1 max-w-xs w-max bg-gray-900 dark:bg-gray-800 text-white text-sm rounded shadow-lg pointer-events-none">
             <div className="whitespace-normal break-words">
-              {currentNote || "Thêm ghi chú"}
+              {currentNote || "ThÃªm ghi chÃº"}
             </div>
             <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-gray-900 dark:border-t-gray-800"></div>
           </div>
@@ -203,7 +199,7 @@ function NoteCell({ memberId, student }: { memberId: string, student: any }) {
               ref={textareaRef}
               value={value}
               onChange={(e) => setValue(e.target.value)}
-              placeholder="Nội dung..."
+              placeholder="Ná»™i dung..."
               rows={5}
               className="w-full px-2 py-1.5 text-base border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-white dark:bg-gray-800 resize-y"
               disabled={isUpdating}
@@ -216,14 +212,14 @@ function NoteCell({ memberId, student }: { memberId: string, student: any }) {
             onClick={handleCancel}
             disabled={isUpdating}
           >
-            Hủy
+            Há»§y
           </Button>
           <Button
             variant="primary"
             onClick={handleSave}
             disabled={isUpdating}
           >
-            {isUpdating ? "Đang lưu..." : "Lưu"}
+            {isUpdating ? "Äang lÆ°u..." : "LÆ°u"}
           </Button>
         </div>
       </AdminModal>
@@ -268,10 +264,10 @@ function AchievementsCell({ memberId, student }: { memberId: string, student: an
       {
         onSuccess: () => {
           setIsModalOpen(false);
-          toast.success("Đã cập nhật thành tích!");
+          toast.success("ÄÃ£ cáº­p nháº­t thÃ nh tÃ­ch!");
         },
         onError: () => {
-          toast.error("Cập nhật thành tích thất bại!");
+          toast.error("Cáº­p nháº­t thÃ nh tÃ­ch tháº¥t báº¡i!");
           setValue(currentAchievements); // Reset to original value on error
         },
       }
@@ -314,13 +310,13 @@ function AchievementsCell({ memberId, student }: { memberId: string, student: an
             </div>
           ) : (
             <p className="text-sm text-gray-400 dark:text-gray-500 italic group-hover:text-gray-600 dark:group-hover:text-gray-400 transition-colors">
-              + T.tích
+              + T.tÃ­ch
             </p>
           )}
           {/* Tooltip on hover */}
           <div className="absolute z-50 hidden group-hover:block bottom-full left-1/2 -translate-x-1/2 mb-1 px-2 py-1 max-w-xs w-max bg-gray-900 dark:bg-gray-800 text-white text-sm rounded shadow-lg pointer-events-none">
             <div className="whitespace-normal break-words">
-              {currentAchievements || "Thêm thành tích"}
+              {currentAchievements || "ThÃªm thÃ nh tÃ­ch"}
             </div>
             <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-gray-900 dark:border-t-gray-800"></div>
           </div>
@@ -330,19 +326,19 @@ function AchievementsCell({ memberId, student }: { memberId: string, student: an
       <AdminModal
         isOpen={isModalOpen}
         onClose={handleCancel}
-        title="Thành tích"
+        title="ThÃ nh tÃ­ch"
         size="md"
       >
         <div className="space-y-2">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              T.tích
+              T.tÃ­ch
             </label>
             <textarea
               ref={textareaRef}
               value={value}
               onChange={(e) => setValue(e.target.value)}
-              placeholder="Nội dung..."
+              placeholder="Ná»™i dung..."
               rows={5}
               className="w-full px-2 py-1.5 text-base border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-white dark:bg-gray-800 resize-y"
               disabled={isUpdating}
@@ -355,70 +351,18 @@ function AchievementsCell({ memberId, student }: { memberId: string, student: an
             onClick={handleCancel}
             disabled={isUpdating}
           >
-            Hủy
+            Há»§y
           </Button>
           <Button
             variant="primary"
             onClick={handleSave}
             disabled={isUpdating}
           >
-            {isUpdating ? "Đang lưu..." : "Lưu"}
+            {isUpdating ? "Äang lÆ°u..." : "LÆ°u"}
           </Button>
         </div>
       </AdminModal>
     </>
-  );
-}
-
-// Component to render bánh mì cell
-function BanhMiCell({ member, student }: { member: IClassMember, student: any }) {
-
-  return (
-    <div className="flex items-center gap-0.5">
-      <span className="text-sm font-medium text-orange-600 whitespace-nowrap tabular-nums">
-        {student?.totalBanhRan || member.totalBanhRan || 0}
-      </span>
-      <Image
-        src="/assets/images/dorayaki.png"
-        alt="bánh mì"
-        width={18}
-        height={18}
-        className="inline-block w-4 h-4"
-      />
-    </div>
-  );
-}
-
-function GameTicketsCell({ student }: { student: any }) {
-  const tickets = collectValidTickets(student ?? {});
-  const ticketCount = tickets.length;
-  const nextExpiry = tickets[0]?.expiresAt;
-
-  return (
-    <div className="flex items-center justify-center gap-0.5">
-      <span
-        className={cn(
-          "text-sm font-medium tabular-nums",
-          ticketCount > 0 ? "text-amber-600" : "text-gray-400"
-        )}
-        title={
-          ticketCount > 0 && nextExpiry
-            ? `${ticketCount} vé — sớm nhất hết hạn ${new Date(nextExpiry).toLocaleString("vi-VN")}`
-            : ticketCount > 0
-              ? `${ticketCount} vé game`
-              : "Không có vé"
-        }
-      >
-        {ticketCount}
-      </span>
-      <FiTag
-        className={cn(
-          "h-3.5 w-3.5",
-          ticketCount > 0 ? "text-amber-600" : "text-gray-300 dark:text-gray-600"
-        )}
-        aria-hidden
-      />
-    </div>
   );
 }
 
@@ -473,28 +417,28 @@ function SpeakingAccuracyCell({ student }: { student: any }) {
   );
 }
 
-// Hiển thị lớp hiện tại tính từ năm sinh (theo năm học, mốc tháng 8)
+// Hiá»ƒn thá»‹ lá»›p hiá»‡n táº¡i tÃ­nh tá»« nÄƒm sinh (theo nÄƒm há»c, má»‘c thÃ¡ng 8)
 function GradeCell({ student }: { student: any }) {
   const birthYear = typeof student?.birthYear === "number" ? student.birthYear : null;
   const grade = calculateCurrentGrade(birthYear);
   if (!birthYear) {
     return (
-      <span className="text-xs text-gray-400 italic" title="Chưa có năm sinh">
-        —
+      <span className="text-xs text-gray-400 italic" title="ChÆ°a cÃ³ nÄƒm sinh">
+        â€”
       </span>
     );
   }
   return (
     <span
       className="inline-flex items-center rounded bg-blue-50 dark:bg-blue-900/20 px-1.5 py-0.5 text-sm font-semibold text-blue-700 dark:text-blue-300 tabular-nums"
-      title={`Năm sinh ${birthYear}`}
+      title={`NÄƒm sinh ${birthYear}`}
     >
-      {grade != null ? `Lớp ${grade}` : `—`}
+      {grade != null ? `Lá»›p ${grade}` : `â€”`}
     </span>
   );
 }
 
-// Tính số ngày tới ngày kiểm tra (0 = hôm nay, âm = đã qua)
+// TÃ­nh sá»‘ ngÃ y tá»›i ngÃ y kiá»ƒm tra (0 = hÃ´m nay, Ã¢m = Ä‘Ã£ qua)
 function diffDaysToExam(iso: string): number | null {
   if (!iso) return null;
   const parts = iso.split("-").map(Number);
@@ -507,12 +451,12 @@ function diffDaysToExam(iso: string): number | null {
 }
 
 /**
- * Format số ngày thành chuỗi ngắn dạng ymwd, làm tròn theo đơn vị gần nhất.
- *   |Δ| < 7   → Nd
- *   |Δ| < 30  → Nw (round)
- *   |Δ| < 365 → Nm (round)
- *   else      → Ny (round)
- * Quá khứ thêm dấu "-".
+ * Format sá»‘ ngÃ y thÃ nh chuá»—i ngáº¯n dáº¡ng ymwd, lÃ m trÃ²n theo Ä‘Æ¡n vá»‹ gáº§n nháº¥t.
+ *   |Î”| < 7   â†’ Nd
+ *   |Î”| < 30  â†’ Nw (round)
+ *   |Î”| < 365 â†’ Nm (round)
+ *   else      â†’ Ny (round)
+ * QuÃ¡ khá»© thÃªm dáº¥u "-".
  */
 function formatExamCountdownShort(diffDays: number): string {
   if (diffDays === 0) return "0d";
@@ -524,14 +468,14 @@ function formatExamCountdownShort(diffDays: number): string {
   return `${sign}${Math.round(abs / 365)}y`;
 }
 
-// Cell chỉnh ngày kiểm tra sắp tới cho từng học sinh (inline, không popup)
+// Cell chá»‰nh ngÃ y kiá»ƒm tra sáº¯p tá»›i cho tá»«ng há»c sinh (inline, khÃ´ng popup)
 function ExamDateCell({ memberId, student }: { memberId: string; student: any }) {
   const { mutate: updateStudent, isPending: isUpdating } = useUpdateStudent();
 
   const currentDate: string =
     typeof student?.nextExamDate === "string" ? student.nextExamDate : "";
 
-  // local value để input không bị "nhảy" khi cập nhật optimistic
+  // local value Ä‘á»ƒ input khÃ´ng bá»‹ "nháº£y" khi cáº­p nháº­t optimistic
   const [value, setValue] = useState<string>(currentDate);
   useEffect(() => {
     setValue(currentDate);
@@ -547,10 +491,10 @@ function ExamDateCell({ memberId, student }: { memberId: string; student: any })
         },
         {
           onSuccess: () => {
-            toast.success(next ? "Đã cập nhật ngày KT!" : "Đã xóa ngày KT!");
+            toast.success(next ? "ÄÃ£ cáº­p nháº­t ngÃ y KT!" : "ÄÃ£ xÃ³a ngÃ y KT!");
           },
           onError: () => {
-            toast.error("Cập nhật ngày KT thất bại!");
+            toast.error("Cáº­p nháº­t ngÃ y KT tháº¥t báº¡i!");
             setValue(currentDate);
           },
         }
@@ -584,11 +528,11 @@ function ExamDateCell({ memberId, student }: { memberId: string; student: any })
         )}
         title={
           value
-            ? `Ngày KT: ${value}${diff != null ? ` (${diff === 0 ? "hôm nay" : diff > 0 ? `còn ${diff} ngày` : `đã qua ${Math.abs(diff)} ngày`})` : ""}`
-            : "Chưa đặt ngày KT"
+            ? `NgÃ y KT: ${value}${diff != null ? ` (${diff === 0 ? "hÃ´m nay" : diff > 0 ? `cÃ²n ${diff} ngÃ y` : `Ä‘Ã£ qua ${Math.abs(diff)} ngÃ y`})` : ""}`
+            : "ChÆ°a Ä‘áº·t ngÃ y KT"
         }
       >
-        {value ? short : "—"}
+        {value ? short : "â€”"}
       </span>
       <input
         type="date"
@@ -599,25 +543,25 @@ function ExamDateCell({ memberId, student }: { memberId: string; student: any })
           persist(next);
         }}
         disabled={isUpdating}
-        title="Chọn ngày kiểm tra sắp tới"
+        title="Chá»n ngÃ y kiá»ƒm tra sáº¯p tá»›i"
         className="h-7 w-[112px] px-1 text-xs border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 focus:outline-none focus:ring-1 focus:ring-primary disabled:opacity-50"
       />
     </div>
   );
 }
 
-/** Mô tả ngắn gọn vị trí hiện tại của học sinh để hiển thị cho giáo viên. */
+/** MÃ´ táº£ ngáº¯n gá»n vá»‹ trÃ­ hiá»‡n táº¡i cá»§a há»c sinh Ä‘á»ƒ hiá»ƒn thá»‹ cho giÃ¡o viÃªn. */
 function formatCurrentActivity(activity?: CurrentActivity): string {
   if (!activity?.tab) return "";
   if (activity.tab !== "Learn") return activity.tab;
-  const parts: string[] = ["Học"];
+  const parts: string[] = ["Há»c"];
   if (activity.miniTab) parts.push(activity.miniTab);
   if (activity.bookName) parts.push(activity.bookName);
   if (activity.lessons && activity.lessons.length > 0) {
-    parts.push(`Bài ${activity.lessons.join(", ")}`);
+    parts.push(`BÃ i ${activity.lessons.join(", ")}`);
   }
   if (activity.mode && activity.mode !== "none") parts.push(activity.mode);
-  return parts.join(" • ");
+  return parts.join(" â€¢ ");
 }
 
 function LazyStudentDataCell({ memberId, renderCell }: { memberId: string, renderCell: (student: any) => React.ReactNode }) {
@@ -629,8 +573,6 @@ function LazyStudentDataCell({ memberId, renderCell }: { memberId: string, rende
 type SortKey =
   | "online"
   | "rank"
-  | "banhmi"
-  | "gameTickets"
   | "timesVocab"
   | "timesVocabXS"
   | "countHeart"
@@ -648,8 +590,6 @@ const MEMBER_TABLE_COLUMN_KEYS = [
   "note",
   "classRank",
   "achievements",
-  "banhmi",
-  "gameTickets",
   "timesVocab",
   "quizAccuracy",
   "speakingAccuracy",
@@ -671,9 +611,9 @@ const ATTENDANCE_STATUS_ICONS: {
   Icon: typeof FiCheckCircle;
   label: string;
 }[] = [
-  { value: "present", Icon: FiCheckCircle, label: "Có mặt" },
-  { value: "late", Icon: FiClock, label: "Trễ" },
-  { value: "absent", Icon: FiUserX, label: "Vắng" },
+  { value: "present", Icon: FiCheckCircle, label: "CÃ³ máº·t" },
+  { value: "late", Icon: FiClock, label: "Trá»…" },
+  { value: "absent", Icon: FiUserX, label: "Váº¯ng" },
 ];
 
 function defaultAttendanceStatusMap(studentIds: string[]): Record<string, AttendanceStatus> {
@@ -684,7 +624,7 @@ function defaultAttendanceStatusMap(studentIds: string[]): Record<string, Attend
   return m;
 }
 
-/** Giữ cột điểm danh ngay sau Thao tác (và đủ mọi key). */
+/** Giá»¯ cá»™t Ä‘iá»ƒm danh ngay sau Thao tÃ¡c (vÃ  Ä‘á»§ má»i key). */
 function pinAttendanceAfterActions(order: MemberTableColumnKey[]): MemberTableColumnKey[] {
   const seen = new Set<MemberTableColumnKey>();
   const unique: MemberTableColumnKey[] = [];
@@ -731,11 +671,6 @@ export default function MembersList() {
 
   const { session, profile } = useAuth();
   const [loadedStudentIds, setLoadedStudentIds] = useState<Set<string>>(new Set());
-  const [currencyModal, setCurrencyModal] = useState<{
-    studentId: string;
-    studentName: string;
-    type: "add" | "subtract";
-  } | null>(null);
   const [showGrammarModal, setShowGrammarModal] = useState(false);
   const [sortConfig, setSortConfig] = useState<{ key: SortKey; direction: SortDirection }>({
     key: "rank",
@@ -794,11 +729,6 @@ export default function MembersList() {
     },
     [classId]
   );
-
-  const { mutate: createTransaction, isPending: isQuickDonating } = useCreateCurrencyTransaction();
-  const { mutate: grantTicket, isPending: isGrantingTicket } = useGrantGameTicket();
-  const [quickDonateId, setQuickDonateId] = useState<string | null>(null);
-  const [grantTicketId, setGrantTicketId] = useState<string | null>(null);
 
   const { data: classDetailsFromHook } = useClassDetails(
     classId,
@@ -872,7 +802,7 @@ export default function MembersList() {
     } catch (e) {
       console.error(e);
       if (attendanceFetchGenRef.current === myGen) {
-        toast.error("Lỗi tải điểm danh.");
+        toast.error("Lá»—i táº£i Ä‘iá»ƒm danh.");
         setAttendanceStatusMap(defaultAttendanceStatusMap(studs.map((s) => s.id)));
       }
     } finally {
@@ -912,7 +842,7 @@ export default function MembersList() {
         await saveClassAttendanceDay(classId, dateKey, statusMap);
       } catch (e) {
         console.error(e);
-        toast.error("Lỗi lưu điểm danh.");
+        toast.error("Lá»—i lÆ°u Ä‘iá»ƒm danh.");
       } finally {
         setAttendanceSaving(false);
       }
@@ -941,69 +871,6 @@ export default function MembersList() {
     };
   }, []);
 
-  const handleQuickDonate = useCallback(
-    (studentId: string, studentName: string) => {
-      if (!session?.user || !profile || !classId) return;
-      setQuickDonateId(studentId);
-      createTransaction(
-        {
-          studentId,
-          studentName,
-          userId: session.user.id,
-          userName: session.user.name || session.user.phone || "Unknown",
-          userRole: profile.role,
-          amount: 1,
-          reason: "Donate nhanh",
-          type: "add",
-          classId: classId,
-        },
-        {
-          onSuccess: () => {
-            setQuickDonateId(null);
-            appendAdmirationToUser(
-              studentId,
-              studentName,
-              {
-                name: session.user.name || session.user.phone || "Giáo viên",
-                value: 1,
-                reactionType: "heart",
-                fromStudentId: session.user.id,
-                type: "admiration",
-                fromStudentAvatarUrl: profile.avatarUrl || "",
-                classId: classId,
-              },
-              { skipIncrementSenderCount: true }
-            ).catch(console.error);
-          },
-          onError: () => setQuickDonateId(null),
-        }
-      );
-    },
-    [session?.user, profile, classId, createTransaction]
-  );
-
-  const handleGrantTicket = useCallback(
-    (studentId: string, studentName: string) => {
-      if (!classId) return;
-      setGrantTicketId(studentId);
-      grantTicket(
-        { studentId, classId },
-        {
-          onSuccess: () => {
-            setGrantTicketId(null);
-            toast.success(`Đã cấp thêm 1 vé game cho ${studentName} (24h/vé).`);
-            queryClient.invalidateQueries({ queryKey: studentKeys.detail(studentId) });
-          },
-          onError: (err) => {
-            setGrantTicketId(null);
-            toast.error(err instanceof Error ? err.message : "Không thể cấp vé.");
-          },
-        }
-      );
-    },
-    [classId, grantTicket, queryClient]
-  );
-
   const handleRowClick = (member: IClassMember) => {
     setLoadedStudentIds((prev) => {
       const newSet = new Set(prev);
@@ -1019,7 +886,7 @@ export default function MembersList() {
   const handleGetAllInfo = useCallback(async () => {
     if (!classId || students.length === 0 || loadingAllInfo) return;
     setLoadingAllInfo(true);
-    const toastId = toast.loading("Đang tải thông tin học sinh…");
+    const toastId = toast.loading("Äang táº£i thÃ´ng tin há»c sinhâ€¦");
     try {
       await Promise.all(
         students.map((member) =>
@@ -1037,10 +904,10 @@ export default function MembersList() {
       setLoadedStudentIds(new Set(students.map((s) => s.id)));
       await queryClient.invalidateQueries({ queryKey: teacherClassKeys.detail(classId) });
       setSortConfig({ key: "rank", direction: "asc" });
-      toast.success("Đã tải thông tin & cập nhật xếp hạng!", { id: toastId });
+      toast.success("ÄÃ£ táº£i thÃ´ng tin & cáº­p nháº­t xáº¿p háº¡ng!", { id: toastId });
     } catch (error) {
       console.error(error);
-      toast.error("Không thể tải thông tin học sinh.", { id: toastId });
+      toast.error("KhÃ´ng thá»ƒ táº£i thÃ´ng tin há»c sinh.", { id: toastId });
     } finally {
       setLoadingAllInfo(false);
     }
@@ -1048,8 +915,8 @@ export default function MembersList() {
 
   const getSortIndicator = useCallback(
     (key: SortKey): string => {
-      if (sortConfig.key !== key) return "↕";
-      return sortConfig.direction === "asc" ? "↑" : "↓";
+      if (sortConfig.key !== key) return "â†•";
+      return sortConfig.direction === "asc" ? "â†‘" : "â†“";
     },
     [sortConfig]
   );
@@ -1074,19 +941,9 @@ export default function MembersList() {
       return Number((student?.speakingAccuracy ?? 50).toFixed(3));
     };
 
-    const getMemberBanhMi = (member: IClassMember): number => {
-      const student = studentsDataMap.get(member.id) || {};
-      return student?.totalBanhRan ?? member.totalBanhRan ?? 0;
-    };
-
     const getMemberTimesVocab = (member: IClassMember): number => {
       const student = studentsDataMap.get(member.id) || {};
       return student?.timesVocab ?? 0;
-    };
-
-    const getMemberGameTickets = (member: IClassMember): number => {
-      const student = studentsDataMap.get(member.id) || {};
-      return collectValidTickets(student).length;
     };
 
     const getMemberTimesVocabXS = (member: IClassMember): number => {
@@ -1122,12 +979,6 @@ export default function MembersList() {
       } else if (sortConfig.key === "rank") {
         av = getMemberRank(a);
         bv = getMemberRank(b);
-      } else if (sortConfig.key === "banhmi") {
-        av = getMemberBanhMi(a);
-        bv = getMemberBanhMi(b);
-      } else if (sortConfig.key === "gameTickets") {
-        av = getMemberGameTickets(a);
-        bv = getMemberGameTickets(b);
       } else if (sortConfig.key === "timesVocab") {
         av = getMemberTimesVocab(a);
         bv = getMemberTimesVocab(b);
@@ -1156,7 +1007,7 @@ export default function MembersList() {
 
   const renderLazyCell = useCallback(
     (memberId: string, isLoaded: boolean, render: (student: any) => React.ReactNode) => {
-      if (!isLoaded) return <span className="text-sm text-gray-400">…</span>;
+      if (!isLoaded) return <span className="text-sm text-gray-400">â€¦</span>;
       return <LazyStudentDataCell memberId={memberId} renderCell={render} />;
     },
     []
@@ -1168,7 +1019,7 @@ export default function MembersList() {
         key: "student",
         title: (
           <button type="button" onClick={() => handleSort("online")} className="inline-flex items-center gap-0.5 whitespace-nowrap text-sm">
-            Học sinh {getSortIndicator("online")}
+            Há»c sinh {getSortIndicator("online")}
           </button>
         ),
         render: (_, member) => {
@@ -1176,9 +1027,9 @@ export default function MembersList() {
           const online = isOnline(member.id);
           const short = formatPresenceShort(presenceTs);
           const titleFull =
-            formatPresenceRelativeTime(presenceTs) || "Chưa rõ hoạt động";
+            formatPresenceRelativeTime(presenceTs) || "ChÆ°a rÃµ hoáº¡t Ä‘á»™ng";
           const presenceTitle = online
-            ? `${member.name}, đang online`
+            ? `${member.name}, Ä‘ang online`
             : `${member.name}, ${titleFull}`;
 
           return (
@@ -1190,7 +1041,7 @@ export default function MembersList() {
                 <ProfileAvatarLink
                   userId={member.id}
                   className="block h-7 w-7 sm:h-8 sm:w-8 rounded-full overflow-hidden ring-1 ring-gray-200 dark:ring-gray-600"
-                  ariaLabel={`Hồ sơ ${member.name}`}
+                  ariaLabel={`Há»“ sÆ¡ ${member.name}`}
                 >
                   {member.avatarUrl ? (
                     <Image
@@ -1242,8 +1093,8 @@ export default function MembersList() {
       grade: {
         key: "grade",
         title: (
-          <span className="whitespace-nowrap text-sm font-medium normal-case tracking-normal" title="Lớp hiện tại (1-12) tính theo năm sinh và năm học">
-            Lớp
+          <span className="whitespace-nowrap text-sm font-medium normal-case tracking-normal" title="Lá»›p hiá»‡n táº¡i (1-12) tÃ­nh theo nÄƒm sinh vÃ  nÄƒm há»c">
+            Lá»›p
           </span>
         ),
         width: "72px",
@@ -1256,8 +1107,8 @@ export default function MembersList() {
       actions: {
         key: "actions",
         title: (
-          <span className="whitespace-nowrap text-xs font-medium" title="Thao tác">
-            Thao tác
+          <span className="whitespace-nowrap text-xs font-medium" title="Thao tÃ¡c">
+            Thao tÃ¡c
           </span>
         ),
         width: "116px",
@@ -1265,77 +1116,11 @@ export default function MembersList() {
         render: (_, member) => {
           return (
             <div className="mx-auto flex w-fit max-w-none items-center justify-center gap-px">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  setCurrencyModal({
-                    studentId: member.id,
-                    studentName: member.name,
-                    type: "subtract",
-                  });
-                }}
-                title="Trừ bánh mì"
-                className="h-7 w-7 p-0 min-w-0 shrink-0"
-              >
-                <FiMinusCircle className="h-3.5 w-3.5 text-red-500" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  handleQuickDonate(member.id, member.name);
-                }}
-                disabled={isQuickDonating && quickDonateId === member.id}
-                title="+1 bánh mì"
-                className="h-7 w-7 p-0 min-w-0 shrink-0 hover:bg-red-50 dark:hover:bg-red-900/20"
-              >
-                <FiHeart
-                  className={`h-3.5 w-3.5 text-red-500 ${isQuickDonating && quickDonateId === member.id ? "animate-pulse" : ""}`}
-                />
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  setCurrencyModal({
-                    studentId: member.id,
-                    studentName: member.name,
-                    type: "add",
-                  });
-                }}
-                title="Cộng bánh mì"
-                className="h-7 w-7 p-0 min-w-0 shrink-0"
-              >
-                <FiPlusCircle className="h-3.5 w-3.5 text-green-500" />
-              </Button>
               <StudentAiCreateButton
                 studentId={member.id}
                 studentName={member.name}
                 classId={classId}
               />
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  handleGrantTicket(member.id, member.name);
-                }}
-                disabled={isGrantingTicket && grantTicketId === member.id}
-                title="Tặng vé chơi game (24h)"
-                className="h-7 w-7 p-0 min-w-0 shrink-0 hover:bg-amber-50 dark:hover:bg-amber-900/20"
-              >
-                <FiTag
-                  className={`h-3.5 w-3.5 text-amber-600 ${isGrantingTicket && grantTicketId === member.id ? "animate-pulse" : ""}`}
-                />
-              </Button>
             </div>
           );
         },
@@ -1343,8 +1128,8 @@ export default function MembersList() {
       attendance: {
         key: "attendance",
         title: (
-          <span className="whitespace-nowrap text-xs font-medium" title="Điểm danh">
-            Đ.Danh
+          <span className="whitespace-nowrap text-xs font-medium" title="Äiá»ƒm danh">
+            Ä.Danh
           </span>
         ),
         width: "88px",
@@ -1353,11 +1138,11 @@ export default function MembersList() {
           <div
             className="mx-auto flex w-fit max-w-none items-center justify-center gap-px"
             role="group"
-            aria-label={`Điểm danh ${member.name}`}
+            aria-label={`Äiá»ƒm danh ${member.name}`}
             onClick={(e) => e.stopPropagation()}
           >
             {attendanceLoading ? (
-              <span className="text-xs text-gray-400">…</span>
+              <span className="text-xs text-gray-400">â€¦</span>
             ) : (
               ATTENDANCE_STATUS_ICONS.map(({ value, Icon, label }) => {
                 const on = attendanceStatusMap[member.id] === value;
@@ -1368,7 +1153,7 @@ export default function MembersList() {
                     size="sm"
                     type="button"
                     title={label}
-                    aria-label={`${label} — ${member.name}`}
+                    aria-label={`${label} â€” ${member.name}`}
                     aria-pressed={on}
                     disabled={students.length === 0}
                     onClick={(e) => {
@@ -1394,7 +1179,7 @@ export default function MembersList() {
       examDate: {
         key: "examDate",
         title: (
-          <span className="whitespace-nowrap text-sm font-medium normal-case tracking-normal" title="Ngày kiểm tra sắp tới (đếm ngược y/m/w/d)">
+          <span className="whitespace-nowrap text-sm font-medium normal-case tracking-normal" title="NgÃ y kiá»ƒm tra sáº¯p tá»›i (Ä‘áº¿m ngÆ°á»£c y/m/w/d)">
             KT
           </span>
         ),
@@ -1433,7 +1218,7 @@ export default function MembersList() {
             "countHeart"
           );
           if (position == null) {
-            return <span className="text-xs text-gray-400">—</span>;
+            return <span className="text-xs text-gray-400">â€”</span>;
           }
           return (
             <span className="text-xs font-semibold tabular-nums text-emerald-700">
@@ -1444,41 +1229,10 @@ export default function MembersList() {
       },
       achievements: {
         key: "achievements",
-        title: <span className="whitespace-nowrap text-sm">T.tích</span>,
+        title: <span className="whitespace-nowrap text-sm">T.tÃ­ch</span>,
         render: (_, member) =>
           renderLazyCell(member.id, loadedStudentIds.has(member.id), (student) => (
             <AchievementsCell memberId={member.id} student={student} />
-          )),
-      },
-      banhmi: {
-        key: "banhmi",
-        title: (
-          <button type="button" onClick={() => handleSort("banhmi")} className="inline-flex items-center gap-0.5 whitespace-nowrap text-sm font-medium normal-case tracking-normal">
-            Bánh {getSortIndicator("banhmi")}
-          </button>
-        ),
-        render: (_, member) =>
-          renderLazyCell(member.id, loadedStudentIds.has(member.id), (student) => (
-            <BanhMiCell member={member} student={student} />
-          )),
-      },
-      gameTickets: {
-        key: "gameTickets",
-        title: (
-          <button
-            type="button"
-            onClick={() => handleSort("gameTickets")}
-            className="inline-flex items-center gap-0.5 whitespace-nowrap text-sm font-medium normal-case tracking-normal"
-            title="Số vé game còn hiệu lực"
-          >
-            Vé {getSortIndicator("gameTickets")}
-          </button>
-        ),
-        width: "56px",
-        className: "text-center !px-1",
-        render: (_, member) =>
-          renderLazyCell(member.id, loadedStudentIds.has(member.id), (student) => (
-            <GameTicketsCell student={student} />
           )),
       },
       timesVocab: {
@@ -1509,7 +1263,7 @@ export default function MembersList() {
         key: "speakingAccuracy",
         title: (
           <button type="button" onClick={() => handleSort("speakingAccuracy")} className="inline-flex items-center gap-0.5 whitespace-nowrap text-sm font-medium normal-case tracking-normal">
-            Nói % {getSortIndicator("speakingAccuracy")}
+            NÃ³i % {getSortIndicator("speakingAccuracy")}
           </button>
         ),
         render: (_, member) =>
@@ -1519,7 +1273,7 @@ export default function MembersList() {
       },
       snapshot: {
         key: "snapshot",
-        title: <span className="whitespace-nowrap text-xs font-medium">Hoạt động</span>,
+        title: <span className="whitespace-nowrap text-xs font-medium">Hoáº¡t Ä‘á»™ng</span>,
         width: "260px",
         render: (_, member) => {
           const presence = presenceMap[member.id];
@@ -1527,7 +1281,7 @@ export default function MembersList() {
           const label = formatCurrentActivity(activity);
 
           if (!activity || !label) {
-            return <span className="text-xs text-gray-400">Chưa rõ</span>;
+            return <span className="text-xs text-gray-400">ChÆ°a rÃµ</span>;
           }
 
           return (
@@ -1552,15 +1306,9 @@ export default function MembersList() {
     attendanceStatusMap,
     presenceMap,
     getSortIndicator,
-    handleQuickDonate,
-    handleGrantTicket,
     handleSort,
     isOnline,
-    isQuickDonating,
-    isGrantingTicket,
-    grantTicketId,
     loadedStudentIds,
-    quickDonateId,
     renderLazyCell,
     setAttendanceMemberStatus,
     students.length,
@@ -1574,7 +1322,7 @@ export default function MembersList() {
     [columnOrder, columnsByKey]
   );
 
-  if (isActuallyLoading) return <p className="text-base text-gray-500 py-1">Đang tải…</p>;
+  if (isActuallyLoading) return <p className="text-base text-gray-500 py-1">Äang táº£iâ€¦</p>;
 
   return (
     <div className="space-y-2">
@@ -1586,12 +1334,12 @@ export default function MembersList() {
             value={noteProcessValue}
             onChange={(e) => setNoteProcessValue(e.target.value)}
             onBlur={handleNoteProcessBlur}
-            placeholder="Tiến độ lớp…"
+            placeholder="Tiáº¿n Ä‘á»™ lá»›pâ€¦"
             disabled={isUpdatingClass || !classDetails}
           />
           {isUpdatingClass && (
             <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-gray-400 animate-pulse">
-              Lưu…
+              LÆ°uâ€¦
             </span>
           )}
         </div>
@@ -1604,14 +1352,14 @@ export default function MembersList() {
               value={attendanceDate}
               onChange={(e) => setAttendanceDate(e.target.value)}
               disabled={attendanceLoading || students.length === 0}
-              aria-label="Ngày điểm danh"
+              aria-label="NgÃ y Ä‘iá»ƒm danh"
               className="h-9 rounded-md border border-gray-300 bg-white py-0 pl-8 pr-2 text-sm dark:border-gray-600 dark:bg-gray-900 disabled:opacity-50"
             />
           </div>
           {attendanceSaving && (
             <span className="inline-flex items-center gap-1 text-xs text-gray-400">
               <FiLoader className="h-3.5 w-3.5 animate-spin" />
-              Đang lưu…
+              Äang lÆ°uâ€¦
             </span>
           )}
         </div>
@@ -1622,7 +1370,7 @@ export default function MembersList() {
             onClick={() => void handleGetAllInfo()}
             disabled={loadingAllInfo || students.length === 0}
             className="flex items-center gap-1 h-9 px-2.5 rounded-md border border-emerald-200 dark:border-emerald-900/30 bg-emerald-50/50 dark:bg-emerald-900/10 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-100 transition-colors disabled:opacity-50"
-            title="Tải thông tin học sinh & cập nhật xếp hạng"
+            title="Táº£i thÃ´ng tin há»c sinh & cáº­p nháº­t xáº¿p háº¡ng"
           >
             {loadingAllInfo ? (
               <FiLoader className="h-3.5 w-3.5 animate-spin" />
@@ -1634,7 +1382,7 @@ export default function MembersList() {
           <button
             onClick={() => setShowGrammarModal(true)}
             className="flex items-center gap-1 h-9 px-2.5 rounded-md border border-blue-200 dark:border-blue-900/30 bg-blue-50/50 dark:bg-blue-900/10 text-blue-700 dark:text-blue-400 hover:bg-blue-100 transition-colors"
-            title="Ngữ pháp hôm nay"
+            title="Ngá»¯ phÃ¡p hÃ´m nay"
           >
             <span className="text-sm font-medium">Videos</span>
           </button>
@@ -1645,7 +1393,7 @@ export default function MembersList() {
         columns={columns}
         data={sortedStudents}
         loading={isActuallyLoading}
-        emptyMessage="Chưa có học sinh"
+        emptyMessage="ChÆ°a cÃ³ há»c sinh"
         showCheckbox={false}
         onRowClick={handleRowClick}
         columnReorder
@@ -1653,25 +1401,13 @@ export default function MembersList() {
         dense
       />
 
-      {/* Currency Modal */}
-      {currencyModal && (
-        <CurrencyRequestModal
-          isOpen={!!currencyModal}
-          onClose={() => setCurrencyModal(null)}
-          studentId={currencyModal.studentId}
-          studentName={currencyModal.studentName}
-          type={currencyModal.type}
-          classId={classId}
-        />
-      )}
-
       {/* Grammar Tracking Modal */}
       {showGrammarModal && (
         <Modal
           open={showGrammarModal}
           onClose={() => setShowGrammarModal(false)}
           maxWidth="4xl"
-          title="Lịch sử xem"
+          title="Lá»‹ch sá»­ xem"
           className="max-w-6xl"
         >
           <GrammarTrackingTable
@@ -1686,237 +1422,3 @@ export default function MembersList() {
     </div>
   );
 }
-
-interface CurrencyRequestModalProps {
-  studentId: string;
-  studentName: string;
-  classId: string;
-  type: "add" | "subtract";
-  isOpen: boolean;
-  onClose: () => void;
-}
-
-function CurrencyRequestModal({
-  studentId,
-  studentName,
-  classId,
-  type,
-  isOpen,
-  onClose,
-}: CurrencyRequestModalProps) {
-  const { session, profile } = useAuth();
-  const { data: student } = useStudent(studentId);
-  const currentBalance = student?.totalBanhRan || 0;
-
-  const {
-    register,
-    handleSubmit,
-    reset,
-    setValue,
-    watch,
-    formState: { errors },
-  } = useForm<{ amount: number; reason: string }>();
-  const { mutate: createTransaction, isPending } = useCreateCurrencyTransaction();
-
-  const amount = watch("amount");
-  const quickAmounts = [10, 20, 30, 50];
-
-  useEffect(() => {
-    if (!isOpen) {
-      reset();
-    } else {
-      // Set default values when modal opens
-      reset({
-        amount: 10,
-        reason: "thích",
-      });
-    }
-  }, [isOpen, reset]);
-
-  const onSubmit = (data: { amount: number; reason: string }) => {
-    if (!session?.user || !profile) return;
-
-    // Validation for subtract
-    if (type === "subtract" && data.amount > currentBalance) {
-      toast.error(
-        `Không thể trừ ${data.amount} bánh mì. Số dư hiện tại chỉ có ${currentBalance} bánh mì.`
-      );
-      return;
-    }
-
-    createTransaction(
-      {
-        studentId: studentId,
-        studentName: studentName,
-        userId: session.user.id,
-        userName: session.user.name || session.user.phone || "Unknown",
-        userRole: profile.role,
-        amount: data.amount,
-        reason: data.reason,
-        type: type,
-        classId: classId,
-      },
-      {
-        onSuccess: () => {
-          if (type === "add") {
-            appendAdmirationToUser(
-              studentId,
-              studentName,
-              {
-                name: session.user.name || session.user.phone || "Giáo viên",
-                value: data.amount,
-                reactionType: "heart",
-                fromStudentId: session.user.id,
-                type: "admiration",
-                fromStudentAvatarUrl: profile.avatarUrl || "",
-                classId: classId,
-              },
-              { skipIncrementSenderCount: true }
-            ).catch(console.error);
-          }
-          reset();
-          onClose();
-        },
-      }
-    );
-  };
-
-  const maxAmount = type === "subtract" ? Math.min(currentBalance, 50) : 50;
-  const sliderValue = amount ?? 10;
-
-  return (
-    <Modal
-      open={isOpen}
-      onClose={onClose}
-      maxWidth="sm"
-      title={
-        <span>
-          {type === "add" ? (
-            <span className="text-green-600">Cộng</span>
-          ) : (
-            <span className="text-red-600">Trừ</span>
-          )}{" "}
-          bánh mì
-        </span>
-      }
-    >
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
-        {/* Student Info */}
-        <div className="flex items-center">
-          <span className="text-sm font-medium text-gray-700 flex items-center gap-1">
-            {studentName} có {currentBalance}
-            <Image
-              src="/assets/images/dorayaki.png"
-              alt="bánh mì"
-              width={16}
-              height={16}
-              className="inline-block"
-            />
-          </span>
-        </div>
-
-        {/* Slider */}
-        <div>
-          <div className="flex items-center justify-between mb-2 gap-2">
-            <label htmlFor="amount" className="text-sm font-medium flex items-center gap-2">
-              Số lượng:
-              <input
-                id="amount"
-                type="number"
-                {...register("amount", {
-                  required: "Vui lòng nhập số lượng",
-                  valueAsNumber: true,
-                  min: { value: 1, message: "Số lượng phải lớn hơn 0" },
-                  max: {
-                    value: maxAmount,
-                    message: `Số lượng không được vượt quá ${maxAmount}`,
-                  },
-                })}
-                className="w-20 px-2 py-1 text-sm border rounded-md text-primary font-bold text-center"
-                min="1"
-                max={maxAmount}
-                onChange={(e) => {
-                  const value = Number(e.target.value);
-                  if (value >= 1 && value <= maxAmount) {
-                    setValue("amount", value, { shouldValidate: true });
-                  }
-                }}
-              />
-            </label>
-            {amount && (
-              <span className="text-xs text-gray-500">
-                {type === "add"
-                  ? `→ ${currentBalance + amount}`
-                  : `→ ${currentBalance - amount}`}
-              </span>
-            )}
-          </div>
-          <input
-            type="range"
-            min="1"
-            max={maxAmount}
-            value={sliderValue}
-            onChange={(e) => {
-              const value = Number(e.target.value);
-              setValue("amount", value, { shouldValidate: true });
-            }}
-            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-primary"
-            style={{
-              background: `linear-gradient(to right, rgb(59 130 246) 0%, rgb(59 130 246) ${((sliderValue - 1) / (maxAmount - 1)) * 100}%, rgb(229 231 235) ${((sliderValue - 1) / (maxAmount - 1)) * 100}%, rgb(229 231 235) 100%)`
-            }}
-          />
-          <div className="flex items-center justify-between mt-1 text-xs text-gray-500">
-            <span>1</span>
-            <div className="flex items-center gap-1">
-              {quickAmounts.filter(q => q <= maxAmount).map((quickAmount) => (
-                <button
-                  key={quickAmount}
-                  type="button"
-                  onClick={() => setValue("amount", quickAmount, { shouldValidate: true })}
-                  className={`px-2 py-0.5 rounded text-xs transition-colors ${amount === quickAmount
-                    ? "bg-primary text-white"
-                    : "bg-gray-100 hover:bg-gray-200"
-                    }`}
-                >
-                  {quickAmount}
-                </button>
-              ))}
-            </div>
-            <span>{maxAmount}</span>
-          </div>
-          {errors.amount && (
-            <p className="text-red-500 text-xs mt-1">{errors.amount.message}</p>
-          )}
-        </div>
-
-        {/* Reason */}
-        <div>
-          <label htmlFor="reason" className="block text-sm font-medium mb-1">
-            Lý do
-          </label>
-          <textarea
-            id="reason"
-            {...register("reason", { required: "Vui lòng nhập lý do" })}
-            className="block w-full p-2 text-sm border rounded-md resize-none"
-            rows={2}
-            placeholder="Nhập lý do..."
-          />
-          {errors.reason && (
-            <p className="text-red-500 text-xs mt-1">{errors.reason.message}</p>
-          )}
-        </div>
-
-        {/* Actions */}
-        <div className="flex justify-end gap-2 pt-2">
-          <Button type="button" variant="outline" size="sm" onClick={onClose}>
-            Hủy
-          </Button>
-          <Button type="submit" size="sm" disabled={isPending}>
-            {isPending ? "Đang xử lý..." : "Xác nhận"}
-          </Button>
-        </div>
-      </form>
-    </Modal>
-  );
-}
-

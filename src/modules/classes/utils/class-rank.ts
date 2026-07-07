@@ -3,8 +3,7 @@ export type ClassRankMetric =
   | "timesVocabXS"
   | "quizAccuracy"
   | "speakingAccuracy"
-  | "streakCount"
-  | "totalBanhRan";
+  | "streakCount";
 
 export type ClassStudentRankStats = {
   id: string;
@@ -15,7 +14,6 @@ export type ClassStudentRankStats = {
   quizAccuracy: number;
   speakingAccuracy: number;
   streakCount: number;
-  totalBanhRan: number;
 };
 
 /** Một học sinh trong snapshot rank trên doc class. */
@@ -43,7 +41,6 @@ export const CLASS_RANK_TABS: {
   { key: "quizAccuracy", label: "Quiz TB", shortLabel: "Quiz" },
   { key: "speakingAccuracy", label: "Nói TB", shortLabel: "Nói" },
   { key: "streakCount", label: "Streak", shortLabel: "🔥" },
-  { key: "totalBanhRan", label: "Bánh", shortLabel: "🍞" },
 ];
 
 /** Top ~40% lớp, tối thiểu 1 học sinh. */
@@ -67,8 +64,6 @@ export function getMetricValue(
       return student.speakingAccuracy ?? 50;
     case "streakCount":
       return student.streakCount ?? 0;
-    case "totalBanhRan":
-      return student.totalBanhRan ?? 0;
     default:
       return 0;
   }
@@ -130,7 +125,6 @@ function parseRankStudentEntry(raw: unknown): ClassRankStudentEntry | null {
     speakingAccuracy:
       typeof d.speakingAccuracy === "number" ? d.speakingAccuracy : 50,
     streakCount: typeof d.streakCount === "number" ? d.streakCount : 0,
-    totalBanhRan: typeof d.totalBanhRan === "number" ? d.totalBanhRan : 0,
   };
 }
 

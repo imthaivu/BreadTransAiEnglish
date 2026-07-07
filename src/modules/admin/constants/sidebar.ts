@@ -27,11 +27,6 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
     href: "/admin/teachers",
   },
   {
-    id: "currency",
-    label: "Bánh mì",
-    href: "/admin/currency",
-  },
-  {
     id: "classes",
     label: "Lớp học",
     href: "/admin/classes",
@@ -40,10 +35,5 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
     id: "content",
     label: "Nội dung",
     href: "/admin/content",
-  },
-  {
-    id: "games",
-    label: "Game",
-    href: "/admin/games",
   },
 ];

@@ -26,7 +26,6 @@ import { BookProgress } from "@/modules/flashcard/types";
 import { IClassMember } from "@/types";
 import { IClass } from "../admin";
 import { ILessonStudentProgress, IStudentActivity } from "./types";
-import { ICurrency } from "../admin/services/currency.service";
 import { parseClassRankFromData } from "./utils/class-rank";
 import type { IPendingSpeakingEvaluationEntry } from "../admin/type";
 export * from "./api/quiz";
@@ -736,62 +735,6 @@ export const getClassActivityData = async (
   }
 };
 
-// Get currency transactions for a class with server-side filtering
-// Uses composite index: createdAt (desc), classId (asc), type (asc)
-export const getClassCurrencyTransactions = async (
-  classId: string,
-  options?: {
-    startDate?: Date;
-    endDate?: Date;
-    type?: "add" | "subtract" | "shopee";
-    limit?: number;
-  }
-): Promise<ICurrency[]> => {
-  try {
-    const currencyRef = collection(db, "currency");
-    const queryConstraints: QueryConstraint[] = [];
-
-    // Filter by classId (required)
-    queryConstraints.push(where("classId", "==", classId));
-
-    // Filter by date range if provided
-    if (options?.startDate) {
-      const startTs = Timestamp.fromDate(options.startDate);
-      queryConstraints.push(where("createdAt", ">=", startTs));
-    }
-    if (options?.endDate) {
-      const endTs = Timestamp.fromDate(options.endDate);
-      queryConstraints.push(where("createdAt", "<=", endTs));
-    }
-
-    // Filter by type if provided
-    if (options?.type) {
-      queryConstraints.push(where("type", "==", options.type));
-    }
-
-    // Order by createdAt desc (requires composite index)
-    queryConstraints.push(orderBy("createdAt", "desc"));
-
-    // Apply limit if provided
-    if (options?.limit) {
-      queryConstraints.push(limit(options.limit));
-    }
-
-    const q = query(currencyRef, ...queryConstraints);
-    const querySnapshot = await getDocs(q);
-
-    return querySnapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-      createdAt: doc.data().createdAt?.toDate(),
-      updatedAt: doc.data().updatedAt?.toDate(),
-    })) as ICurrency[];
-  } catch (error) {
-    console.error("Error getting class currency transactions:", error);
-    throw error;
-  }
-};
-
 // Get today's activity for each student in a class
 export interface TodayStudentActivity {
   studentId: string;
@@ -800,7 +743,6 @@ export interface TodayStudentActivity {
   quizCount: number; // Number of quiz submissions today
   speakingCount: number; // Number of speaking submissions today
   grammarCount: number; // Number of grammar views completed today
-  admirationsSentStoryTodayCount?: number; // Number of story reactions sent today
 }
 
 export const getTodayStudentActivity = async (
@@ -860,7 +802,6 @@ export const getTodayStudentActivity = async (
           quizCount: 0,
           speakingCount: 0,
           grammarCount: 0,
-          admirationsSentStoryTodayCount: 0,
         };
       }
 
@@ -879,10 +820,6 @@ export const getTodayStudentActivity = async (
       const grammarCount = typeof userData.grammarCount === "number" ? userData.grammarCount : 0;
       const grammarDate = userData.grammarDate || "";
 
-      // adm count
-      const admirationsSentStoryToday = userData.admirationsSentStoryToday;
-      const admirationsSentStoryTodayCount = admirationsSentStoryToday?.dateKey === selectedDateKey ? admirationsSentStoryToday.count : 0;
-
       // Only count if the date matches the selected date
       return {
         studentId: student.id,
@@ -891,7 +828,6 @@ export const getTodayStudentActivity = async (
         quizCount: quizDate === selectedDateKey ? quizCount : 0,
         speakingCount: speakDate === selectedDateKey ? speakCount : 0,
         grammarCount: grammarDate === selectedDateKey ? grammarCount : 0,
-        admirationsSentStoryTodayCount: admirationsSentStoryTodayCount,
       };
     });
   } catch (error) {
