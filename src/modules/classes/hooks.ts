@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -72,7 +72,7 @@ export const useCreateCurrencyRequest = () => {
   return useMutation({
     mutationFn: createCurrencyRequest,
     onSuccess: () => {
-      toast.success("YÃªu cáº§u Ä‘Ã£ Ä‘Æ°á»£c gá»­i thÃ nh cÃ´ng! Admin sáº½ xem xÃ©t vÃ  duyá»‡t yÃªu cáº§u.");
+      toast.success("Yêu cầu đã được gửi thành công! Admin sẽ xem xét và duyệt yêu cầu.");
       // Invalidate all currency requests queries so admin can see new requests immediately
       queryClient.invalidateQueries({
         predicate: (query) => {
@@ -89,7 +89,7 @@ export const useCreateCurrencyRequest = () => {
     onError: (error: Error | unknown) => {
       console.error("Error creating currency request:", error);
       const errorMessage =
-        error instanceof Error ? error.message : "Gá»­i yÃªu cáº§u tháº¥t báº¡i. Vui lÃ²ng thá»­ láº¡i.";
+        error instanceof Error ? error.message : "Gửi yêu cầu thất bại. Vui lòng thử lại.";
       toast.error(errorMessage);
     },
   });
@@ -100,7 +100,7 @@ export const useUpdateClassLinks = () => {
   return useMutation({
     mutationFn: updateClassLinks,
     onSuccess: (_, { classId }) => {
-      toast.success("Cáº­p nháº­t liÃªn káº¿t thÃ nh cÃ´ng!");
+      toast.success("Cập nhật liên kết thành công!");
       queryClient.invalidateQueries({
         queryKey: teacherClassKeys.lists(),
       });
@@ -110,7 +110,7 @@ export const useUpdateClassLinks = () => {
     },
     onError: (error) => {
       console.error("Error updating class links:", error);
-      toast.error("Cáº­p nháº­t liÃªn káº¿t tháº¥t báº¡i.");
+      toast.error("Cập nhật liên kết thất bại.");
     },
   });
 };
@@ -120,13 +120,13 @@ export const useTeacherClasses = (teacherId: string | undefined) => {
     queryKey: teacherClassKeys.list(teacherId!),
     queryFn: () => getTeacherClasses(teacherId!),
     enabled: !!teacherId,
-    staleTime: 3 * 60 * 1000, // 3 phÃºt - shared data 5 tab student
+    staleTime: 3 * 60 * 1000, // 3 phút - shared data 5 tab student
     gcTime: 10 * 60 * 1000,
-    refetchOnMount: false, // dÃ¹ng cache khi chuyá»ƒn tab
+    refetchOnMount: false, // dùng cache khi chuyển tab
   });
 };
 
-/** Pending speaking â€” derived tá»« pendingEvaluations trÃªn class docs (Ä‘Ã£ fetch). */
+/** Pending speaking — derived từ pendingEvaluations trên class docs (đã fetch). */
 export function useTeacherPendingSpeakingEvaluations(classes: IClass[] | undefined) {
   return useMemo(
     () => getTeacherPendingSpeakingEvaluations(classes),
@@ -139,13 +139,13 @@ export const useStudentClasses = (studentId: string | undefined) => {
     queryKey: teacherClassKeys.studentClasses(studentId),
     queryFn: () => getStudentClasses(studentId!),
     enabled: !!studentId,
-    staleTime: 3 * 60 * 1000, // 3 phÃºt - shared data 5 tab student
+    staleTime: 3 * 60 * 1000, // 3 phút - shared data 5 tab student
     gcTime: 10 * 60 * 1000,
-    refetchOnMount: false, // dÃ¹ng cache khi chuyá»ƒn tab
+    refetchOnMount: false, // dùng cache khi chuyển tab
   });
 };
 
-/** Giá»‘ng full tab Stories: toÃ n bá»™ lá»›p trong há»‡ thá»‘ng â€” inbox online / thÃ nh viÃªn. */
+/** Giống full tab Stories: toàn bộ lớp trong hệ thống — inbox online / thành viên. */
 export const allClassesInboxKeys = {
   all: ["allClasses", "inbox"] as const,
 };
@@ -176,8 +176,8 @@ export const useClassMembers = (classId: string, options?: { enabled?: boolean }
     queryKey: teacherClassKeys.members(classId),
     queryFn: () => getClassMembers(classId),
     enabled: options?.enabled !== false && !!classId,
-    staleTime: 10 * 60 * 1000, // Cache for 10 minutes - members don't change frequently (tá»‘i Æ°u: tÄƒng cache time)
-    gcTime: 30 * 60 * 1000, // Keep in cache for 30 minutes (tá»‘i Æ°u: giá»¯ cache lÃ¢u hÆ¡n)
+    staleTime: 10 * 60 * 1000, // Cache for 10 minutes - members don't change frequently (tối ưu: tăng cache time)
+    gcTime: 30 * 60 * 1000, // Keep in cache for 30 minutes (tối ưu: giữ cache lâu hơn)
   });
 };
 
@@ -196,7 +196,7 @@ export const useClassProgress = (
       const cachedMembers = queryClient.getQueryData<IClassMember[]>(
         teacherClassKeys.members(classId)
       );
-      // Reuse classBookProgress cache khi cÃ¹ng sÃ¡ch (tá»« Báº£ng Quiz) - trÃ¡nh fetch láº¡i
+      // Reuse classBookProgress cache khi cùng sách (từ Bảng Quiz) - tránh fetch lại
       const bookProgressQueryKey = ["classBookProgress", classId, bookId];
       const cachedBookProgress = queryClient.getQueryData<Map<string, BookProgress>>(
         bookProgressQueryKey
@@ -210,7 +210,7 @@ export const useClassProgress = (
       );
     },
     enabled: !!classId && !!bookId && !!lessonId,
-    staleTime: 2 * 60 * 1000, // 2 phÃºt - dÃ¹ng chung cache vá»›i classBookProgress
+    staleTime: 2 * 60 * 1000, // 2 phút - dùng chung cache với classBookProgress
   });
 };
 
@@ -282,7 +282,7 @@ export const useDeleteQuizResults = () => {
   return useMutation({
     mutationFn: deleteQuizResults,
     onSuccess: async (_, quizResultIds) => {
-      toast.success(`ÄÃ£ xÃ³a ${quizResultIds.length} bÃ i quiz thÃ nh cÃ´ng!`);
+      toast.success(`Đã xóa ${quizResultIds.length} bài quiz thành công!`);
 
       // Remove cached classBookProgress to force fresh fetch
       // This ensures classQuizResults will get fresh data
@@ -322,7 +322,7 @@ export const useDeleteQuizResults = () => {
     },
     onError: (error) => {
       console.error("Error deleting quiz results:", error);
-      toast.error("XÃ³a bÃ i quiz tháº¥t báº¡i. Vui lÃ²ng thá»­ láº¡i.");
+      toast.error("Xóa bài quiz thất bại. Vui lòng thử lại.");
     },
   });
 };
@@ -336,7 +336,7 @@ export const useDeleteClassQuizResultsByBook = () => {
     mutationFn: ({ classId, bookId }: { classId: string; bookId: string }) =>
       deleteClassQuizResultsByBook(classId, bookId),
     onSuccess: (_, { classId, bookId }) => {
-      toast.success("ÄÃ£ xÃ³a táº¥t cáº£ bÃ i quiz trong sÃ¡ch nÃ y thÃ nh cÃ´ng!");
+      toast.success("Đã xóa tất cả bài quiz trong sách này thành công!");
       // Invalidate all related queries including lessonStatus and completedLessons
       queryClient.invalidateQueries({
         predicate: (query) => {
@@ -358,7 +358,7 @@ export const useDeleteClassQuizResultsByBook = () => {
     },
     onError: (error) => {
       console.error("Error deleting quiz results by book:", error);
-      toast.error("XÃ³a bÃ i quiz tháº¥t báº¡i. Vui lÃ²ng thá»­ láº¡i.");
+      toast.error("Xóa bài quiz thất bại. Vui lòng thử lại.");
     },
   });
 };
@@ -374,7 +374,7 @@ export const useSyncLessonStatusForBook = () => {
       syncLessonStatusForBook(classId, bookId),
     onSuccess: (result, { bookId }) => {
       toast.success(
-        `ÄÃ£ Ä‘á»“ng bá»™ ${result.updated} tráº¡ng thÃ¡i bÃ i há»c thÃ nh cÃ´ng!`
+        `Đã đồng bộ ${result.updated} trạng thái bài học thành công!`
       );
       // Invalidate all related queries
       queryClient.invalidateQueries({
@@ -392,7 +392,7 @@ export const useSyncLessonStatusForBook = () => {
     },
     onError: (error) => {
       console.error("Error syncing lesson status:", error);
-      toast.error("Äá»“ng bá»™ tráº¡ng thÃ¡i bÃ i há»c tháº¥t báº¡i. Vui lÃ²ng thá»­ láº¡i.");
+      toast.error("Đồng bộ trạng thái bài học thất bại. Vui lòng thử lại.");
     },
   });
 };
@@ -476,7 +476,7 @@ export const useGrammarTrackingData = (classId: string, date: Date = new Date())
 };
 
 /**
- * Lá»‹ch sá»­ xem tá»« watch_tracking â€” toÃ n thá»i gian hoáº·c lá»c theo ngÃ y / mediaType.
+ * Lịch sử xem từ watch_tracking — toàn thời gian hoặc lọc theo ngày / mediaType.
  */
 export const useClassWatchTrackingData = (
   classId: string,
@@ -541,7 +541,7 @@ export const useMarkLessonsAsDone = () => {
       });
 
       if (validLessonIds.length === 0) {
-        throw new Error("KhÃ´ng cÃ³ bÃ i nÃ o há»£p lá»‡ Ä‘á»ƒ Ä‘Ã¡nh dáº¥u");
+        throw new Error("Không có bài nào hợp lệ để đánh dấu");
       }
 
       // Batch processing: process 5 lessons at a time to avoid transaction conflicts
@@ -620,8 +620,8 @@ export const useMarkLessonsAsDone = () => {
 
       if (failedLessons.length > 0) {
         throw new Error(
-          `ÄÃ£ Ä‘Ã¡nh dáº¥u ${totalLessons - failedLessons.length}/${totalLessons} bÃ i. ` +
-          `Tháº¥t báº¡i: ${failedLessons.join(", ")}`
+          `Đã đánh dấu ${totalLessons - failedLessons.length}/${totalLessons} bài. ` +
+          `Thất bại: ${failedLessons.join(", ")}`
         );
       }
 
@@ -633,11 +633,11 @@ export const useMarkLessonsAsDone = () => {
     onSuccess: (result) => {
       if (result.failed > 0) {
         toast.error(
-          `ÄÃ£ Ä‘Ã¡nh dáº¥u ${result.count - result.failed}/${result.count} bÃ i. ` +
-          `CÃ³ ${result.failed} bÃ i tháº¥t báº¡i.`
+          `Đã đánh dấu ${result.count - result.failed}/${result.count} bài. ` +
+          `Có ${result.failed} bài thất bại.`
         );
       } else {
-        toast.success(`ÄÃ£ Ä‘Ã¡nh dáº¥u ${result.count} bÃ i lÃ  Ä‘Ã£ lÃ m vá»›i 95%!`);
+        toast.success(`Đã đánh dấu ${result.count} bài là đã làm với 95%!`);
       }
       // Invalidate all related queries
       queryClient.invalidateQueries({
@@ -656,16 +656,16 @@ export const useMarkLessonsAsDone = () => {
     },
     onError: (error) => {
       console.error("Error marking lessons as done:", error);
-      const errorMessage = error instanceof Error ? error.message : "ÄÃ¡nh dáº¥u bÃ i tháº¥t báº¡i. Vui lÃ²ng thá»­ láº¡i.";
+      const errorMessage = error instanceof Error ? error.message : "Đánh dấu bài thất bại. Vui lòng thử lại.";
       toast.error(errorMessage);
     },
   });
 };
 
 /**
- * Hook tráº£ vá» tráº¡ng thÃ¡i online cho danh sÃ¡ch há»c sinh.
- * Online láº¥y tá»« global presence (RTDB) â€” `studentIds`/`classId` chá»‰ giá»¯ cho
- * tÆ°Æ¡ng thÃ­ch chá»¯ kÃ½ cÅ©.
+ * Hook trả về trạng thái online cho danh sách học sinh.
+ * Online lấy từ global presence (RTDB) — `studentIds`/`classId` chỉ giữ cho
+ * tương thích chữ ký cũ.
  */
 export const useStudentPresence = (
   studentIds: string[],
@@ -684,8 +684,8 @@ export const useStudentPresence = (
 };
 
 /**
- * Hook tráº£ vá» presence cho thÃ nh viÃªn lá»›p (students + teachers).
- * Äá»c tá»« global presence map (RTDB `/presence`).
+ * Hook trả về presence cho thành viên lớp (students + teachers).
+ * Đọc từ global presence map (RTDB `/presence`).
  */
 export const useClassMemberPresence = (
   classId: string,
@@ -717,7 +717,7 @@ export const useSendAdmiration = () => {
     mutationFn: sendAdmiration,
     onSuccess: (_, variables) => {
       const reactionIcon = getReactionIcon(variables.reactionType);
-      toast.success(`ÄÃ£ gá»­i ${reactionIcon} tá»›i ${variables.toStudentName}`);
+      toast.success(`Đã gửi ${reactionIcon} tới ${variables.toStudentName}`);
       // Invalidate currency balance for recipient
       queryClient.invalidateQueries({
         queryKey: ["currency", "balance", variables.toStudentId],
@@ -728,7 +728,7 @@ export const useSendAdmiration = () => {
       const errorMessage =
         error instanceof Error
           ? error.message
-          : "Gá»­i ngÆ°á»¡ng má»™ tháº¥t báº¡i. Vui lÃ²ng thá»­ láº¡i.";
+          : "Gửi ngưỡng mộ thất bại. Vui lòng thử lại.";
       toast.error(errorMessage);
     },
   });
@@ -739,13 +739,13 @@ export const useSendAdmiration = () => {
  */
 export function getReactionIcon(reactionType?: string): string {
   const icons: Record<string, string> = {
-    dislike: "ðŸ‘Ž",
-    haha: "ðŸ˜‚",
-    like: "ðŸ‘",
-    heart: "â¤ï¸",
-    wow: "ðŸ˜±",
+    dislike: "👎",
+    haha: "😂",
+    like: "👍",
+    heart: "❤️",
+    wow: "😱",
   };
-  return icons[reactionType || ""] || "â¤ï¸";
+  return icons[reactionType || ""] || "❤️";
 }
 
 const RECORDING_FLAG_KEY = "__breadtransRecordingActive";
@@ -814,8 +814,8 @@ export const useAdmirationNotifications = (studentId: string | undefined) => {
         const reactionIcon = getReactionIcon(latest.reactionType);
         const isSpeakingGrade = latest.type === "speakingGrade";
         const message = isSpeakingGrade
-          ? `${latest.fromStudentName} cháº¥m bÃ i nÃ³i ${reactionIcon}`
-          : `${latest.fromStudentName} ${reactionIcon} báº¡n`;
+          ? `${latest.fromStudentName} chấm bài nói ${reactionIcon}`
+          : `${latest.fromStudentName} ${reactionIcon} bạn`;
 
         const sound = new Audio("/sounds/it-xu.mp3");
         sound.play().catch(() => {});

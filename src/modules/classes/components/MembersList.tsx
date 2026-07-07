@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { Button } from "@/components/ui/Button";
 import { useAuth } from "@/lib/auth/context";
@@ -124,10 +124,10 @@ function NoteCell({ memberId, student }: { memberId: string, student: any }) {
       {
         onSuccess: () => {
           setIsModalOpen(false);
-          toast.success("ÄÃ£ cáº­p nháº­t ghi chÃº!");
+          toast.success("Đã cập nhật ghi chú!");
         },
         onError: () => {
-          toast.error("Cáº­p nháº­t ghi chÃº tháº¥t báº¡i!");
+          toast.error("Cập nhật ghi chú thất bại!");
           setValue(currentNote); // Reset to original value on error
         },
       }
@@ -176,7 +176,7 @@ function NoteCell({ memberId, student }: { memberId: string, student: any }) {
           {/* Tooltip on hover */}
           <div className="absolute z-50 hidden group-hover:block bottom-full left-1/2 -translate-x-1/2 mb-1 px-2 py-1 max-w-xs w-max bg-gray-900 dark:bg-gray-800 text-white text-sm rounded shadow-lg pointer-events-none">
             <div className="whitespace-normal break-words">
-              {currentNote || "ThÃªm ghi chÃº"}
+              {currentNote || "Thêm ghi chú"}
             </div>
             <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-gray-900 dark:border-t-gray-800"></div>
           </div>
@@ -199,7 +199,7 @@ function NoteCell({ memberId, student }: { memberId: string, student: any }) {
               ref={textareaRef}
               value={value}
               onChange={(e) => setValue(e.target.value)}
-              placeholder="Ná»™i dung..."
+              placeholder="Nội dung..."
               rows={5}
               className="w-full px-2 py-1.5 text-base border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-white dark:bg-gray-800 resize-y"
               disabled={isUpdating}
@@ -212,14 +212,14 @@ function NoteCell({ memberId, student }: { memberId: string, student: any }) {
             onClick={handleCancel}
             disabled={isUpdating}
           >
-            Há»§y
+            Hủy
           </Button>
           <Button
             variant="primary"
             onClick={handleSave}
             disabled={isUpdating}
           >
-            {isUpdating ? "Äang lÆ°u..." : "LÆ°u"}
+            {isUpdating ? "Đang lưu..." : "Lưu"}
           </Button>
         </div>
       </AdminModal>
@@ -264,10 +264,10 @@ function AchievementsCell({ memberId, student }: { memberId: string, student: an
       {
         onSuccess: () => {
           setIsModalOpen(false);
-          toast.success("ÄÃ£ cáº­p nháº­t thÃ nh tÃ­ch!");
+          toast.success("Đã cập nhật thành tích!");
         },
         onError: () => {
-          toast.error("Cáº­p nháº­t thÃ nh tÃ­ch tháº¥t báº¡i!");
+          toast.error("Cập nhật thành tích thất bại!");
           setValue(currentAchievements); // Reset to original value on error
         },
       }
@@ -310,13 +310,13 @@ function AchievementsCell({ memberId, student }: { memberId: string, student: an
             </div>
           ) : (
             <p className="text-sm text-gray-400 dark:text-gray-500 italic group-hover:text-gray-600 dark:group-hover:text-gray-400 transition-colors">
-              + T.tÃ­ch
+              + T.tích
             </p>
           )}
           {/* Tooltip on hover */}
           <div className="absolute z-50 hidden group-hover:block bottom-full left-1/2 -translate-x-1/2 mb-1 px-2 py-1 max-w-xs w-max bg-gray-900 dark:bg-gray-800 text-white text-sm rounded shadow-lg pointer-events-none">
             <div className="whitespace-normal break-words">
-              {currentAchievements || "ThÃªm thÃ nh tÃ­ch"}
+              {currentAchievements || "Thêm thành tích"}
             </div>
             <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-gray-900 dark:border-t-gray-800"></div>
           </div>
@@ -326,19 +326,19 @@ function AchievementsCell({ memberId, student }: { memberId: string, student: an
       <AdminModal
         isOpen={isModalOpen}
         onClose={handleCancel}
-        title="ThÃ nh tÃ­ch"
+        title="Thành tích"
         size="md"
       >
         <div className="space-y-2">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              T.tÃ­ch
+              T.tích
             </label>
             <textarea
               ref={textareaRef}
               value={value}
               onChange={(e) => setValue(e.target.value)}
-              placeholder="Ná»™i dung..."
+              placeholder="Nội dung..."
               rows={5}
               className="w-full px-2 py-1.5 text-base border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-white dark:bg-gray-800 resize-y"
               disabled={isUpdating}
@@ -351,14 +351,14 @@ function AchievementsCell({ memberId, student }: { memberId: string, student: an
             onClick={handleCancel}
             disabled={isUpdating}
           >
-            Há»§y
+            Hủy
           </Button>
           <Button
             variant="primary"
             onClick={handleSave}
             disabled={isUpdating}
           >
-            {isUpdating ? "Äang lÆ°u..." : "LÆ°u"}
+            {isUpdating ? "Đang lưu..." : "Lưu"}
           </Button>
         </div>
       </AdminModal>
@@ -417,28 +417,28 @@ function SpeakingAccuracyCell({ student }: { student: any }) {
   );
 }
 
-// Hiá»ƒn thá»‹ lá»›p hiá»‡n táº¡i tÃ­nh tá»« nÄƒm sinh (theo nÄƒm há»c, má»‘c thÃ¡ng 8)
+// Hiển thị lớp hiện tại tính từ năm sinh (theo năm học, mốc tháng 8)
 function GradeCell({ student }: { student: any }) {
   const birthYear = typeof student?.birthYear === "number" ? student.birthYear : null;
   const grade = calculateCurrentGrade(birthYear);
   if (!birthYear) {
     return (
-      <span className="text-xs text-gray-400 italic" title="ChÆ°a cÃ³ nÄƒm sinh">
-        â€”
+      <span className="text-xs text-gray-400 italic" title="Chưa có năm sinh">
+        —
       </span>
     );
   }
   return (
     <span
       className="inline-flex items-center rounded bg-blue-50 dark:bg-blue-900/20 px-1.5 py-0.5 text-sm font-semibold text-blue-700 dark:text-blue-300 tabular-nums"
-      title={`NÄƒm sinh ${birthYear}`}
+      title={`Năm sinh ${birthYear}`}
     >
-      {grade != null ? `Lá»›p ${grade}` : `â€”`}
+      {grade != null ? `Lớp ${grade}` : `—`}
     </span>
   );
 }
 
-// TÃ­nh sá»‘ ngÃ y tá»›i ngÃ y kiá»ƒm tra (0 = hÃ´m nay, Ã¢m = Ä‘Ã£ qua)
+// Tính số ngày tới ngày kiểm tra (0 = hôm nay, âm = đã qua)
 function diffDaysToExam(iso: string): number | null {
   if (!iso) return null;
   const parts = iso.split("-").map(Number);
@@ -451,12 +451,12 @@ function diffDaysToExam(iso: string): number | null {
 }
 
 /**
- * Format sá»‘ ngÃ y thÃ nh chuá»—i ngáº¯n dáº¡ng ymwd, lÃ m trÃ²n theo Ä‘Æ¡n vá»‹ gáº§n nháº¥t.
- *   |Î”| < 7   â†’ Nd
- *   |Î”| < 30  â†’ Nw (round)
- *   |Î”| < 365 â†’ Nm (round)
- *   else      â†’ Ny (round)
- * QuÃ¡ khá»© thÃªm dáº¥u "-".
+ * Format số ngày thành chuỗi ngắn dạng ymwd, làm tròn theo đơn vị gần nhất.
+ *   |Δ| < 7   → Nd
+ *   |Δ| < 30  → Nw (round)
+ *   |Δ| < 365 → Nm (round)
+ *   else      → Ny (round)
+ * Quá khứ thêm dấu "-".
  */
 function formatExamCountdownShort(diffDays: number): string {
   if (diffDays === 0) return "0d";
@@ -468,14 +468,14 @@ function formatExamCountdownShort(diffDays: number): string {
   return `${sign}${Math.round(abs / 365)}y`;
 }
 
-// Cell chá»‰nh ngÃ y kiá»ƒm tra sáº¯p tá»›i cho tá»«ng há»c sinh (inline, khÃ´ng popup)
+// Cell chỉnh ngày kiểm tra sắp tới cho từng học sinh (inline, không popup)
 function ExamDateCell({ memberId, student }: { memberId: string; student: any }) {
   const { mutate: updateStudent, isPending: isUpdating } = useUpdateStudent();
 
   const currentDate: string =
     typeof student?.nextExamDate === "string" ? student.nextExamDate : "";
 
-  // local value Ä‘á»ƒ input khÃ´ng bá»‹ "nháº£y" khi cáº­p nháº­t optimistic
+  // local value để input không bị "nhảy" khi cập nhật optimistic
   const [value, setValue] = useState<string>(currentDate);
   useEffect(() => {
     setValue(currentDate);
@@ -491,10 +491,10 @@ function ExamDateCell({ memberId, student }: { memberId: string; student: any })
         },
         {
           onSuccess: () => {
-            toast.success(next ? "ÄÃ£ cáº­p nháº­t ngÃ y KT!" : "ÄÃ£ xÃ³a ngÃ y KT!");
+            toast.success(next ? "Đã cập nhật ngày KT!" : "Đã xóa ngày KT!");
           },
           onError: () => {
-            toast.error("Cáº­p nháº­t ngÃ y KT tháº¥t báº¡i!");
+            toast.error("Cập nhật ngày KT thất bại!");
             setValue(currentDate);
           },
         }
@@ -528,11 +528,11 @@ function ExamDateCell({ memberId, student }: { memberId: string; student: any })
         )}
         title={
           value
-            ? `NgÃ y KT: ${value}${diff != null ? ` (${diff === 0 ? "hÃ´m nay" : diff > 0 ? `cÃ²n ${diff} ngÃ y` : `Ä‘Ã£ qua ${Math.abs(diff)} ngÃ y`})` : ""}`
-            : "ChÆ°a Ä‘áº·t ngÃ y KT"
+            ? `Ngày KT: ${value}${diff != null ? ` (${diff === 0 ? "hôm nay" : diff > 0 ? `còn ${diff} ngày` : `đã qua ${Math.abs(diff)} ngày`})` : ""}`
+            : "Chưa đặt ngày KT"
         }
       >
-        {value ? short : "â€”"}
+        {value ? short : "—"}
       </span>
       <input
         type="date"
@@ -543,25 +543,25 @@ function ExamDateCell({ memberId, student }: { memberId: string; student: any })
           persist(next);
         }}
         disabled={isUpdating}
-        title="Chá»n ngÃ y kiá»ƒm tra sáº¯p tá»›i"
+        title="Chọn ngày kiểm tra sắp tới"
         className="h-7 w-[112px] px-1 text-xs border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 focus:outline-none focus:ring-1 focus:ring-primary disabled:opacity-50"
       />
     </div>
   );
 }
 
-/** MÃ´ táº£ ngáº¯n gá»n vá»‹ trÃ­ hiá»‡n táº¡i cá»§a há»c sinh Ä‘á»ƒ hiá»ƒn thá»‹ cho giÃ¡o viÃªn. */
+/** Mô tả ngắn gọn vị trí hiện tại của học sinh để hiển thị cho giáo viên. */
 function formatCurrentActivity(activity?: CurrentActivity): string {
   if (!activity?.tab) return "";
   if (activity.tab !== "Learn") return activity.tab;
-  const parts: string[] = ["Há»c"];
+  const parts: string[] = ["Học"];
   if (activity.miniTab) parts.push(activity.miniTab);
   if (activity.bookName) parts.push(activity.bookName);
   if (activity.lessons && activity.lessons.length > 0) {
-    parts.push(`BÃ i ${activity.lessons.join(", ")}`);
+    parts.push(`Bài ${activity.lessons.join(", ")}`);
   }
   if (activity.mode && activity.mode !== "none") parts.push(activity.mode);
-  return parts.join(" â€¢ ");
+  return parts.join(" • ");
 }
 
 function LazyStudentDataCell({ memberId, renderCell }: { memberId: string, renderCell: (student: any) => React.ReactNode }) {
@@ -611,9 +611,9 @@ const ATTENDANCE_STATUS_ICONS: {
   Icon: typeof FiCheckCircle;
   label: string;
 }[] = [
-  { value: "present", Icon: FiCheckCircle, label: "CÃ³ máº·t" },
-  { value: "late", Icon: FiClock, label: "Trá»…" },
-  { value: "absent", Icon: FiUserX, label: "Váº¯ng" },
+  { value: "present", Icon: FiCheckCircle, label: "Có mặt" },
+  { value: "late", Icon: FiClock, label: "Trễ" },
+  { value: "absent", Icon: FiUserX, label: "Vắng" },
 ];
 
 function defaultAttendanceStatusMap(studentIds: string[]): Record<string, AttendanceStatus> {
@@ -624,7 +624,7 @@ function defaultAttendanceStatusMap(studentIds: string[]): Record<string, Attend
   return m;
 }
 
-/** Giá»¯ cá»™t Ä‘iá»ƒm danh ngay sau Thao tÃ¡c (vÃ  Ä‘á»§ má»i key). */
+/** Giữ cột điểm danh ngay sau Thao tác (và đủ mọi key). */
 function pinAttendanceAfterActions(order: MemberTableColumnKey[]): MemberTableColumnKey[] {
   const seen = new Set<MemberTableColumnKey>();
   const unique: MemberTableColumnKey[] = [];
@@ -802,7 +802,7 @@ export default function MembersList() {
     } catch (e) {
       console.error(e);
       if (attendanceFetchGenRef.current === myGen) {
-        toast.error("Lá»—i táº£i Ä‘iá»ƒm danh.");
+        toast.error("Lỗi tải điểm danh.");
         setAttendanceStatusMap(defaultAttendanceStatusMap(studs.map((s) => s.id)));
       }
     } finally {
@@ -842,7 +842,7 @@ export default function MembersList() {
         await saveClassAttendanceDay(classId, dateKey, statusMap);
       } catch (e) {
         console.error(e);
-        toast.error("Lá»—i lÆ°u Ä‘iá»ƒm danh.");
+        toast.error("Lỗi lưu điểm danh.");
       } finally {
         setAttendanceSaving(false);
       }
@@ -886,7 +886,7 @@ export default function MembersList() {
   const handleGetAllInfo = useCallback(async () => {
     if (!classId || students.length === 0 || loadingAllInfo) return;
     setLoadingAllInfo(true);
-    const toastId = toast.loading("Äang táº£i thÃ´ng tin há»c sinhâ€¦");
+    const toastId = toast.loading("Đang tải thông tin học sinh…");
     try {
       await Promise.all(
         students.map((member) =>
@@ -904,10 +904,10 @@ export default function MembersList() {
       setLoadedStudentIds(new Set(students.map((s) => s.id)));
       await queryClient.invalidateQueries({ queryKey: teacherClassKeys.detail(classId) });
       setSortConfig({ key: "rank", direction: "asc" });
-      toast.success("ÄÃ£ táº£i thÃ´ng tin & cáº­p nháº­t xáº¿p háº¡ng!", { id: toastId });
+      toast.success("Đã tải thông tin & cập nhật xếp hạng!", { id: toastId });
     } catch (error) {
       console.error(error);
-      toast.error("KhÃ´ng thá»ƒ táº£i thÃ´ng tin há»c sinh.", { id: toastId });
+      toast.error("Không thể tải thông tin học sinh.", { id: toastId });
     } finally {
       setLoadingAllInfo(false);
     }
@@ -915,8 +915,8 @@ export default function MembersList() {
 
   const getSortIndicator = useCallback(
     (key: SortKey): string => {
-      if (sortConfig.key !== key) return "â†•";
-      return sortConfig.direction === "asc" ? "â†‘" : "â†“";
+      if (sortConfig.key !== key) return "↕";
+      return sortConfig.direction === "asc" ? "↑" : "↓";
     },
     [sortConfig]
   );
@@ -1007,7 +1007,7 @@ export default function MembersList() {
 
   const renderLazyCell = useCallback(
     (memberId: string, isLoaded: boolean, render: (student: any) => React.ReactNode) => {
-      if (!isLoaded) return <span className="text-sm text-gray-400">â€¦</span>;
+      if (!isLoaded) return <span className="text-sm text-gray-400">…</span>;
       return <LazyStudentDataCell memberId={memberId} renderCell={render} />;
     },
     []
@@ -1019,7 +1019,7 @@ export default function MembersList() {
         key: "student",
         title: (
           <button type="button" onClick={() => handleSort("online")} className="inline-flex items-center gap-0.5 whitespace-nowrap text-sm">
-            Há»c sinh {getSortIndicator("online")}
+            Học sinh {getSortIndicator("online")}
           </button>
         ),
         render: (_, member) => {
@@ -1027,9 +1027,9 @@ export default function MembersList() {
           const online = isOnline(member.id);
           const short = formatPresenceShort(presenceTs);
           const titleFull =
-            formatPresenceRelativeTime(presenceTs) || "ChÆ°a rÃµ hoáº¡t Ä‘á»™ng";
+            formatPresenceRelativeTime(presenceTs) || "Chưa rõ hoạt động";
           const presenceTitle = online
-            ? `${member.name}, Ä‘ang online`
+            ? `${member.name}, đang online`
             : `${member.name}, ${titleFull}`;
 
           return (
@@ -1041,7 +1041,7 @@ export default function MembersList() {
                 <ProfileAvatarLink
                   userId={member.id}
                   className="block h-7 w-7 sm:h-8 sm:w-8 rounded-full overflow-hidden ring-1 ring-gray-200 dark:ring-gray-600"
-                  ariaLabel={`Há»“ sÆ¡ ${member.name}`}
+                  ariaLabel={`Hồ sơ ${member.name}`}
                 >
                   {member.avatarUrl ? (
                     <Image
@@ -1093,8 +1093,8 @@ export default function MembersList() {
       grade: {
         key: "grade",
         title: (
-          <span className="whitespace-nowrap text-sm font-medium normal-case tracking-normal" title="Lá»›p hiá»‡n táº¡i (1-12) tÃ­nh theo nÄƒm sinh vÃ  nÄƒm há»c">
-            Lá»›p
+          <span className="whitespace-nowrap text-sm font-medium normal-case tracking-normal" title="Lớp hiện tại (1-12) tính theo năm sinh và năm học">
+            Lớp
           </span>
         ),
         width: "72px",
@@ -1107,8 +1107,8 @@ export default function MembersList() {
       actions: {
         key: "actions",
         title: (
-          <span className="whitespace-nowrap text-xs font-medium" title="Thao tÃ¡c">
-            Thao tÃ¡c
+          <span className="whitespace-nowrap text-xs font-medium" title="Thao tác">
+            Thao tác
           </span>
         ),
         width: "116px",
@@ -1128,8 +1128,8 @@ export default function MembersList() {
       attendance: {
         key: "attendance",
         title: (
-          <span className="whitespace-nowrap text-xs font-medium" title="Äiá»ƒm danh">
-            Ä.Danh
+          <span className="whitespace-nowrap text-xs font-medium" title="Điểm danh">
+            Đ.Danh
           </span>
         ),
         width: "88px",
@@ -1138,11 +1138,11 @@ export default function MembersList() {
           <div
             className="mx-auto flex w-fit max-w-none items-center justify-center gap-px"
             role="group"
-            aria-label={`Äiá»ƒm danh ${member.name}`}
+            aria-label={`Điểm danh ${member.name}`}
             onClick={(e) => e.stopPropagation()}
           >
             {attendanceLoading ? (
-              <span className="text-xs text-gray-400">â€¦</span>
+              <span className="text-xs text-gray-400">…</span>
             ) : (
               ATTENDANCE_STATUS_ICONS.map(({ value, Icon, label }) => {
                 const on = attendanceStatusMap[member.id] === value;
@@ -1153,7 +1153,7 @@ export default function MembersList() {
                     size="sm"
                     type="button"
                     title={label}
-                    aria-label={`${label} â€” ${member.name}`}
+                    aria-label={`${label} — ${member.name}`}
                     aria-pressed={on}
                     disabled={students.length === 0}
                     onClick={(e) => {
@@ -1179,7 +1179,7 @@ export default function MembersList() {
       examDate: {
         key: "examDate",
         title: (
-          <span className="whitespace-nowrap text-sm font-medium normal-case tracking-normal" title="NgÃ y kiá»ƒm tra sáº¯p tá»›i (Ä‘áº¿m ngÆ°á»£c y/m/w/d)">
+          <span className="whitespace-nowrap text-sm font-medium normal-case tracking-normal" title="Ngày kiểm tra sắp tới (đếm ngược y/m/w/d)">
             KT
           </span>
         ),
@@ -1218,7 +1218,7 @@ export default function MembersList() {
             "countHeart"
           );
           if (position == null) {
-            return <span className="text-xs text-gray-400">â€”</span>;
+            return <span className="text-xs text-gray-400">—</span>;
           }
           return (
             <span className="text-xs font-semibold tabular-nums text-emerald-700">
@@ -1229,7 +1229,7 @@ export default function MembersList() {
       },
       achievements: {
         key: "achievements",
-        title: <span className="whitespace-nowrap text-sm">T.tÃ­ch</span>,
+        title: <span className="whitespace-nowrap text-sm">T.tích</span>,
         render: (_, member) =>
           renderLazyCell(member.id, loadedStudentIds.has(member.id), (student) => (
             <AchievementsCell memberId={member.id} student={student} />
@@ -1263,7 +1263,7 @@ export default function MembersList() {
         key: "speakingAccuracy",
         title: (
           <button type="button" onClick={() => handleSort("speakingAccuracy")} className="inline-flex items-center gap-0.5 whitespace-nowrap text-sm font-medium normal-case tracking-normal">
-            NÃ³i % {getSortIndicator("speakingAccuracy")}
+            Nói % {getSortIndicator("speakingAccuracy")}
           </button>
         ),
         render: (_, member) =>
@@ -1273,7 +1273,7 @@ export default function MembersList() {
       },
       snapshot: {
         key: "snapshot",
-        title: <span className="whitespace-nowrap text-xs font-medium">Hoáº¡t Ä‘á»™ng</span>,
+        title: <span className="whitespace-nowrap text-xs font-medium">Hoạt động</span>,
         width: "260px",
         render: (_, member) => {
           const presence = presenceMap[member.id];
@@ -1281,7 +1281,7 @@ export default function MembersList() {
           const label = formatCurrentActivity(activity);
 
           if (!activity || !label) {
-            return <span className="text-xs text-gray-400">ChÆ°a rÃµ</span>;
+            return <span className="text-xs text-gray-400">Chưa rõ</span>;
           }
 
           return (
@@ -1322,7 +1322,7 @@ export default function MembersList() {
     [columnOrder, columnsByKey]
   );
 
-  if (isActuallyLoading) return <p className="text-base text-gray-500 py-1">Äang táº£iâ€¦</p>;
+  if (isActuallyLoading) return <p className="text-base text-gray-500 py-1">Đang tải…</p>;
 
   return (
     <div className="space-y-2">
@@ -1334,12 +1334,12 @@ export default function MembersList() {
             value={noteProcessValue}
             onChange={(e) => setNoteProcessValue(e.target.value)}
             onBlur={handleNoteProcessBlur}
-            placeholder="Tiáº¿n Ä‘á»™ lá»›pâ€¦"
+            placeholder="Tiến độ lớp…"
             disabled={isUpdatingClass || !classDetails}
           />
           {isUpdatingClass && (
             <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-gray-400 animate-pulse">
-              LÆ°uâ€¦
+              Lưu…
             </span>
           )}
         </div>
@@ -1352,14 +1352,14 @@ export default function MembersList() {
               value={attendanceDate}
               onChange={(e) => setAttendanceDate(e.target.value)}
               disabled={attendanceLoading || students.length === 0}
-              aria-label="NgÃ y Ä‘iá»ƒm danh"
+              aria-label="Ngày điểm danh"
               className="h-9 rounded-md border border-gray-300 bg-white py-0 pl-8 pr-2 text-sm dark:border-gray-600 dark:bg-gray-900 disabled:opacity-50"
             />
           </div>
           {attendanceSaving && (
             <span className="inline-flex items-center gap-1 text-xs text-gray-400">
               <FiLoader className="h-3.5 w-3.5 animate-spin" />
-              Äang lÆ°uâ€¦
+              Đang lưu…
             </span>
           )}
         </div>
@@ -1370,7 +1370,7 @@ export default function MembersList() {
             onClick={() => void handleGetAllInfo()}
             disabled={loadingAllInfo || students.length === 0}
             className="flex items-center gap-1 h-9 px-2.5 rounded-md border border-emerald-200 dark:border-emerald-900/30 bg-emerald-50/50 dark:bg-emerald-900/10 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-100 transition-colors disabled:opacity-50"
-            title="Táº£i thÃ´ng tin há»c sinh & cáº­p nháº­t xáº¿p háº¡ng"
+            title="Tải thông tin học sinh & cập nhật xếp hạng"
           >
             {loadingAllInfo ? (
               <FiLoader className="h-3.5 w-3.5 animate-spin" />
@@ -1382,7 +1382,7 @@ export default function MembersList() {
           <button
             onClick={() => setShowGrammarModal(true)}
             className="flex items-center gap-1 h-9 px-2.5 rounded-md border border-blue-200 dark:border-blue-900/30 bg-blue-50/50 dark:bg-blue-900/10 text-blue-700 dark:text-blue-400 hover:bg-blue-100 transition-colors"
-            title="Ngá»¯ phÃ¡p hÃ´m nay"
+            title="Ngữ pháp hôm nay"
           >
             <span className="text-sm font-medium">Videos</span>
           </button>
@@ -1393,7 +1393,7 @@ export default function MembersList() {
         columns={columns}
         data={sortedStudents}
         loading={isActuallyLoading}
-        emptyMessage="ChÆ°a cÃ³ há»c sinh"
+        emptyMessage="Chưa có học sinh"
         showCheckbox={false}
         onRowClick={handleRowClick}
         columnReorder
@@ -1407,7 +1407,7 @@ export default function MembersList() {
           open={showGrammarModal}
           onClose={() => setShowGrammarModal(false)}
           maxWidth="4xl"
-          title="Lá»‹ch sá»­ xem"
+          title="Lịch sử xem"
           className="max-w-6xl"
         >
           <GrammarTrackingTable

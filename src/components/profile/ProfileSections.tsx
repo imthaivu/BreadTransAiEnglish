@@ -18,7 +18,7 @@ import { syncMemberAvatarInClasses } from "@/modules/classes/api/member-avatar";
 import { AppUserProfile, UserRole } from "@/lib/auth/types";
 import { readAchievementsFromUser } from "@/modules/user/services";
 
-/** Äiá»ƒm 0â€“100 â†’ hiá»ƒn thá»‹ thang 10 (vd. 50 â†’ "5.0"). */
+/** Điểm 0–100 → hiển thị thang 10 (vd. 50 → "5.0"). */
 function formatAccuracyScore(accuracy: number): string {
   return (accuracy / 10).toFixed(1);
 }
@@ -46,7 +46,7 @@ function getRateTone(rate: number) {
 }
 
 type HalfCircleGaugeProps = {
-  /** GiÃ¡ trá»‹ 0â€“100 */
+  /** Giá trị 0–100 */
   value: number;
   displayValue: string;
   tone: ReturnType<typeof getRateTone>;
@@ -115,7 +115,7 @@ export function AvatarCard({
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // NgÆ°á»i nháº­n quÃ : true = há»c sinh (HS), false = phá»¥ huynh (PH)
+  // Người nhận quà: true = học sinh (HS), false = phụ huynh (PH)
   const [isSelfClaimedLocal, setIsSelfClaimedLocal] = useState<boolean>(
     !!(profile as { isSelfClaimed?: boolean } | null)?.isSelfClaimed
   );
@@ -131,10 +131,10 @@ export function AvatarCard({
       setIsSelfClaimedLocal(selfClaimed);
       setIsClaimUpdating(true);
       await updateDoc(doc(getDb(), "users", session.user.id), { isSelfClaimed: selfClaimed });
-      toast.success("ÄÃ£ cáº­p nháº­t ngÆ°á»i nháº­n quÃ ");
+      toast.success("Đã cập nhật người nhận quà");
     } catch {
       setIsSelfClaimedLocal(previous);
-      toast.error("Cáº­p nháº­t tháº¥t báº¡i");
+      toast.error("Cập nhật thất bại");
     } finally {
       setIsClaimUpdating(false);
     }
@@ -164,7 +164,7 @@ export function AvatarCard({
   async function handleAvatarChange(croppedFile: File) {
     if (!session?.user || !croppedFile || readOnly) return;
 
-    const toastId = toast.loading("Äang xá»­ lÃ½ vÃ  táº£i áº£nh lÃªn...");
+    const toastId = toast.loading("Đang xử lý và tải ảnh lên...");
     setAvatarUploading(true);
     try {
       // Compress and resize image before upload (400x400, quality 0.85)
@@ -207,10 +207,10 @@ export function AvatarCard({
       // Refresh profile to update UI immediately
       refetchProfile();
 
-      toast.success("Cáº­p nháº­t áº£nh Ä‘áº¡i diá»‡n thÃ nh cÃ´ng!", { id: toastId });
+      toast.success("Cập nhật ảnh đại diện thành công!", { id: toastId });
     } catch (error) {
       console.error(error);
-      toast.error("ÄÃ£ cÃ³ lá»—i xáº£y ra.", { id: toastId });
+      toast.error("Đã có lỗi xảy ra.", { id: toastId });
     } finally {
       setAvatarUploading(false);
     }
@@ -224,7 +224,7 @@ export function AvatarCard({
             <div className="relative">
               {currentProfile?.role === "student" && !readOnly && (
                 <div className="absolute right-full mr-3 top-1/2 -translate-y-1/2 flex flex-col gap-1.5">
-                  <span className="text-[11px] font-semibold text-slate-700 whitespace-nowrap">SDT ngÆ°á»i nháº­n quÃ </span>
+                  <span className="text-[11px] font-semibold text-slate-700 whitespace-nowrap">SDT người nhận quà</span>
                   <label
                     className={`flex items-center gap-1.5 ${
                       profile?.phone ? "cursor-pointer" : "cursor-not-allowed opacity-50"
@@ -239,8 +239,8 @@ export function AvatarCard({
                       className="w-4 h-4 text-primary border-slate-300 focus:ring-primary"
                     />
                     <span className="flex flex-col leading-tight">
-                      <span className="text-[11px] font-semibold text-slate-700 whitespace-nowrap">Há»c sinh</span>
-                      <span className="text-[10px] text-slate-400 whitespace-nowrap">{profile?.phone || "ChÆ°a cÃ³"}</span>
+                      <span className="text-[11px] font-semibold text-slate-700 whitespace-nowrap">Học sinh</span>
+                      <span className="text-[10px] text-slate-400 whitespace-nowrap">{profile?.phone || "Chưa có"}</span>
                     </span>
                   </label>
                   <label
@@ -259,8 +259,8 @@ export function AvatarCard({
                       className="w-4 h-4 text-primary border-slate-300 focus:ring-primary"
                     />
                     <span className="flex flex-col leading-tight">
-                      <span className="text-[11px] font-semibold text-slate-700 whitespace-nowrap">Phá»¥ huynh</span>
-                      <span className="text-[10px] text-slate-400 whitespace-nowrap">{(profile as { parentPhone?: string } | null)?.parentPhone || "ChÆ°a cÃ³"}</span>
+                      <span className="text-[11px] font-semibold text-slate-700 whitespace-nowrap">Phụ huynh</span>
+                      <span className="text-[10px] text-slate-400 whitespace-nowrap">{(profile as { parentPhone?: string } | null)?.parentPhone || "Chưa có"}</span>
                     </span>
                   </label>
                 </div>
@@ -277,16 +277,16 @@ export function AvatarCard({
                   onClick={() => fileInputRef.current?.click()}
                   className="absolute -bottom-1 -right-1 px-1.5 h-5 rounded-full bg-white border flex items-center justify-center text-slate-500"
                 >
-                  <span className="text-[10px] font-medium leading-none text-blue-400">Äá»•i</span>
+                  <span className="text-[10px] font-medium leading-none text-blue-400">Đổi</span>
                 </button>
               )}
             </div>
             <h2 className="text-base font-bold text-slate-800 text-center line-clamp-2">
-              {currentProfile?.displayName ?? "NgÆ°á»i dÃ¹ng"}
+              {currentProfile?.displayName ?? "Người dùng"}
             </h2>
             <p className="text-xs text-slate-500 text-center line-clamp-2">
               {readAchievementsFromUser(profileWithExtras as Record<string, unknown>) ||
-                "ChÆ°a cÃ³ thÃ nh tÃ­ch"}
+                "Chưa có thành tích"}
             </p>
           </div>
 
@@ -294,12 +294,12 @@ export function AvatarCard({
             <div className={`rounded-lg p-2 sm:p-3 text-center ${vocabTone.cardClass}`}>
               <HalfCircleGauge value={vocabRate} displayValue={vocabScoreDisplay} tone={vocabTone} />
               <p className="mt-1 text-[11px] sm:text-xs font-semibold leading-tight text-slate-700">
-                Xuáº¥t sáº¯c: <span className={vocabTone.numberClass}>{timesVocabXS}</span>
+                Xuất sắc: <span className={vocabTone.numberClass}>{timesVocabXS}</span>
               </p>
             </div>
             <div className="rounded-lg bg-rose-50 ring-1 ring-rose-100 p-3 sm:p-3.5 text-center">
-              <p className="text-xl font-black tracking-tight text-rose-700">{countHeart} â¤ï¸</p>
-              <p className="text-xl text-slate-700 leading-tight font-semibold"> {streakCount} ðŸ”¥</p>
+              <p className="text-xl font-black tracking-tight text-rose-700">{countHeart} ❤️</p>
+              <p className="text-xl text-slate-700 leading-tight font-semibold"> {streakCount} 🔥</p>
             </div>
             <div className={`rounded-lg p-2 sm:p-3 text-center ${speakingTone.cardClass}`}>
               <HalfCircleGauge value={speakingRate} displayValue={speakingScoreDisplay} tone={speakingTone} />
@@ -362,19 +362,19 @@ export function ChangePasswordButton() {
 
   async function handleChangePassword() {
     if (!session?.user || !newPassword.trim()) {
-      setError("Vui lÃ²ng nháº­p máº­t kháº©u má»›i.");
+      setError("Vui lòng nhập mật khẩu mới.");
       return;
     }
 
     // Validate password: 6-8 characters
     if (!/^.{6,8}$/.test(newPassword)) {
-      setError("Máº­t kháº©u pháº£i cÃ³ tá»« 6-8 kÃ½ tá»±.");
+      setError("Mật khẩu phải có từ 6-8 ký tự.");
       return;
     }
 
     setIsChanging(true);
     setError("");
-    const toastId = toast.loading("Äang Ä‘á»•i máº­t kháº©u...");
+    const toastId = toast.loading("Đang đổi mật khẩu...");
 
     try {
       const response = await fetch("/api/auth/change-password", {
@@ -386,16 +386,16 @@ export function ChangePasswordButton() {
       const data = await response.json();
 
       if (!response.ok || !data.success) {
-        throw new Error(data.error || "Äá»•i máº­t kháº©u tháº¥t báº¡i.");
+        throw new Error(data.error || "Đổi mật khẩu thất bại.");
       }
 
-      toast.success("ÄÃ£ Ä‘á»•i máº­t kháº©u thÃ nh cÃ´ng!", { id: toastId });
+      toast.success("Đã đổi mật khẩu thành công!", { id: toastId });
       setNewPassword("");
       setError("");
       setIsModalOpen(false);
     } catch (error) {
       console.error("Error changing password:", error);
-      const errorMessage = error instanceof Error ? error.message : "Äá»•i máº­t kháº©u tháº¥t báº¡i. Vui lÃ²ng thá»­ láº¡i.";
+      const errorMessage = error instanceof Error ? error.message : "Đổi mật khẩu thất bại. Vui lòng thử lại.";
       setError(errorMessage);
       toast.error(errorMessage, { id: toastId });
     } finally {
@@ -426,14 +426,14 @@ export function ChangePasswordButton() {
           className="w-full flex items-center justify-center gap-2 min-h-[48px] sm:min-h-[44px] px-4 py-3 sm:py-2.5 text-base sm:text-sm font-medium touch-manipulation active:scale-95 transition-transform select-none"
         >
           <FiLock className="w-5 h-5 sm:w-4 sm:h-4 shrink-0" />
-          Äá»•i máº­t kháº©u
+          Đổi mật khẩu
         </Button>
       </div>
 
       <Modal
         open={isModalOpen}
         onClose={handleCloseModal}
-        title="Äá»•i máº­t kháº©u"
+        title="Đổi mật khẩu"
         maxWidth="sm"
       >
         <div className="space-y-4 p-6">
@@ -454,7 +454,7 @@ export function ChangePasswordButton() {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Máº­t kháº©u má»›i <span className="text-red-500">*</span>
+              Mật khẩu mới <span className="text-red-500">*</span>
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -467,7 +467,7 @@ export function ChangePasswordButton() {
                   setNewPassword(e.target.value);
                   setError("");
                 }}
-                placeholder="Nháº­p máº­t kháº©u má»›i..."
+                placeholder="Nhập mật khẩu mới..."
                 className="w-full pl-10 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
                 disabled={isChanging}
                 minLength={6}
@@ -480,7 +480,7 @@ export function ChangePasswordButton() {
               />
             </div>
             <p className="mt-1 text-xs text-gray-500">
-              Pháº£i cÃ³ tá»« 6-8 kÃ½ tá»±.
+              Phải có từ 6-8 ký tự.
             </p>
           </div>
 
@@ -490,13 +490,13 @@ export function ChangePasswordButton() {
               onClick={handleCloseModal}
               disabled={isChanging}
             >
-              Há»§y
+              Hủy
             </Button>
             <Button
               onClick={handleChangePassword}
               disabled={isChanging || !newPassword.trim()}
             >
-              {isChanging ? "Äang Ä‘á»•i..." : "Äá»•i máº­t kháº©u"}
+              {isChanging ? "Đang đổi..." : "Đổi mật khẩu"}
             </Button>
           </div>
         </div>
