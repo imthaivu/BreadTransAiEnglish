@@ -371,6 +371,7 @@ export const WordListPreview = ({
             <LessonScriptPanel
               selectedBook={selectedBook}
               selectedLesson={selectedLesson}
+              vocabulary={words}
             />
           </div>
         )}

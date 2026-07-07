@@ -2,16 +2,19 @@
 
 import { useAuth } from "@/lib/auth/context";
 import { useDuobookLesson } from "@/modules/flashcard/hooks";
+import type { Word } from "@/modules/flashcard/types";
 import { useEffect, useMemo, useState } from "react";
 import {
   getStreamlineLessonImageUrl,
   type StreamlineImageVariant,
 } from "../utils/streamline-script-image";
+import { ScriptInteractiveText } from "./ScriptInteractiveText";
 
 interface LessonScriptPanelProps {
   selectedBook: string | null;
   selectedLesson: number | null;
   context?: "speaking" | "vocabulary";
+  vocabulary?: Pick<Word, "word" | "mean" | "ipa">[];
 }
 
 const VARIANT_LABELS: Record<StreamlineImageVariant, string> = {
@@ -139,9 +142,11 @@ function StreamlineSpeakingPanel({
 function DuobookScriptPanel({
   bookId,
   lessonId,
+  vocabulary = [],
 }: {
   bookId: string;
   lessonId: number;
+  vocabulary?: Pick<Word, "word" | "mean" | "ipa">[];
 }) {
   const { data: lesson, isLoading } = useDuobookLesson(bookId, lessonId);
 
@@ -183,9 +188,13 @@ function DuobookScriptPanel({
         {lines.map((line, index) => (
           <li key={index} className="px-4 py-2.5 space-y-0.5">
             {line.script ? (
-              <p className=" font-medium text-gray-900 dark:text-gray-100 leading-snug">
-                {line.script}
-              </p>
+              <div className="font-medium text-gray-900 dark:text-gray-100 leading-snug">
+                <ScriptInteractiveText
+                  text={line.script}
+                  vocabulary={vocabulary}
+                  lineMean={line.mean}
+                />
+              </div>
             ) : null}
             {line.mean ? (
               <p className="text-sm text-gray-600 dark:text-gray-400 leading-snug">
@@ -203,6 +212,7 @@ export function LessonScriptPanel({
   selectedBook,
   selectedLesson,
   context = "vocabulary",
+  vocabulary = [],
 }: LessonScriptPanelProps) {
   if (!selectedBook || !selectedLesson) return null;
 
@@ -226,7 +236,11 @@ export function LessonScriptPanel({
 
   if (bookNum >= 5 && bookNum <= 8) {
     return (
-      <DuobookScriptPanel bookId={selectedBook} lessonId={selectedLesson} />
+      <DuobookScriptPanel
+        bookId={selectedBook}
+        lessonId={selectedLesson}
+        vocabulary={vocabulary}
+      />
     );
   }
 

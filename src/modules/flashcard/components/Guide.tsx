@@ -7,18 +7,6 @@ import { useState } from "react";
 export const Guide = () => {
   const [showGuideModal, setShowGuideModal] = useState(false);
 
-  const gradeMaps = [
-    { label: "Lớp 6", startValue: 1, count: 7 },
-    { label: "Lớp 7", startValue: 8, count: 7 },
-    { label: "Lớp 8", startValue: 15, count: 7 },
-    { label: "Lớp 9", startValue: 22, count: 7 },
-    { label: "Lớp 10", startValue: 29, count: 9 },
-    { label: "Lớp 11", startValue: 38, count: 9 },
-    { label: "Lớp 12", startValue: 47, count: 9 },
-  ];
-
-  const maxUnitCount = Math.max(...gradeMaps.map((g) => g.count));
-
   return (
     <>
       <div className="text-center md:py-2">
@@ -37,73 +25,43 @@ export const Guide = () => {
         onClose={() => setShowGuideModal(false)}
         title="Hướng dẫn sử dụng"
       >
-        <div className="space-y-4 text-gray-700">
+        <div className="space-y-3 text-sm text-gray-700">
+          <p>
+            Chọn <strong>sách</strong> và <strong>bài</strong>, rồi bấm{" "}
+            <strong>Test</strong> hoặc <strong>Ôn</strong> để học.
+          </p>
+
           <div>
-            <h4 className="font-semibold text-lg mb-2">Bắt đầu</h4>
-            <p className="text-sm">
-              Chọn sách, chọn bài học, chọn chế độ và bắt đầu học.
+            <p className="font-semibold mb-1">Danh sách từ</p>
+            <p>
+              Nhấn từ để nghe phát âm. Tab <strong>Vocabs</strong> /{" "}
+              <strong>Script</strong> đổi giữa từ vựng và bài đọc. Bật{" "}
+              <strong>Ảnh</strong> để xem minh họa.
             </p>
           </div>
+
           <div>
-            <h4 className="font-semibold text-lg mb-2">🃏 Flashcard</h4>
-            <p className="text-sm mb-2">
-              Nhấp vào thẻ để xem nghĩa. Kéo sang{" "}
-              <strong className="text-green-600">phải</strong> nếu biết, sang{" "}
-              <strong className="text-red-600">trái</strong> nếu chưa biết.
-            </p>
-            <p className="text-sm text-gray-600">
-              Phím tắt: <kbd className="px-1.5 py-0.5 text-xs font-semibold text-gray-800 bg-gray-100 border border-gray-200 rounded">←</kbd>{" "}
-              <kbd className="px-1.5 py-0.5 text-xs font-semibold text-gray-800 bg-gray-100 border border-gray-200 rounded">→</kbd>
+            <p className="font-semibold mb-1">Ôn</p>
+            <p>
+              Lật thẻ xem nghĩa. Kéo{" "}
+              <strong className="text-green-600">phải</strong> = biết,{" "}
+              <strong className="text-red-600">trái</strong> = chưa biết. Phím{" "}
+              <kbd className="px-1 py-0.5 text-xs bg-gray-100 border rounded">→</kbd>{" "}
+              /{" "}
+              <kbd className="px-1 py-0.5 text-xs bg-gray-100 border rounded">←</kbd>.
             </p>
           </div>
+
           <div>
-            <h4 className="font-semibold text-lg mb-2">🧠 Trắc nghiệm</h4>
-            <p className="text-sm mb-2">
-              Chọn câu trả lời đúng trước khi hết thời gian.
+            <p className="font-semibold mb-1">Test (5 vòng)</p>
+            <p>
+              Ghép cặp → Ghép câu → Trắc nghiệm → Ráp câu Việt → Ráp câu Anh.
+              Trả lời sai sẽ lưu từ cần ôn; trả lời đúng giảm dần. Trên 10 từ
+              cần ôn, hệ thống ưu tiên ôn lại trước.
             </p>
-            <strong>Sách giáo khoa Right On - Bright:</strong>
-            <div className="mt-3 overflow-x-auto">
-              <table className="min-w-full border border-gray-200 text-xs">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="border border-gray-200 px-2 py-1 text-left">
-                      .
-                    </th>
-                    {gradeMaps.map((grade) => (
-                      <th
-                        key={grade.label}
-                        className="border border-gray-200 px-2 py-1 text-left"
-                      >
-                        {grade.label}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {Array.from({ length: maxUnitCount }).map((_, idx) => (
-                    <tr key={`unit-${idx}`}>
-                      <td className="border border-gray-200 px-2 py-1 font-medium">
-                        Unit {idx}
-                      </td>
-                      {gradeMaps.map((grade) => {
-                        const value =
-                          idx < grade.count ? grade.startValue + idx : null;
-                        return (
-                          <td
-                            key={`${grade.label}-unit-${idx}`}
-                            className="border border-gray-200 px-2 py-1"
-                          >
-                            {value ?? "—"}
-                          </td>
-                        );
-                      })}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
           </div>
-          <div className="pt-2 sm:pt-4 text-right">
+
+          <div className="pt-2 text-right">
             <Button onClick={() => setShowGuideModal(false)}>Đã hiểu</Button>
           </div>
         </div>
