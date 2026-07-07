@@ -1,0 +1,402 @@
+[
+  {
+    "id": 1,
+    "title": "Hello",
+    "script": "Hello. Hello. I'm David Clark. I'm Linda Martin. Are you a teacher? No, I'm not. Oh, are you a student? Yes, I am. Are you from England? No, I'm not. Where are you from? I'm from Canada. Hello, John! Hello, Peter. How are you? I'm very well, thanks. And you? I'm fine, thanks."
+  },
+  {
+    "id": 2,
+    "title": "Excuse me!",
+    "script": "Excuse me! Yes? Are you English? Pardon? Are you English? Oh, yes. Yes, we are. Oh, I'm English. Are you on holiday? No, we aren't. We're businessmen. Please, sit down... Thank you. Tea? Yes, please. Sugar? No, thanks. Where are you from? I'm from London. Are you a businessman? No, I'm not. I'm a tourist."
+  },
+  {
+    "id": 3,
+    "title": "What is it?",
+    "script": ""
+  },
+  {
+    "id": 4,
+    "title": "What's your name?",
+    "script": "Good evening. Good evening, sir. What's your name, please? My name's Dean. Ah, yes... Mr Dean... Room 15. Here's your key. Thank you. Is this your case? No, it isn't. Oh, is that your case over there? Yes, it is. Good evening. Good evening. What are your names, please? Mr and Mrs Brown. Ah, yes... here's your key. Are these your cases here? No, they aren't. Oh, I'm sorry. Are those your cases over there? Yes, they are. Is this our room? What's the number? 14. Oh, no, it isn't. That's our room... number 13."
+  },
+  {
+    "id": 5,
+    "title": "I'm cold",
+    "script": "Ooh! I'm cold! Are you? Yes, I am. Oh, I'm not. I'm hot!"
+  },
+  {
+    "id": 6,
+    "title": "A nice flat",
+    "script": "This is a nice flat, Miss Wilkins. Here's a plan... Hmm... There's a living-room. There's a kitchen, a bedroom, a bathroom, and there's a toilet. Is there a balcony? No, there isn't. ...and a telephone? No, there isn't a telephone. Well, here's the kitchen. Hmm... it's very small. Yes, it isn't very large, but there's a cooker and a fridge. There are some cupboards under the sink. Are there any plates? Yes, there are. Good. Are there any chairs in here? No, there aren't, but there are some in the living-room. Hmm. There aren't any glasses! Yes, there are! They're in the cupboard. ...and ...er ...where's the toilet?"
+  },
+  {
+    "id": 7,
+    "title": "Everyday Conversation",
+    "script": "Excuse me. Yes? Is there a post office near here? Yes, there is. Is it far? No, it isn't very far. First right, second left. Thank you very much. That's all right. Mrs Connor, could you pass the salt please? Certainly. Thank you very much. And the pepper? No, thank you. Good evening. Good evening. Half of bitter, please. Here you are, sir. Thank you very much. How much is that? 15p. Are you on the phone? Yes, I am. What's your number? 23306."
+  },
+  {
+    "id": 8,
+    "title": "A family reunion",
+    "script": "Who's that? Who's that? It's me... Tom. Tom? Yes, Tom... your grandson... from Canada! Oh, Tom! Come in! This is my wife, Mary. Oh, how do you do? ... and these are our children, Jimmy and Ethel. Hello, Jimmy. Hello, Ethel. Well, this is a nice surprise! Look at Mrs Turner. Her skirt's black. Her blouse is white. Look at Tom. His jacket's brown. His trousers are grey. Look at Mary. Her dress is pink. Her shoes are orange. Look at Jimmy. His shirt's red. His shorts are green. Look at Ethel. Her T-shirt's yellow. Her jeans are blue."
+  },
+  {
+    "id": 9,
+    "title": "Whose is it?",
+    "script": "Hello, Jane. Hello, Richard. Phew! What's this? It's a Cadillac. Hmmm. Is it your car? Well, no... no, it isn't. Whose car is it? It's Mr Orson's car. Mr Orson? Who's he? He's my boss. He's a millionaire!"
+  },
+  {
+    "id": 10,
+    "title": "Is there any wine in the bottle?",
+    "script": "There's some rice in the jar. There's some milk in the bottle. There's some sugar in the jar. There's some oil in the bottle. There's some water in the jug. There's some wine in the bottle. There are some apples on the table. There are some eggs on the table. There are some oranges on the table. There are some bananas on the table. There are some lemons on the table. There are some onions on the table. There isn't any butter. There isn't any cheese. There isn't any beer. There aren't any tomatoes. There aren't any mushrooms. There aren't any eggs. The fridge is empty. Is there any cheese in the fridge? Yes, there is. Is there any butter in the fridge? No, there isn't. Are there any eggs in the fridge? Yes, there are. Are there any tomatoes in the fridge? No, there aren't. There's some butter in the freezer. How much is there? There's a lot. There are some hamburgers in the freezer. How many are there? There are a lot."
+  },
+  {
+    "id": 11,
+    "title": "An English restaurant",
+    "script": "Waiter! I'd like the menu, please. Here you are, sir. Thanks... I'd like some soup... Tomato soup? Yes, please... and I'd like a steak. Rare, medium, or well done? Medium, please. Which vegetables would you like? I'd like some potatoes, some peas, and a salad, please. Certainly, sir. Oh, and I'd like some wine. Which wine would you like, sir? A bottle of red wine, please."
+  },
+  {
+    "id": 12,
+    "title": "Do this! don't do that!",
+    "script": "Charles Orson is a film director. He's in the studio. He's with Steve Newman and Raquel Evans. Steve's an actor. Raquel's an actress. They're film stars. \"Everybody! Be quiet, please! OK, Steve, now open the door... come in... walk to the sofa... Walk! Don't run!... OK, sit down... don't move... now, take Raquel's hand... look into her eyes... don't laugh! ...smile!\" \"Raquel! Smile at Steve... look into his eyes... don't laugh! ...now, close your eyes. Steve! Kiss her! That's fine! Now, Steve, go to the door... go out, and close the door... OK, turn the lights on... turn the microphones on... start the camera... action!\""
+  },
+  {
+    "id": 13,
+    "title": "Elton Kash",
+    "script": "Look at this man. He's Elton Kash. He's a pop star. He's very rich and famous. Look at his house. It's large and expensive, and there's a swimming-pool in the garden. There are ten bedrooms in the house. Elton's car's American. It's a 1978 Lincoln Continental. It's fast and comfortable. In his car there's a radio, a stereo cassette-player, a cocktail cabinet, a cigar lighter and electric windows. But Elton isn't happy... he'd like a Rolls-Royce. Look at this man. He's Mr. Wilson. He's a teacher. 's very poor and he isn't famous. Look at his house. It's small and cheap and there isn't a garden. There are only two bedrooms in the house. Mr. Wilson's car's English. It's a 1959 Mini. It's slow and uncomfortable. In his car there isn't a radio or a cassette player... there's an engine, a steering wheel, and there are four wheels and two doors. Mr. Wilson isn't happy... he'd like a new Mini."
+  },
+  {
+    "id": 14,
+    "title": "At the hairdresser's",
+    "script": "Oh, yes, my husband's wonderful! Really? Is he? Yes, he's big, strong and handsome! Well, my husband isn't very big, or very strong... but he's very intelligent. Intelligent? Yes, he can speak six languages. Can he? Which languages can he speak? He can speak French, Spanish, Italian, German, Arabic and Japanese. Oh... My husband's very athletic. Athletic? Yes, he can swim, ski, play football, cricket and rugby... Can he cook? Pardon? Can your husband cook? My husband can't play sports... but he's an excellent cook. Is he? Yes, he can sew, and iron... he's a very good husband. Really? Is he English?"
+  },
+  {
+    "id": 15,
+    "title": "Everyday Conversation",
+    "script": "Please come in. Thank you. Please, sit down. Would you like a cup of tea? Yes, please. How about a biscuit? No, thanks. I'm on a diet. Excuse me... Yes, can I help you? Yes. I'd like some information about trains please. Where to? ... to London. When? Tomorrow. Morning or afternoon? In the evening. About six o'clock. There's one at 6.40. Thank you. I'd like a pair of shoes, please. What colour would you like? Brown. And what size are you? Five. Can I try them on? Of course. How about dinner, tonight? I'd love to. Where can we meet? How about the square? All right. What time? Is seven o'clock OK? Yes, that's fine."
+  },
+  {
+    "id": 16,
+    "title": "Gloria Gusto, Tom Atkin and Terry Archer",
+    "script": "Hi, there! My name's Gloria Gusto. I'm an actress. I'm from London. I've got a flat in London and a house in Hollywood, with a swimming pool. I've got a new Rolls-Royce and a lot of money in the bank. I've got a husband, and three wonderful children in Hollywood. Life's great! I've got everything. Hello, my name's Tom Atkins. I'm from London, too. I'm broke. I haven't got any money. I haven't got a job or a house, or a car. I haven't got a wife, and I haven't got any children. Life's terrible! I haven't got anything! Look at this man His name's Terry Archer. He isn't from London. He's from Oxford. He's a factory worker. He's got a good job. He's got a car. He hasn't got a big house, he's got a flat. He's got a wife, but he hasn't got any children. Life's all right."
+  },
+  {
+    "id": 17,
+    "title": "At the customs",
+    "script": "Good morning. Can I see your passport? Certainly. Here it is. Yes, that's all right. Have you got anything to declare? Yes, I have. What have you got? I've got some whisky and some cigarettes. How much whisky have you got? A litre. That all right. And how many cigarettes have you got? Two hundred. Fine. What about perfume? Have you got any perfume? Err... No, I haven't. Good. Open you case, please. Pardon? Open your case, please. Open it now! Oh dear! Look at this! You've got three bottles of whisky, four hundred cigarettes and a lot of perfume!"
+  },
+  {
+    "id": 18,
+    "title": "Which one?",
+    "script": "How about some more wine? Please. Which glass is yours? That one's mine. Which one? The empty one! Well, good night... Good night... thank you for a lovely evening. Now, which coats are yours? Oh, those coats are ours. Which ones? The black one and the grey one. Ah, yes... I've got them. Good, the grey one's mine, and the black one's hers."
+  },
+  {
+    "id": 19,
+    "title": "Everyday Conversation",
+    "script": "Can you show me some cameras, please? Certainly, sir... this one's very good. Yes, it is... How much is it? £85, sir. Oh, dear. That's very expensive. Hmm, I see... that one isn't expensive, sir. What make is it? It's a Kodak... It's £47. Hmm... Can you show it to me, please? Oh, excuse me! Yes, sir? Could you bring us some more tea, please? Of course, sir. ... and could you bring me the bill, please? I'm in a hurry. Taxi! Where to, madam? Can you take me to the airport, please? Certainly, madam... Have you got any luggage? Yes. Can you get it for me? It's over there. All right.... Ooh! It's very heavy. Yes, it is... I'm very sorry. Goodnight, Andrew. Goodnight, Colin. Have a good holiday! Thanks. Don't forget... send me a postcard! OK... Oh, I haven't got your address. That's O.K. You can send it to me at the office. All right... 'Bye. Bye."
+  },
+  {
+    "id": 20,
+    "title": "A postcard",
+    "script": "Dear John, This is a picture of Paris. The weather's beautiful. The hotel's excellent. In my hotel room there's a colour TV and a shower. The food isn't very good. Paris is expensive. My French is terrible, but the people are friendly. See you soon. Best wishes, Mary xxx"
+  },
+  {
+    "id": 21,
+    "title": "What are they doing?",
+    "script": "Hello, Linda. Is Jack here? No, he isn't. Is he working today? No, he isn't working today. He's in the kitchen. What's he doing? He's cooking. What are you doing? I'm reading."
+  },
+  {
+    "id": 22,
+    "title": "Can you help me?",
+    "script": "Thomas is a student. He is staying with the Taylor, an English family. Hello, Mrs. Taylor. Can you help me? I'm doing my homework and I can't understand this word. Which one? Oh... that's difficult. I can't help you now... I'm watching something... Oh? What are you watching? I'm watching a cowboy film. Can Mr. Taylor help me? No, he can't now, Thomas. He's reading. What's he reading? He's reading a magazine. What about Kate? Oh, she can't help you now... she's phoning someone. Oh? Who's she phoning? She's phoning her boyfriend... you're asking a lot of questions tonight, Thomas! Am I?... Well, I'm practicing my English!"
+  },
+  {
+    "id": 23,
+    "title": "Everyday Conversation",
+    "script": "Would you like to come to a party? Well, I'd like to... but when is it? On Saturday evening. What a pity! I'm busy on Saturday. What are you doing? I'm doing my homework. Really!... Another time perhaps? Yes, thanks anyway. Excuse me, is this seat free? Yes, it is. Is it O.K. if I sit here? Yes, of course. Err,... is that your newspaper? Yes, it is. May I borrow it for a minute, please? Yes, certainly. Good morning. Good morning. Can I help you? Yes, I'm looking for a book. What's the title? Instant English . Have you got it? Yes, we have. How much is it? £5. May I see it? Of course, here you are."
+  },
+  {
+    "id": 24,
+    "title": "The fashion show",
+    "script": "... and now here's Julia. Julia's wearing a white cotton blouse, and a black nylon skirt. She's wearing orange shoes, and she's carrying an orange leather handbag. Thank you, Julia! Now, Godfrey's wearing dark-blue flared trousers and light-blue woollen jacket. He's wearing a yellow terylene shirt and a red tie. Thank you, Godfrey!"
+  },
+  {
+    "id": 25,
+    "title": "At the cinema",
+    "script": "Peter's standing outside the cinema. He's waiting for Lulu, his girlfriend, and he's looking at his watch because she's late. An old man's coming out of the cinema. A young man's going into the cinema. A boy's running up the steps. A woman's buying a ticket from the cashier. Some people are queueing outside the cinema. Now Peter's in the cinema with Lulu. He's sitting between Lulu and a man with a moustache. A lady's sitting in front of him. She wearing a large hat. Peter can't see the film. A man's sitting behind Peter. He's smoking a pipe. Lulu's unhappy because the smoke's going into her eyes. This is the scene from the film. In this scene, a beautiful young girl's lying across the lines. She's shouting \"Help!\" because the train's coming along the lines. It's very near. It's coming round the bend now."
+  },
+  {
+    "id": 26,
+    "title": "What's on television tonight?",
+    "script": "Hello, darling... I'm home. Hello, John. Are you tired, dear ? Yes, I am. What time is it? It's six o'clock. Oh... What's on television tonight? There's good programme at quarter past eight... \"Paul McCartney In Concert\". Yes... and there's a good film after the news. Ooh... and \"Mary in love\" at the quarter to seven before \"Police story\". Oh, I can't watch that! There's a football match on ITV at half past six. But, John, it's my favourite programme! Well, go and watch it at your mother's!"
+  },
+  {
+    "id": 27,
+    "title": "In prison",
+    "script": "Well... Tomorrow we're going to leave this place! Yes. What are you going to do first? Hmm... first, I'm going to rent a big car, meet my girlfriend and take her to an expensive restaurant. We're going to have steak and drink champagne. What about you, Fred? My wife's going to meet me outside the prison. Then we're going to have tea with her mother. With her mother! You're joking! No, I'm not. I'm going to work for my wife's mother. Really? You're not going to work for your mother-in-law! Yes. She's got a little café in London. What are you going to do there? I'm going to wash up. What! Wash up! I'm not going to work! I'm going to have a good time! You're lucky... I'm going to rob a bank next week. Why? Because I'm happy in prison!"
+  },
+  {
+    "id": 28,
+    "title": "An English Wedding",
+    "script": "This is an English wedding. They're standing on the steps outside the church. The bride is wearing a long white dress and is holding some blue flowers in her left hand. The groom is wearing a traditional morning suit and is holding a top hat in his right hand. They're both smiling because they're very happy. In a few minutes, they're going to get into a Rolls-Royce and drive to a big hotel for the reception. At the reception they're going to cut the cake and drink champagne. Then they're going to open all their presents. Some people are going to make speeches and both of the mothers are going to cry. At three o'clock they're going to leave the reception and drive to Heathrow Airport. They're going to fly to Bermuda. They're going to spend their honeymoon in a villa by the sea. They're going to be happy forever and ever and have a lot of children."
+  },
+  {
+    "id": 29,
+    "title": "Computer dating",
+    "script": "Come in. Ah, good afternoon. My name's Bull... John Bull. I'm looking for a girlfriend. Please, sit down, Mr Bull. May I ask you some questions? Oh, yes... what about? Ah... music, for example... do you like music? Yes, I do. I like classical music. Do you like pop music? No, I don't... and I don't like jazz. How old are you, Mr Bull? What! I don't like personal questions! Oh, well... can you complete this form later, and send it by post!"
+  },
+  {
+    "id": 30,
+    "title": "I want you, Fiona",
+    "script": "Please marry me, Fiona. I want you, I need you, I love you. I'm sorry Charles, but I can't. Oh, Fiona. Why not? Well, Charles. I like you... I like you a lot.... but I don't love you. But, Fiona, love isn't everything. Oh, Charles, you don't understand... for me love is everything. Do you love another man Fiona? Yes, Charles, I do ... James. Not James Milton! Yes, James Milton. But he doesn't want you. He's engaged. I know. But Fiona, James isn't a rich man. I can give you everything. What do you want? Clothes? Money? Travel? A big house? No, Charles. I don't want those things. I only want James."
+  },
+  {
+    "id": 31,
+    "title": "Everyday Conversation",
+    "script": "What are you doing this weekend? I'm going away. Oh, where are you going? I'm going to London. How long for? Just for two days. Have you got a car? Yes, I have. What kind is it? It's a V.W. Do you like it? Yes, I do. Why? Because it's very economical. Excuse me... Yes? Have you got any change? What do you need? I need some tens. Oh, how many do you want? Well, can you change a pound note? Yes, I think so. Good afternoon. Good afternoon. Could you repair these shoes, please? Yes, certainly. When do you want them? As soon as possible. Is Thursday afternoon O.K? Yes, that's fine."
+  },
+  {
+    "id": 32,
+    "title": "An interview",
+    "script": "Robin Knight, the television reporter, is interviewing the Duchess of Wessex for the programme \"The English At Home\". Now, Duchess... tell us about an ordinary day in your life. Well, I wake up at seven o'clock... Really? Do you get up then? No, of course I don't get up at that time. I have breakfast in bed and I read \"The Times\". What time do you get up? I get up at ten. What do you do then? I read my letters and dictate the replies to my secretary. ... and then? At eleven I walk in the garden with Philip. Oh? Who's Philip? Philip's my dog. What time do you have lunch? I have lunch at twelve thirty. And after lunch? Oh, I rest until six o'clock. ... and at six? What do you do at six? I dress for dinner. We have dinner at eight o'clock. What time do you go to bed? Well, I have a bath at nine thirty, and I go to bed at ten. Thank you, Duchess... you certainly have a busy and interesting life!"
+  },
+  {
+    "id": 33,
+    "title": "Every day",
+    "script": "Alan's a lorry driver. He's twenty-five years old. He works five days a week. He gets up at six o'clock every day. He eats an enormous breakfast. He drinks two cups of tea. Then he kisses his wife. He leaves for work at half past six. He has lunch in a transport café. He comes home at five o'clock. In the evening he goes to the pub. He goes to bed at ten o'clock."
+  },
+  {
+    "id": 34,
+    "title": "What's my job?",
+    "script": "Good evening, Ladies and Gentlemen. Welcome to What's My Job? Here's our first competitor. We've got three famous people here — Professor Moore, the scientist — Jessica Gale, the film star — and Ken Carson, the pop singer. They are going to ask the questions. First, Professor Moore. Hmm... Do you work outside? No, I don't. Do you wear a uniform? No, I don't. I see. Do you work in an office? No, I don't. Next... Jessica Gale. Oh... Is your job important? Yes, it is. Do you get a big salary? Yes, I do. Have you got any special diplomas? Yes, I have. Thank you, Jessica... and now Ken Carson. Hello. Do you work with your hands? Yes, I do. Do you work at weekends? No, I don't. Do you travel? No, I don't. That's the ninth question! Now you can ask one last question. Ha... Are you a doctor? No, I'm not... I'm a dentist."
+  },
+  {
+    "id": 35,
+    "title": "Never on a Sunday",
+    "script": "Ah, good evening, Mr. Benson. I never see you in church nowadays. Oh! No, Vicar... but my wife always goes to church... she goes every Sunday. I know... but you never come. Well, I sometimes come, Vicar. I come on Christmas Day and at Easter. Hmm... But what about Sundays, Mr. Benson? I usually wash my car on Sunday morning. I see. Why don't you wash your car on Saturday next week, Mr. Benson? Oh... I can't do that, Vicar. Why not? It's my son's wedding next Saturday... I'm going to church! 1) Every morning he cleans his teeth. He always cleans his teeth in the morning. 2) She gets up at 7 o'clock from Monday to Saturday, but on Sunday she gets up at 11 o'clock. She usually gets up at 7 o'clock. 3) They like films. They see all the new films. They often go to the cinema. 4) He's got a radio and a television. He sometimes listens to the radio, and he sometimes watches television. 5) Her brother lives in London. She doesn't. She sees him four or five times every year. She occasionally sees him. 6) He doesn't usually smoke, but at Christmas, after dinner, he has a cigar. He rarely smokes cigars. 7) She doesn't like whisky. She never drinks whisky."
+  },
+  {
+    "id": 36,
+    "title": "A Questionnaire",
+    "script": "Desmond Philton works for a Market Research company. He's asking people about their free time. Good evening, sir. Good evening. I'm from Market Research Ltd. May I ask you some questions? Yes... yes, all right. Thank you... Now, what time do you usually arrive home from work? Hmm... I usually arrive home at six o'clock. When do you usually have dinner? Oh, I usually eat at seven o'clock, but I sometimes eat at eight o'clock or nine o'clock. My wife works too! What do you usually do after dinner? Well, I sometimes go out, but I usually stay at home and watch television. How often do you go out? Oh, not often... once or twice a week. Do you often visit your friends? Yes, I do, quite often. I sometimes visit them and they sometimes visit me. Do you ever go to the cinema? Oh, yes... yes, I do. How often? Well, I occasionally see a film... I like horror films... Frankenstein or Dracula ! ... and the theatre? Do you ever go to the theatre? Yes, I do... but not often. I rarely go to the theatre. Hmm... Do you ever go to the ballet? No, never. I don't like ballet. Well, thank you Mr Norris... May I ask you a question? Yes? What do you do in your free time? I ask questions, Mr Norris... I never answer them. Oh!"
+  },
+  {
+    "id": 37,
+    "title": "What does he do every day?",
+    "script": "Hello! My name's Douglas Hunter. I'm a pilot for British Airways. I fly Concordes. I'm not working today. I'm playing golf. It's my favourite sport. This man is a champion jockey. His name's Gordon Lester. He rides racehorses, but he isn't riding a racehorse at the moment. He's dancing with his sixth wife. This is a picture of Bob and Michael. They teach English in a language school. They aren't teaching at the moment. They're in a pub. They're talking and laughing about their students. This is Rosalind Graham. She dances for the Royal Ballet. She isn't dancing now. She's having a bath. She's going to dance in front of the Queen this evening."
+  },
+  {
+    "id": 38,
+    "title": "Well or badly?",
+    "script": "There's an international football match on television. England are playing against Scotland. They are good teams. They usually play well. But today England are playing very well, and Scotland are playing badly. Tom Morgan often has accidents. This is his fourth accident this year. He's a bad driver, because he's a fast and careless driver. He drives fast, carelessly and badly. Bill Morris is a gentleman. He always drives slowly, carefully and well. All his friends say, \"Bill's a good driver! He’s very carefully\". Mr. Johnson works very hard. He's a fast worker. His boss often says, \"Johnson works fast for 10 hours every day. He's a very hard worker.\""
+  },
+  {
+    "id": 39,
+    "title": "Everyday Conversation",
+    "script": "How do you come to school? By bus. How much does it cost? Only 20p. How long does it take? About twenty minutes. Is Maria Italian? Yes, I think so. Does she speak English well? No, I don't think so. Is she coming to the dance tonight? I hope so! What's the matter? I've got a cold. Why don't you see a doctor? I don't know any doctors. Why don't you ask your landlady? Yes. That's a good idea. Would you like to dance? Yes. Do you come here often? Sometimes. Do you live here? Yes, I do. Where do you work? In a bank. Do you like it? It's O.K."
+  },
+  {
+    "id": 40,
+    "title": "A personal letter",
+    "script": "13 rue Pigalle, Montmartre, Paris August 9th, 1977 Dear John, Well, this is my second week in Paris. I like it very much. I usually get up at ten o'clock and have breakfasts in a street cafe. French breakfasts are very small, but the coffee's not bad. I always go to school by Metro. I usually arrive at school at twelve o'clock. I'm learning a lot of French. In the evening I occasionally stay in the hotel, but I usually go out for dinner with a friend. Life is very interesting here. Next weekend I'm going to the coast. Give my regards to everybody. Love, Mary xxx"
+  },
+  {
+    "id": 41,
+    "title": "Where were you yesterday?",
+    "script": "Now, Mr. Briggs... Where were you yesterday? Yesterday? What time? At two o'clock. Where were you at two o'clock? I was at home. You weren't at home, you were in central London. No, I wasn't! I was at home. Ask my girlfriend! She was with me! Well, we're going to speak to her later. Where is she now? Oh... I don't now... OK... Now, where were you on January 12th? January 12th? Yes, it was a Wednesday. I can't remember. You were in Manchester. Oh no, I wasn't. Oh, yes, you were. Oh no, I wasn't... I was in prison in January. Oh!"
+  },
+  {
+    "id": 42,
+    "title": "Holidays",
+    "script": "Hello, John! Where were you last month? Oh, I was on holiday. Oh, really? But you were on holiday in January. Yes, I was in Switzerland in January. Where were you last month? I was in Florida. Florida! What was it like? Fantastic! The weather was beautiful... the sea was warm. What was the hotel like? Excellent! There was a swimming-pool and private beach. There were three restaurants and two bars. What were the people like? They were very friendly. Was your wife with you? No, she wasn't. She never comes with me on holiday. What about the children? Were they with you? No, they weren't. They were with their grandparents."
+  },
+  {
+    "id": 43,
+    "title": "Everyday Conversation",
+    "script": "Can you change this pullover, please? Why? What's wrong with it? It's the wrong size. Is it too big or too small? It's too small for me. What size are you? I'm not sure. Can you measure me? Yes, certainly... You're a thirty-six. This one's the right size. I'd like a room, please. A single room or a double room sir? A double, please. With or without a private bathroom? With, please. For how many nights? Just for one night, please. Excuse me! Yes? I think my change is wrong! Are you sure? Let me see. Oh, yes... you need another 50p. Yes, that's right. I'm terrible sorry. That's O.K. I think English food is excellent. Really! I don't think so. Why not? I refer French food."
+  },
+  {
+    "id": 44,
+    "title": "Return from Space",
+    "script": "Phil Strongarm, the American astronaut, is talking to a reporter about his journey to the moon. Well, Phil... Welcome home! Thank you. Did you have any problems on the journey? Well, we didn't have any serious problems... but it certainly wasn't a holiday! Of course not... We didn't have a wash or a shave for two weeks! Really? Yes. It wasn't very comfortable! What about food? Was that a problem? Well, we didn't have any normal food. What did you have? Well, we had some food tablets. Are you going to the moon again? I hope so. It was wonderful!"
+  },
+  {
+    "id": 45,
+    "title": "Yes, dear!",
+    "script": "Every Saturday Mr Brown goes to town. He went to town last Saturday. He usually has a drink in the pub with his friends. Last Saturday he had four or five drinks. After the pub, he usually goes to supermarket and gets the food for his wife. He got the food last Saturday. He usually comes home on foot. Last Saturday he came home by taxi. His wife was very angry. John! Is that you? Yes, dear. I'm back. Did you come home by taxi? Yes, dear. The bags were very heavy. Did you get everything? Yes, dear. I got everything... nearly everything. Nearly everything? Yes, dear... I went to the butcher's, but they didn't have any steak. They didn't have any steak! No, dear, so I got some hamburgers. Did you go to the baker's? Yes, dear... but I didn't get any bread. You didn't get any bread! No, dear. They didn't have any bread, so I got some rolls. How many rolls did you get? I can't remember, dear. John? Yes, dear? Did you go to the pub again? Yes, dear. How many drinks did you have? Only four or five, dear, ... small ones."
+  },
+  {
+    "id": 46,
+    "title": "In the office",
+    "script": "Good afternoon, Mr Smith. Good afternoon, Miss Wild. Did you finish those letters? Yes, sir. I typed them and signed them for you. Did you photo-copy them? Yes, sir. I photo-copied them and posted them. Did Mr Jackson arrive? Yes, sir. What time did he arrive? About two o'clock, sir... but he didn't stay. He didn't have time. What did he want? Oh... I didn't ask, sir. Er... Did you telephone Mrs. Smith? Yes, I did... but she wasn't in. Hmm... And the table at \"Mario's\" for tonight? Yes, sir, I reserved a table for two, at eight o'clock. Good! Did Lulu telephone? Yes, sir."
+  },
+  {
+    "id": 47,
+    "title": "The Story of Willy The Kid",
+    "script": "Willy The Kid arrived in Dodge City one evening. He walked into the saloon, and looked slowly round the room. Everybody was afraid. Willy had two guns. The sheriff was in his office. He was asleep. The saloon barman rushed into the sheriff's office: \"Willy The Kid's in town!\" The sheriff hurried to the saloon. The sheriff shouted to Willy: \"Give me your guns, Willy.\" \"This town is too small for both of us.\", Willy replied calmly. They walked into the street. The sheriff waited. Willy moved his hand towards his gun... The sheriff pulled out his gun. He fired twice. The first bullet missed Willy. The second killed him. Two cowboys carried Willy away. That was the end of Willy The Kid."
+  },
+  {
+    "id": 48,
+    "title": "Foreign holidays",
+    "script": "Anne's a student at London University. She studies Spanish, and she goes to Spain every summer. She lies in the sun, she drinks a lot of wine, and eats a lot of Spanish food. She always flies by British Airways. Her mother and father went to Italy last year. They toured Italy by coach. They saw a lot of interesting places. They ate spaghetti in Rome, drank coffee in Venice, and took a lot of photographs. The sun shone every day. They went to Italy by coach. Professor Hopkins teaches Anne at London University. He went to India last year. He saw the Taj Mahal, and rode on an elephant. He wrote postcards to all his friends. He flew by Air India. Rob is Anne's boyfriend. He hitch-hiked around the United States last summer. He stayed there for a month. Of course he ate hamburgers, and drank Coca-Cola! He met a lot of interesting people. He bought a lot of American pop records, and brought them back to England. He flew there by Pan-American."
+  },
+  {
+    "id": 49,
+    "title": "Survivors",
+    "script": "Bill Craig and John Fitzgerald are pilots. Last year their plane crashed in the Pacific Ocean. They were in a rubber dinghy for four weeks. They didn't have much water, and they didn't have many things to eat. They had a few bananas and a little brandy from their plane. They caught a lot of fish. They had only a little chocolate. They had only a few biscuits and a few apples. After four weeks, they saw a ship and the ship rescued them."
+  },
+  {
+    "id": 50,
+    "title": "Robbie and the Rebels",
+    "script": "Good morning, Shirley... Hello, Jill... Oh, I'm tired this morning! Are you? Why? Well, I went to the concert last night. Which concert? The pop concert, the one at the Town Hall. Oh, which group did you see? I saw \"Robbie and the Rebels\"... they're a new group. Are they good? Hmm... they usually play well, but last night they played badly. Is Robbie a good singer? Oh, yes, he usually sings well. Did he sing well last night? No, he didn't... he sang very badly. What about the group? Oh, the guitarist played beautifully... but the drummer was loud. Yes, pop drummers always play loudly. I know! I had a headache after the concert. Hmm... I never go to the pop concerts. I prefer classical music."
+  },
+  {
+    "id": 51,
+    "title": "Everyday Conversation",
+    "script": "Excuse me... I lost my handbag this morning. Where did you lose it? On the bus... I left it on the number 28. Well, you're lucky, the conductor found it. Thank Goodness! I was worried. Here it is... he gave it to me an hour ago. What did you do last weekend? I went to Oxford. Really? How did you go? I went by car. How long did it take? It took about two hours. Hello, John! I thought you were in Brighton! I was. I drove there on Friday. Yes...? ... and I came back on Saturday morning! Oh? Why did you come back? Well, I went to a casino, and spent all my money! How did you do that? Well, I won a little at first... then I lost everything! Have a cigarette. No, thanks. I am trying to stop. Oh, come on! I insist! No, really... I've got a terrible cough."
+  },
+  {
+    "id": 52,
+    "title": "The Eight O'Clock News",
+    "script": "Good evening. And here is the Eight O'clock News. Last night there was a revolution in Mandanga. The rebels attacked the President's palace, shot the President and burnt the building. The air force bombed the capital. The United State sent ships to the area this morning. The Soviet Union protested in the United Nations. The Scottish police are looking for two climbers in the Highlands. The climbers left yesterday morning to climb Ben Nevis. It began to snow heavily yesterday afternoon. The police sent out a search party yesterday evening. They spent the night on the mountain, but they didn't find the climbers. The Queen opened a new hospital in London today. She met all the doctors and nurses, and spoke to the first patients. The Queen wore a yellow dress, and a green hat. ... and next football. This afternoon at the Wembley Stadium, England played against Wales. England lost by four goals to nil. The English captain broke his leg. The Welsh team played well. David Evans scored three goals for Wales."
+  },
+  {
+    "id": 53,
+    "title": "Howard Hughes 1905—1976",
+    "script": "Biography of a Billionaire Howard Hughes was bom in Houston. Texas. He started school. His father died. He left school. He inherited $750,000. He became director of his father's oil-drilling company. He married Ella Rice. He went to Hollywood. He produced a film. He divorced Ella Rice. He directed the film Hell's Angels. He worked as an airline pilot. (He changed his name). He built a plane. He broke the world air-speed record. (He flew at 352 m.p.h.) President Roosevelt gave him a special aviation award. He flew round the world in 91 hours (a new world record). He designed and manufactured war planes. He designed a new bra for film-star Jane Russell. He started T.W.A. (Trans World Airlines). He crashed a new war-plane. He nearly died. In hospital, he designed a new bed. He flew a new 700-seat passenger plane. He bought RKO Film Studio. He sold RKO He sold TWA for $546,000,000. He married Jean Peters. He retired from public life. He went to Las Vegas. He bought a lot of casinos, clubs, and hotels. (He didn't smoke, drink or gamble.) He divorced Jean Peters. He gave $100,000 to President Nixon for the 1972 Election. Hughes died in Acapulco. He left $2,000,000,000."
+  },
+  {
+    "id": 54,
+    "title": "The boss and the secretary",
+    "script": "Well, Miss Smith... this is a change! I usually have water with meals, you know. Yes, Mr Gibbon, but tonight we're having champagne! Please don't call me Mr Gibbon. My friend always call me Horace. All right... Horace... and we're having fillet steak! Isn't it wonderful! I normally have egg and chips on Mondays... you see, my wife doesn't like restaurants. Oh, your wife... what's she doing now? Er... she's watching television at home. What perfume are you wearing, Miss Smith? Please... call me Dorothy, I'm wearing \"Night of Passion\". It's lovely. My wife never wears perfume... I don't always wear it, but this is a special occasion. Of course it is. I never come to restaurants like this. Dorothy, I want to ask you something. Oh, Horace, go on... I'm enjoying this evening so much. Well... it's difficult. Please... ask me. Well, you know we've got a lot of work at the office... Yes? Well, can you work on Saturdays until we finish it? Oh!"
+  },
+  {
+    "id": 55,
+    "title": "An accident",
+    "script": "Two cars were going along Cambridge Street. An English man was driving a Rolls-Royce, and a foreign student was driving a V.W. The English man was driving slowly and carefully. The student wasn't driving carefully... He was looking at a girl. She was walking along the street. She was wearing a short skirt, and she was carrying a handbag. The traffic-lights were green. A dog was sitting beside the traffic-lights. A cat was sitting on the opposite corner. The dog was thinking about a bone. Suddenly the dog saw the cat. It ran across the road. The English driver saw the dog. He braked quickly. The V.W. crashed into the Rolls-Royce. The girl saw the accident. She ran to a telephone box. The police came immediately."
+  },
+  {
+    "id": 56,
+    "title": "An investigation",
+    "script": "Last night at 9.18 the Director of a school was walking from his office to his car when he was attacked from behind. The attacker hit the Director on the head. The police think attacker was a student... may be a girl student! The police are going to interview every student in the school. A policeman interviewed the Director at the hospital last night: Now, Mr Snow... what can you remember about the attack? Well, I was working late yesterday evening... What time did you leave your office? About quarter past nine. Are you sure? Oh, yes... I looked at my watch. What did you do then? Well, I locked the door... and I was walking to my car, when somebody hit me on the head. Did you see the attacker? No, he was wearing a stocking over his head. Tell me, Mr Snow... how did you break your leg? Well, when they were putting me into the ambulance, they dropped me!"
+  },
+  {
+    "id": 57,
+    "title": "A photograph album",
+    "script": "Jenny's 26. She's a teacher. She's in class now. Now, Martin... can you swim? Yes, I can... I could swim when I was five. Could you? Yes, Miss... could you swim when you were five? I could swim when I was three. Really, Miss? Could you read and write when you were three? No, Martin... of course I couldn't!"
+  },
+  {
+    "id": 58,
+    "title": "A spy story",
+    "script": "This is a very important mission, 006. What must I do? You must go to Moscow on tonight's plane. Ah, Moscow! I've got a girlfriend there! We know that... but you mustn't visit her! Where must I stay? You must go to the Airport Hotel, stay in your room and wait. Which passport must I use? Your Swiss passport... and you must speak Swiss-German all the time. They mustn't know your nationality. What must I take with me? Well, you mustn't carry your gun... but take a lot of warm clothes. Good luck, 006! Now, Olga. You must check into the Airport Hotel tonight. Must I reserve a room? No, you needn't. We reserved one for you... next to the British agent's room. Must I stay in my room? No, you needn't stay in your room, but you must stay in the hotel. Must I... be nice to him? No, you needn't... but you must discover why he's here. Must I contact you every day? No, you mustn't! It's too dangerous for you. Why? Because 006 is a very dangerous man."
+  },
+  {
+    "id": 59,
+    "title": "Everyday Conversation",
+    "script": "Bournemouth 18233. Hello. This is Tom Piper here. Is Mary there? Hang on a minute. I'll see. O.K. Hello. I'm sorry, but Mary's out. Oh! Could you take a message? Yes, of course. Just a minute. I need a pen. Hello. Director Enquiries. Can I help you? Yes. Can I dial direct to Zurich? Yes sir, you can. What's the S.T.D code number, please? It's 010411. Thank you. Hello. Radio Taxis. I'd like a taxi, please. When do you want it? As soon as possible. Where are you? On the corner of London Road and Strouden Street. Where do you want to go? The station. What's the name? Johnson. Mr Johnson. O.K. Thank you. Hello. International Service. Can I help you? Yes, please. I'd like to make a three-minute call to Madrid. What's the number, please? Madrid 65.43.21. What's your number, please? Oxford 56767. Please put £1.56 in the box and I'll call you back. Thank you."
+  },
+  {
+    "id": 60,
+    "title": "Another personal letter",
+    "script": "13 rue Pigalle Montmartre, Paris. August 16th 1977 Dear John, Last week I went on an excursion to Versailles. I went with some students in my class. I got up at six o'clock on Saturday and met the other students at the station. In the morning we visited the Palace. It was very interesting. We saw Louis XIV's bedroom. We had lunch in a little cafe and I drank a lot of wine. In the afternoon we sat in the sun for an hour and walked through the gardens. I met a very interesting Frenchman with a big moustache. I didn’t practice my French very much because he spoke English all the time. Did you have a nice weekend? I miss you a lot. Love, Mary."
+  },
+  {
+    "id": 61,
+    "title": "On the moon",
+    "script": "Phil Strongarm, the American astronaut has landed on the moon. He's speaking to Mission Control now: Hello, Phil... can you hear me? Yes, I can hear you clearly. What are you going to do next? I'm going to open the door. Hello, Phil... What are you doing now? I'm opening the door. Phil! Have you opened the door? Yes, I've opened the door. I can see the moon! It's fantastic!"
+  },
+  {
+    "id": 62,
+    "title": "Where's he gone?",
+    "script": "Hello, Janet... what's the matter? It's my husband... he's gone! Gone? Where's he gone? He's gone to Paris. Has he gone on business? No, he hasn't gone on business. He's gone with Dorothy. Dorothy? Who's Dorothy? She's his secretary. Is he coming back? I don't know. Can you lend me £5? Sorry, I can't... I haven't been to the bank today. Oh dear... I haven't been either, and I need some money. It's too late now... it's four o'clock. Why you don't ask Peter? Oh, has he been to the bank? Yes, he has. He always goes on Mondays."
+  },
+  {
+    "id": 63,
+    "title": "Everyday Conversation",
+    "script": "Oh, dear! What's wrong? I can't find my pen. Really! You mustn't laugh... it isn't funny. Oh, yes it is. Is it? Why? It's in your hand! Oh, yes. Are you a foreigner? Pardon? ARE-YOU-A-FOREIGNER? You needn't shout. I'm not deaf. Oh, I'm sorry. That's all right. I just didn't understand. What does \"foreigner\" mean? Be careful! Why? I've just painted the door. It's all right... I haven't touched it. Haven't you? What's that on your arm? I'm bored. Well, do something! What, for example? Wash your hair. I've already washed it. Brush your shoes. I've already brushed them. Why you don't clean your room? I've already cleaned it. Well,... perfect your English! Hmm..."
+  },
+  {
+    "id": 64,
+    "title": "Town and Country",
+    "script": "Stan! I've got a new job! I'm going to live in London! Are you? Oh, I lived in London five years ago. Did you like it? Not very much. Why not? Well, there were too many people, and there was too much noise! Oh, I love crowds and noise! Well, I don't... and I don't like pollution. What do you mean? Oh, there isn't enough fresh air in London. But there are a lot of parks. Yes, I know... and people sleep in them! Why? Because there isn't enough accommodation... there aren't enough flats and houses. Well, I still prefer big cities. But why? I was born in a small country village. It was too quiet. You were lucky! I don't think so. There wasn't much to do. That's why young people go to London. But London's too expensive for young people. But they still go... they want excitement. Hmm... I don't want excitement. I just want a quiet life, that's all."
+  },
+  {
+    "id": 65,
+    "title": "Europa tours",
+    "script": "Elmer Colt is from Kansas. He's on a 14-day tour Europe. The tour started in London. At the moment he's in Prague. It's the eighth day of the tour. He's already been to seven countries and stayed in the capital cities. He's never been to Europe before, and he's already seen a lot of new places. He's done a lot of interesting things... and the tour hasn't finished yet."
+  },
+  {
+    "id": 66,
+    "title": "A call from home",
+    "script": "Hello... Elmer?... Is that you? Yes, Momma. Where are you now, Elmer? I've just arrived in Prague, Momma. You haven't sent me any postcards yet. Yes, I have... I've sent one from every city. Have you been to Paris yet, Elmer? Yes, I have. Have you been to Vienna yet? No, I haven't. We're going to Vienna tomorrow. Elmer! Are you still there? Yes, Momma. How many countries have you seen now, Elmer? Well, this is the eighth day, so I've already seen eight countries. Have you spend much money, Elmer? Yes, Momma, I've bought a lot of souvenirs... and I want to buy some more. Can you send me a thousand dollars? All right, Elmer. Elmer, are you listening to me? Yes, Momma. Have you taken many photographs, Elmer? Yes, Momma, I've taken a lot. I've used three rolls of film. Have you met any nice girl yet, Elmer? Oh, yes, Momma... there's a girl from Texas on the tour. We've done everything together. Elmer! Elmer! Are you still there, Elmer?"
+  },
+  {
+    "id": 67,
+    "title": "Have you ever...?",
+    "script": "Have you ever studied a language before? Yes, I have. Oh, which one did you study? I studied French at school. Have you ever been to a wedding? Yes, I have. Whose wedding was it? It was my brother's. Have you ever seen a fire? Oh, yes, I have. When did you see it? I saw one in Manchester in 1976. Have you ever drunk too much? Yes... I have. Where did you drink too much? I drank too much at my brother's wedding. Have you ever eaten at the Royal Hotel? Yes, I have. When did you eat there? Mary and I ate there two months ago. Have you ever had flu? Yes, I have. When did you have it? I had it last winter. Have you ever broken a bone? Yes, I have. What did you break? I broke my leg."
+  },
+  {
+    "id": 68,
+    "title": "Comparisons",
+    "script": ""
+  },
+  {
+    "id": 69,
+    "title": "A hard life",
+    "script": "Jerry Floyd is talking to his grandfather about his new job: \"It's terrible, granddad. I have to get up at seven o'clock because I have to catch the bus to work. Because I'm new, I have to make the tea. I have to work hard... I'm only happy at the weekends: I don't have to work then.\" His grandfather isn't very sympathetic: \"I had to start work when I was 14. I lived in South Wales, and there wasn't much work. I had to be a coal miner. We had to work twelve hours a day. We didn't have to work on Sundays... but we had to work the other six days of the week. \"When I was eighteen, the First World War started. I joined the army. I had to wear a uniform, and I had to go to France. A lot of my friends died. We had to obey the officers, and we had to kill people. \"When I was sixty, I had to go into hospital because of the dust from the mines. It was the only quiet time in my life... I didn't have to work, I didn't have to earn money. \"I retired when I was sixty-five. Nowadays I don't work and I don't have to get up early. But I have to live on my pension, and life is still difficult. I don't feel sorry for you.\""
+  },
+  {
+    "id": 70,
+    "title": "Comparisons",
+    "script": ""
+  },
+  {
+    "id": 71,
+    "title": "Brutus Cray — the Greatest",
+    "script": "I'm the greatest! You were the greatest, Brutus... but you're ten years older than Joe Freezer. Joe Freezer! I'm not afraid of Joe Freezer! Really? Listen! I've beaten him twice, and I going to beat him again. Are you sure? Sure? Of course I'm sure. Some people say he's better than you. Listen! I've beaten all the best boxers, and Joe Freezer's one of the worst! Yes, but he's better than he was. Listen! I'm stronger, faster, fitter and more intelligent than him! Yes, but he KO'ed Len Korton two moths ago. Len Korton. I've KO'ed him three times! O.K., O.K., Brutus. Are you going to retire after this fight? Retire? No. I've been the champion for ten years... and I going to stay the champion for another ten. Joe Freezer doesn't think so! Joe Freezer? Joe Freezer's the ugliest man in the world... after tonight he's going to need a new face!"
+  },
+  {
+    "id": 72,
+    "title": "George and Brenda",
+    "script": "Will you marry me, darling? Of course I will. Is that a promise? Of course it is... I love you. Oh, darling, I feel terribly tired! Well, sit down. I'll do the washing-up. Oh, thank you darling... and I'm thirsty. All right, I'll make you a cup of tea. George! Have you mended that plug yet? No, I haven't. Well, will you do it today? Yes, I'll do it now. Where's the screwdriver? I don't know. Well, I can't find it. I'll do it tomorrow. Oh, George... we haven't got much for dinner. That's all right. Shall we eat out? Oh, yes! Where shall we go? Let's go to that new Italian Restaurant! George! Yes, dear. You're drunk! Shall I drive? No, I'm O.K. I'll drive. No, you won't. Give me the keys!"
+  },
+  {
+    "id": 73,
+    "title": "Everyday Conversation",
+    "script": "What's the matter? Why has the bus stopped? There's been an accident. Has there? Again? Yes, there have been three here this week. Yes, I know. And it's only Wednesday. Yes. It's the most dangerous corner I've ever been seen. Look at that girl! What about her? Look at her dress! What about it! It's the same as mine! That's what! No, it isn't. It's different from yours. Is it? Yes. Hers is shorter than yours. Are you a new student? No, I'm not. Oh. How long have you been here? As long as you. Why haven't I seen you? I've been ill. Can I borrow £10? Why you don't go to the bank? My cheque hasn't arrived yet. Well, I'm sorry, but I'm broke. What can I do? Ask George. He's as rich as Rockefeller."
+  },
+  {
+    "id": 74,
+    "title": "Something, nothing, anything, everything",
+    "script": "I want some seats for Tuesday night. Are there any left? No, there are no seats left. Every seat is reserved. Doctor, I think there's something in my eye. Everything looks funny. Let me have a look... I can't see anything... No, I'm sure there's nothing there. There's somebody in the other office! I didn't hear anybody. Well, just have a look... ... No, there's nobody there. Everybody's gone home. What are you looking for? My pen. It's somewhere in this room! Where have you looked? I've looked everywhere... and I can't find it anywhere!"
+  },
+  {
+    "id": 75,
+    "title": "Four lives",
+    "script": "Herbert Burke, James Stephens, Mary Foot, and Charlie Phillip all went to the same school. They left school in 1960, and they've had very different careers. Herbert Burke became a politician ten years ago. He's very successful. He bought a country house five years ago, and bought a Jaguar at the same time. He's been a Member of Parliament for ten years. He's had his house and car for five years. James Stephens is a criminal. He robbed a bank in 1971, and escaped to a Pacific island. He bought a luxury yacht the same year. He's still on the island. He's been there since 1971. He's had the yacht since 1971. Mary Foot and Charlie Phillips fell in love at school. He gave her a ring when they left school. She wears it every day, and she's never taken it off. They got married in 1963 and they are still in love. They moved to Australia in 1968."
+  },
+  {
+    "id": 76,
+    "title": "A night out",
+    "script": ""
+  },
+  {
+    "id": 77,
+    "title": "The election result",
+    "script": "It's midnight. In a moment, the Mayor of Bamford is going to read the results of the General Election. Both of the candidates are on the balcony with the Mayor. Both of them are smiling, but neither of them are happy. Both of them are wearing rosettes. One of them is the Labour candidate, and the other is the Conservative candidate. Neither of them have been Members of Parliament before. The Mayor has just announced the result. The Labour candidate has won the election. Some of crowd are pleased, but the others are angry. All of the Labour supporters are happy. All of them are shouting and cheering. The Conservative supporters are booing. None of them are smiling. The Conservatives haven't won an election in Bamford for many years. The Labour Party has won every election in the town since 1945."
+  },
+  {
+    "id": 78,
+    "title": "The Daily News",
+    "script": "Sensational jewel robbery: £50,000 stolen There was a fifty thousand pound jewel robbery in central London yesterday. The thieves threw a stone through the window of Carbunkle & Company and stole necklaces, rings and watches worth £50,000. Mr Goldsmith, the manager of the shop, was working in his office when it happened. The police are looking for three men. The men drove away in a stolen Ford Cortina. The police have not found the getaway car yet. Everest expedition fails Three British climbers in the Himalayas wanted to reach the top of Mount Everest yesterday, but they failed because the weather has been too bad. They had to postpone the climb until next week. The weather has been the worst for two years. Hollywood divorce case Richard Taylor, the British actor, is going to divorce his wife, Liza Bertram. They have been married for thirteen years, and have lived in Hollywood since 1978. Several people have seen Taylor with film starlet Judy Bowes recently. He has been married four times. He refused to speak to our reporter yesterday. Police Notice: Have you seen this girl? Maria Roberts, a 15-year-old schoolgirl, left her home in Leeds last week and nobody has seen her since. She was wearing a blue raincoat, green trousers and black shoes. She has blonde hair and blue eyes. Please telephone: 0202-17414 with any information."
+  },
+  {
+    "id": 79,
+    "title": "Everyday Conversation",
+    "script": "Can I help you? Yes, I want to send some flowers to my mother in Germany. What kind of flowers would you like? Well, what do you recommend? Well, roses are very nice at this time of the year. O.K... a dozen roses, please. Mrs Connor? Yes, Paul? This is a present for you. A present? What a lovely surprise! Shall I open it now? Yes, of course. Ooh! Chocolates! I love chocolates... Thank you, very much indeed! Thank you. You've been very kind. I'd like to say goodbye to everybody. When are you leaving? Tomorrow morning. Let's meet for a coffee tonight. I'm afraid I can't. Oh... come on! No, really... I've got so much to do. It's been a lovely party. Thank you very much. But you can't go yet! The party's just beginning! I'm sorry, but I must! Why? Because I have to catch the last train. Don't be silly! I'll give you a lift. Where are you going? Caracas! Oh!!"
+  },
+  {
+    "id": 80,
+    "title": "The fourth letter",
+    "script": "13 rue Pigalle Montmartre, Paris. August 23 rd, 1977 Dear John, I've missed you very much. I've been lonely this week because I haven't seen you for a month. I've learnt a lot of French this week... I've worked hard. I haven't been out too much. Last night I had to do a lot of homework, and I'm tired today. Paris is smaller than London, but it's more interesting. I think it's the best city I've ever been to. There's too much traffic and there aren't enough restaurants with English food, but I like it. All of my teachers are very nice and none of them speak English to me... so I have to speak French. Anyway, I must finish now. I'll write again soon... I promise. All my love, Mary xxx"
+  }
+]

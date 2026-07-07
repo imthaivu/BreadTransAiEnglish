@@ -1,0 +1,50 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+
+    "invitations": {
+      "$inviteeId": {
+        ".read": "auth != null && auth.uid === $inviteeId",
+        "$inviteId": {
+          ".write": "auth != null && ((!data.exists() && newData.child('fromId').val() === auth.uid && newData.child('toId').val() === $inviteeId) || (data.exists() && (data.child('fromId').val() === auth.uid || auth.uid === $inviteeId)))",
+          ".validate": "newData.hasChildren(['fromId', 'toId', 'gameId', 'roomId', 'status']) || !newData.exists()"
+        }
+      }
+    },
+
+    "inviteSignals": {
+      "//": "Tín hiệu phản hồi lời mời gửi cho host. Chỉ host tự đọc/dọn; mọi user đăng nhập được phép ghi (chỉ là thông báo nhẹ, vd. người nhận không đủ bánh).",
+      "$hostId": {
+        ".read": "auth != null && auth.uid === $hostId",
+        "$signalId": {
+          ".write": "auth != null"
+        }
+      }
+    },
+
+    "rooms": {
+      "$roomId": {
+        "//": "Room ids are unguessable. Reads require auth; writes are limited to the host, the two players, or a guest joining as p2. Per-role write isolation (state/p1 vs state/p2) is enforced in application code, since once an ancestor grants write it cannot be narrowed by descendant rules.",
+        ".read": "auth != null",
+        ".write": "auth != null && (!data.exists() ? newData.child('meta/hostId').val() === auth.uid : (!newData.exists() && data.child('meta/status').val() === 'waiting' && !data.child('meta/players/p2').exists()) || (data.child('meta/hostId').val() === auth.uid || data.child('meta/players/p1/id').val() === auth.uid || data.child('meta/players/p2/id').val() === auth.uid || newData.child('meta/players/p2/id').val() === auth.uid))"
+      }
+    },
+
+    "userActiveRooms": {
+      "//": "Index trỏ tới phòng đang chơi của từng user. Tồn tại qua disconnect/reload để tự rejoin trận đang dở. Mỗi user chỉ tự đọc/ghi index của mình.",
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid",
+        ".write": "auth != null && auth.uid === $uid"
+      }
+    },
+
+    "presence": {
+      "//": "Global presence: online/lastSeen/name + currentActivity. Mọi user đăng nhập đọc được (cần .read tại node cha để listen toàn bộ map). Chỉ chủ node tự ghi.",
+      ".read": "auth != null",
+      "$uid": {
+        ".write": "auth != null && auth.uid === $uid"
+      }
+    }
+  }
+}

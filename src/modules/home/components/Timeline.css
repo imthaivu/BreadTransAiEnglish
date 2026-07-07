@@ -1,0 +1,129 @@
+/* Timeline Styles */
+.timeline {
+  position: relative;
+  width: 100%;
+}
+
+.timeline::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: linear-gradient(to bottom, #3b82f6, #1d4ed8);
+  transform: translateX(-50%);
+  border-radius: 2px;
+}
+
+.card-about {
+  position: relative;
+
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.15);
+  border: 2px solid rgba(59, 130, 246, 0.1);
+  transition: all 0.3s ease;
+}
+
+.card-about:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px rgba(59, 130, 246, 0.25);
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+.card-about::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 20px;
+  height: 20px;
+  background: #3b82f6;
+  border: 4px solid white;
+  border-radius: 50%;
+  transform: translateY(-50%);
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
+}
+
+/* Alternating layout */
+.card-about:nth-child(odd) {
+  margin-left: 0;
+  margin-right: 50%;
+  padding-right: 3rem;
+}
+
+.card-about:nth-child(odd)::before {
+  right: -10px;
+}
+
+.card-about:nth-child(even) {
+  margin-left: 50%;
+  margin-right: 0;
+  padding-left: 3rem;
+}
+
+.card-about:nth-child(even)::before {
+  left: -10px;
+}
+
+/* Special styling for different time periods */
+.month-1 {
+  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+}
+
+.month-3-6 {
+  background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+}
+
+.year-1 {
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+}
+
+.year-2-3 {
+  background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .timeline::before {
+    left: 20px;
+  }
+
+  .card-about {
+    margin-left: 50px !important;
+    margin-right: 0 !important;
+    padding-left: 2rem !important;
+    padding-right: 2rem !important;
+  }
+
+  .card-about::before {
+    left: -30px !important;
+    right: auto !important;
+  }
+
+  .card-about h2 {
+    font-size: 1.5rem;
+  }
+
+  .card-about ul {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .card-about {
+    margin-left: 40px !important;
+    padding: 1.5rem !important;
+  }
+
+  .card-about::before {
+    left: -25px !important;
+    width: 16px;
+    height: 16px;
+  }
+
+  .timeline::before {
+    left: 15px;
+    width: 3px;
+  }
+}

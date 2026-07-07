@@ -1,0 +1,106 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && request.auth.token.admin == true;
+    }
+
+    function isTeacher() {
+      return isSignedIn() && request.auth.token.teacher == true;
+    }
+
+    function protectedUserFields() {
+      return ['role', 'totalBanhRan', 'gameTickets', 'allowedTicket', 'ticketExpiresAt', 'ticketGrantedBy', 'ticketGrantedAt'];
+    }
+
+    function canUpdateOwnUserProfile() {
+      return isSignedIn()
+        && !(request.resource.data.diff(resource.data).affectedKeys().hasAny(protectedUserFields()));
+    }
+
+    // --- COLLECTION: USERS ---
+    match /users/{uid} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+      allow update: if canUpdateOwnUserProfile() || isTeacher() || isAdmin();
+    }
+
+    // --- COLLECTION: CLASSES ---
+    match /classes/{id} {
+      allow read, update, create: if isSignedIn();
+      allow delete: if isAdmin();
+    }
+
+    // --- COLLECTION: CURRENCY ---
+    match /currency/{id} {
+      allow read: if isSignedIn();
+      allow update, create: if isTeacher() || isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // --- COLLECTION: GAME PLAYS (server-only writes) ---
+    match /gamePlays/{playId} {
+      allow read: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow write: if false;
+    }
+
+    // --- COLLECTION: GAME BATTLES (server-only writes) ---
+    match /gameBattles/{roomId} {
+      allow read: if isSignedIn()
+        && (resource.data.p1 == request.auth.uid || resource.data.p2 == request.auth.uid);
+      allow write: if false;
+    }
+
+    // --- COLLECTION: SETTINGS ---
+    match /settings/{id} {
+      allow read, update, create: if isSignedIn();
+      allow delete: if isAdmin();
+    }
+
+    // --- COLLECTION: USERBOOKPROGRESS ---
+    match /userBookProgress/{id} {
+      allow read, update, create: if isSignedIn();
+      allow delete: if isAdmin();
+    }
+
+    match /classAttendance/{id} {
+      allow read: if isSignedIn();
+      allow update, create: if isTeacher();
+      allow delete: if isAdmin();
+    }
+
+    // --- COLLECTION: CONTENT (Ngữ pháp / Phim / Nhạc) ---
+    // Học sinh đọc được (giống sheet cũ), chỉ admin tạo/sửa/xoá.
+    match /grammars/{topicId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    match /movies/{topicId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    match /music/{topicId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    match /gameSettings/{gameId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    // --- COLLECTION: WATCH_TRACKING ---
+    match /watch_tracking/{docId} {
+      allow read: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create, update: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow delete: if isAdmin();
+    }
+  }
+}

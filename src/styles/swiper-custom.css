@@ -1,0 +1,331 @@
+/*
+ * Custom Swiper Styles for BreadTrans
+ *
+ * ═══════════════════════════════════════════════════════════════════════════
+ * CẢNH BÁO — swiper-custom.css
+ * ═══════════════════════════════════════════════════════════════════════════
+ * Rule ở đây chỉ áp class .banner-swiper / .primary-swiper / … — ít rủi ro hơn globals.
+ * Xem ⚠️ cạnh từng block dễ gây layout/flash/hydration.
+ * ═══════════════════════════════════════════════════════════════════════════
+ */
+
+/* Banner Swiper Styles */
+.banner-swiper {
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.banner-swiper .swiper-slide {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* @media (min-width: 768px) {
+  .banner-swiper .swiper-slide {
+    height: 500px;
+  }
+} */
+
+.banner-swiper .swiper-slide-active {
+  transform: scale(1);
+}
+
+/* Banner Navigation Buttons */
+.banner-swiper-button-prev,
+.banner-swiper-button-next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  background: rgba(255, 255, 255, 0.4);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(42, 167, 226, 0.6);
+  font-weight: bold;
+  width: 44px;
+  height: 44px;
+  font-size: 20px;
+  opacity: 0.5;
+  user-select: none;
+}
+
+@media (min-width: 768px) {
+  .banner-swiper-button-prev,
+  .banner-swiper-button-next {
+    width: 52px;
+    height: 52px;
+    font-size: 24px;
+  }
+}
+
+.banner-swiper-button-prev:hover,
+.banner-swiper-button-next:hover {
+  background: rgba(255, 255, 255, 0.95);
+  border: 2px solid rgba(42, 167, 226, 0.4);
+  box-shadow: 0 8px 35px rgba(42, 167, 226, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.1);
+  transform: translateY(-50%) scale(1.2);
+  color: #2aa7e2;
+  opacity: 1;
+}
+
+.banner-swiper-button-prev:active,
+.banner-swiper-button-next:active {
+  transform: translateY(-50%) scale(1.1);
+  transition: all 0.1s ease;
+  box-shadow: 0 4px 20px rgba(42, 167, 226, 0.3);
+}
+
+.banner-swiper-button-prev {
+  left: 12px;
+}
+
+@media (min-width: 768px) {
+  .banner-swiper-button-prev {
+    left: 20px;
+  }
+}
+
+.banner-swiper-button-next {
+  right: 12px;
+}
+
+@media (min-width: 768px) {
+  .banner-swiper-button-next {
+    right: 20px;
+  }
+}
+
+/* Add subtle pulse animation for better visibility */
+@keyframes subtlePulse {
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+.banner-swiper-button-prev:hover,
+.banner-swiper-button-next:hover {
+  animation: none;
+}
+
+/* Banner Pagination */
+.banner-swiper-pagination {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+@media (min-width: 768px) {
+  .banner-swiper-pagination {
+    bottom: 16px;
+  }
+}
+
+.banner-swiper-pagination .swiper-pagination-bullet {
+  width: 10px;
+  height: 10px;
+  background: rgba(255, 255, 255, 0.5);
+  opacity: 0.7;
+  transition: all 0.3s ease;
+  margin: 0 4px;
+}
+
+@media (min-width: 768px) {
+  .banner-swiper-pagination .swiper-pagination-bullet {
+    width: 12px;
+    height: 12px;
+    margin: 0 6px;
+  }
+}
+
+.banner-swiper-pagination .swiper-pagination-bullet-active {
+  background: white;
+  opacity: 1;
+  transform: scale(1.2);
+}
+
+/* Primary Swiper Styles */
+.primary-swiper {
+  position: relative;
+  padding: 0 60px;
+}
+
+/*
+ * ⚠️ height:auto — slide cao theo nội dung; OK cho card carousel.
+ * KHÔNG đặt video/iframe full-bleed trong slide này mà không bọc .aspect-video + iframe 100% height.
+ */
+.primary-swiper .swiper-slide {
+  height: auto;
+  display: flex;
+  align-items: stretch;
+}
+
+/* Secondary Swiper Styles */
+.secondary-swiper {
+  position: relative;
+  padding: 0 50px;
+}
+
+/* ⚠️ Giống .primary-swiper .swiper-slide — xem comment phía trên */
+.secondary-swiper .swiper-slide {
+  height: auto;
+  display: flex;
+  align-items: stretch;
+}
+
+/* Navigation Buttons */
+.swiper-button-prev-primary,
+.swiper-button-next-primary,
+.swiper-button-prev-secondary,
+.swiper-button-next-secondary {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #2aa7e2;
+  font-weight: bold;
+}
+
+.swiper-button-prev-primary:hover,
+.swiper-button-next-primary:hover,
+.swiper-button-prev-secondary:hover,
+.swiper-button-next-secondary:hover {
+  background: white;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.swiper-button-prev-primary,
+.swiper-button-next-primary {
+  width: 48px;
+  height: 48px;
+  font-size: 24px;
+}
+
+.swiper-button-prev-secondary,
+.swiper-button-next-secondary {
+  width: 40px;
+  height: 40px;
+  font-size: 20px;
+}
+
+.swiper-button-prev-primary,
+.swiper-button-prev-secondary {
+  left: 0;
+}
+
+.swiper-button-next-primary,
+.swiper-button-next-secondary {
+  right: 0;
+}
+
+/* Pagination Styles */
+.swiper-pagination-primary,
+.swiper-pagination-secondary {
+  position: relative;
+  margin-top: 20px;
+}
+
+.swiper-pagination-primary .swiper-pagination-bullet,
+.swiper-pagination-secondary .swiper-pagination-bullet {
+  width: 12px;
+  height: 12px;
+  background: #b3e5fc;
+  opacity: 0.5;
+  transition: all 0.3s ease;
+  margin: 0 6px;
+}
+
+.swiper-pagination-primary .swiper-pagination-bullet-active,
+.swiper-pagination-secondary .swiper-pagination-bullet-active {
+  background: #2aa7e2;
+  opacity: 1;
+  transform: scale(1.2);
+}
+
+/* Coverflow Effect for Secondary Swiper */
+.secondary-swiper .swiper-slide-shadow-left,
+.secondary-swiper .swiper-slide-shadow-right {
+  background: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0.1),
+    rgba(0, 0, 0, 0.05)
+  );
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .primary-swiper,
+  .secondary-swiper {
+    padding: 0 40px;
+  }
+
+  .swiper-button-prev-primary,
+  .swiper-button-next-primary {
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+  }
+
+  .swiper-button-prev-secondary,
+  .swiper-button-next-secondary {
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 640px) {
+  .primary-swiper,
+  .secondary-swiper {
+    padding: 0 30px;
+  }
+
+  .swiper-button-prev-primary,
+  .swiper-button-next-primary,
+  .swiper-button-prev-secondary,
+  .swiper-button-next-secondary {
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
+  }
+}
+
+/*
+ * ⚠️ opacity:0 ban đầu — slide vô hình đến khi animation chạy; có thể flash/CLS hoặc “trống” nếu CSS chậm.
+ * prefers-reduced-motion trong globals.css có thể cắt animation → slide kẹt opacity:0 nếu không có fallback.
+ */
+.primary-swiper .swiper-slide,
+.secondary-swiper .swiper-slide {
+  opacity: 0;
+  animation: swiperFadeIn 0.4s ease forwards;
+}
+
+@keyframes swiperFadeIn {
+  to {
+    opacity: 1;
+  }
+}

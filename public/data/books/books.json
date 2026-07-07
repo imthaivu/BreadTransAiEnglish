@@ -1,0 +1,50 @@
+[
+  {
+    "id": 1,
+    "name": "Book 1.Departures",
+    "totalLessons": 80,
+    "totalWords": 1300
+  },
+  {
+    "id": 2,
+    "name": "Book 2.Connections",
+    "totalLessons": 80,
+    "totalWords": 1593
+  },
+  {
+    "id": 3,
+    "name": "Book 3.Destinations",
+    "totalLessons": 80,
+    "totalWords": 2167
+  },
+  {
+    "id": 4,
+    "name": "Book 4.Directions",
+    "totalLessons": 60,
+    "totalWords": 2700
+  },
+  {
+    "id": 5,
+    "name": "Listening 0",
+    "totalLessons": 80,
+    "totalWords": 1213
+  },
+  {
+    "id": 6,
+    "name": "Listening 1",
+    "totalLessons": 80,
+    "totalWords": 3317
+  },
+  {
+    "id": 7,
+    "name": "Listening 2",
+    "totalLessons": 80,
+    "totalWords": 2677
+  },
+  {
+    "id": 8,
+    "name": "Listening 3",
+    "totalLessons": 80,
+    "totalWords": 2542
+  }
+]

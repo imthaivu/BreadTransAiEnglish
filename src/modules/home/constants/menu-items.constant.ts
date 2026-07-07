@@ -1,0 +1,43 @@
+export const menuItems = [
+  {
+    id: "flashcard",
+    title: "Học từ vựng",
+    path: "/flashcard",
+    description: "Học từ vựng hiệu quả",
+    image: "/assets/images/flash-card.png",
+    alt: "Flashcard",
+    category: "Học tập",
+    priority: "medium",
+  },
+  {
+    id: "video",
+    title: "Luyện nghe, nói",
+    path: "/speaking-upload",
+    description: "Nghe và nói bắt chước",
+    image:
+      "/assets/images/nobita-submit.png",
+    alt: "Nộp bài nói",
+    category: "Thực hành",
+    priority: "high",
+  },
+  {
+    id: "grammar",
+    title: "Trọn bộ ngữ pháp 6-12",
+    path: "/grammar",
+    description: "Học ngữ pháp qua video",
+    image: "/assets/images/grammar.png",
+    alt: "Ngữ pháp",
+    category: "Học tập",
+    priority: "medium",
+  },
+  {
+    id: "class",
+    title: "Vào lớp học",
+    path: "/classes",
+    description: "Tham gia lớp học trực tuyến",
+    image: "/assets/images/class.jpg",
+    alt: "Vào lớp học",
+    category: "Học tập",
+    priority: "high",
+  },
+];

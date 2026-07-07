@@ -1,0 +1,15 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /movies/{movieId}/episodes/{episodeKey}/{fileName} {
+      allow read: if true;
+      allow write, delete: if request.auth != null
+        && request.auth.token.admin == true;
+    }
+    match /movies/{movieId}/{fileName} {
+      allow read: if true;
+      allow write, delete: if request.auth != null
+        && request.auth.token.admin == true;
+    }
+  }
+}

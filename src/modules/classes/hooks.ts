@@ -1,0 +1,1407 @@
+"use client";
+
+import React, { useState, useEffect, useCallback, useRef, useMemo } from "react";
+import { useMutation, useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
+import { IClassMember } from "@/types";
+import {
+  createCurrencyRequest,
+  getClassDetails,
+  getClassMembers,
+  getClassProgressActivities,
+  getLessonStudentProgress,
+  getStudentClasses,
+  getTeacherClasses,
+  getAllClasses,
+  updateClassLinks,
+  getClassQuizResults,
+  deleteQuizResults,
+  deleteClassQuizResultsByBook,
+  getClassActivityData,
+  getGrammarTrackingData,
+  getClassWatchTrackingData,
+  type GetClassWatchTrackingOptions,
+} from "./services";
+import { getStudentQuizCountsByDate, syncLessonStatusForBook, getClassBookProgress } from "./api/quiz";
+import { updateBookProgressWithQuizResult, getLessonWords } from "@/modules/flashcard/services";
+import { QuizResult, LessonStatus, BookProgress } from "@/modules/flashcard/types";
+import { getUserInfoFromLocalStorage } from "./api/presence";
+import {
+  isPresenceOnline,
+  useGlobalPresenceMap,
+  type PresenceMap,
+} from "@/modules/presence";
+import {
+  sendAdmiration,
+  subscribeToAdmirations,
+  getTodayAdmirationsReceived,
+  getAdmirationsReceivedFromTime,
+  type IAdmiration,
+} from "./api/admiration";
+import {
+  saveQuizStory,
+  getQuizStories,
+  getClassQuizStories,
+  addQuizStoryReaction,
+  removeQuizStoryReaction,
+  getLastSaveStory,
+} from "./api/quiz-story";
+import toast from "react-hot-toast";
+import { useAuth } from "@/lib/auth/context";
+import type { IClass } from "../admin/type";
+import { getTeacherPendingSpeakingEvaluations } from "./api/pending-speaking";
+
+/** Cửa sổ story quiz (giờ) — dùng chung Home / Profile / prefetch để trùng queryKey, không lệch stale. */
+export const QUIZ_STORY_WINDOW_HOURS = 7 * 24;
+
+/** Query key toàn hệ thống story (tab Lớp khác) — gom một chỗ tránh lệch string. */
+export const allSystemQuizStoriesKeys = {
+  byHours: (hours: number) => ["allSystemQuizStories", hours] as const,
+};
+
+export const teacherClassKeys = {
+  all: ["teacherClasses"] as const,
+  lists: () => [...teacherClassKeys.all, "list"] as const,
+  list: (teacherId: string) =>
+    [...teacherClassKeys.lists(), { teacherId }] as const,
+  details: () => [...teacherClassKeys.all, "detail"] as const,
+  detail: (id: string) => [...teacherClassKeys.details(), id] as const,
+  members: (classId: string) =>
+    [...teacherClassKeys.detail(classId), "members"] as const,
+  progress: (classId: string, bookId?: string, lessonId?: string) =>
+    [
+      ...teacherClassKeys.detail(classId),
+      "progress",
+      { bookId, lessonId },
+    ] as const,
+  studentClasses: (studentId?: string) =>
+    [...teacherClassKeys.all, "student", { studentId }] as const,
+};
+
+export const pendingSpeakingKeys = {
+  all: ["pendingSpeakingEvaluations"] as const,
+  teacher: (teacherId: string) =>
+    [...pendingSpeakingKeys.all, teacherId] as const,
+};
+
+export const useCreateCurrencyRequest = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: createCurrencyRequest,
+    onSuccess: () => {
+      toast.success("Yêu cầu đã được gửi thành công! Admin sẽ xem xét và duyệt yêu cầu.");
+      // Invalidate all currency requests queries so admin can see new requests immediately
+      queryClient.invalidateQueries({
+        predicate: (query) => {
+          const key = query.queryKey;
+          return (
+            Array.isArray(key) &&
+            key.length >= 2 &&
+            key[0] === "currency" &&
+            key[1] === "requests"
+          );
+        },
+      });
+    },
+    onError: (error: Error | unknown) => {
+      console.error("Error creating currency request:", error);
+      const errorMessage =
+        error instanceof Error ? error.message : "Gửi yêu cầu thất bại. Vui lòng thử lại.";
+      toast.error(errorMessage);
+    },
+  });
+};
+
+export const useUpdateClassLinks = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: updateClassLinks,
+    onSuccess: (_, { classId }) => {
+      toast.success("Cập nhật liên kết thành công!");
+      queryClient.invalidateQueries({
+        queryKey: teacherClassKeys.lists(),
+      });
+      queryClient.invalidateQueries({
+        queryKey: teacherClassKeys.detail(classId),
+      });
+    },
+    onError: (error) => {
+      console.error("Error updating class links:", error);
+      toast.error("Cập nhật liên kết thất bại.");
+    },
+  });
+};
+
+export const useTeacherClasses = (teacherId: string | undefined) => {
+  return useQuery({
+    queryKey: teacherClassKeys.list(teacherId!),
+    queryFn: () => getTeacherClasses(teacherId!),
+    enabled: !!teacherId,
+    staleTime: 3 * 60 * 1000, // 3 phút - shared data 5 tab student
+    gcTime: 10 * 60 * 1000,
+    refetchOnMount: false, // dùng cache khi chuyển tab
+  });
+};
+
+/** Pending speaking — derived từ pendingEvaluations trên class docs (đã fetch). */
+export function useTeacherPendingSpeakingEvaluations(classes: IClass[] | undefined) {
+  return useMemo(
+    () => getTeacherPendingSpeakingEvaluations(classes),
+    [classes]
+  );
+}
+
+export const useStudentClasses = (studentId: string | undefined) => {
+  return useQuery({
+    queryKey: teacherClassKeys.studentClasses(studentId),
+    queryFn: () => getStudentClasses(studentId!),
+    enabled: !!studentId,
+    staleTime: 3 * 60 * 1000, // 3 phút - shared data 5 tab student
+    gcTime: 10 * 60 * 1000,
+    refetchOnMount: false, // dùng cache khi chuyển tab
+  });
+};
+
+/** Giống full tab Stories: toàn bộ lớp trong hệ thống — inbox online / thành viên. */
+export const allClassesInboxKeys = {
+  all: ["allClasses", "inbox"] as const,
+};
+
+export const useAllClassesForInbox = (enabled: boolean) => {
+  return useQuery({
+    queryKey: allClassesInboxKeys.all,
+    queryFn: () => getAllClasses(),
+    enabled,
+    staleTime: 3 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
+    refetchOnMount: false,
+  });
+};
+
+export const useClassDetails = (classId: string, teacherId: string, options?: { enabled?: boolean }) => {
+  return useQuery({
+    queryKey: teacherClassKeys.detail(classId),
+    queryFn: () => getClassDetails(classId, teacherId),
+    enabled: options?.enabled !== false && !!classId && !!teacherId,
+    staleTime: 5 * 60 * 1000, // Cache for 5 minutes - class details don't change frequently
+    gcTime: 10 * 60 * 1000, // Keep in cache for 10 minutes
+  });
+};
+
+export const useClassMembers = (classId: string, options?: { enabled?: boolean }) => {
+  return useQuery({
+    queryKey: teacherClassKeys.members(classId),
+    queryFn: () => getClassMembers(classId),
+    enabled: options?.enabled !== false && !!classId,
+    staleTime: 10 * 60 * 1000, // Cache for 10 minutes - members don't change frequently (tối ưu: tăng cache time)
+    gcTime: 30 * 60 * 1000, // Keep in cache for 30 minutes (tối ưu: giữ cache lâu hơn)
+  });
+};
+
+/**
+ * Hook to fetch all progress activities for a specific class.
+ */
+export const useClassProgress = (
+  classId: string,
+  bookId: string,
+  lessonId: string
+) => {
+  const queryClient = useQueryClient();
+  return useQuery({
+    queryKey: ["classProgress", classId, bookId, lessonId],
+    queryFn: () => {
+      const cachedMembers = queryClient.getQueryData<IClassMember[]>(
+        teacherClassKeys.members(classId)
+      );
+      // Reuse classBookProgress cache khi cùng sách (từ Bảng Quiz) - tránh fetch lại
+      const bookProgressQueryKey = ["classBookProgress", classId, bookId];
+      const cachedBookProgress = queryClient.getQueryData<Map<string, BookProgress>>(
+        bookProgressQueryKey
+      );
+      return getClassProgressActivities(
+        classId,
+        bookId,
+        lessonId,
+        cachedMembers,
+        cachedBookProgress ?? undefined
+      );
+    },
+    enabled: !!classId && !!bookId && !!lessonId,
+    staleTime: 2 * 60 * 1000, // 2 phút - dùng chung cache với classBookProgress
+  });
+};
+
+/**
+ * Hook to fetch aggregated progress for all students in a class for a specific lesson.
+ */
+export const useLessonStudentProgress = (
+  classId: string,
+  bookId: string,
+  lessonId: string
+) => {
+  const queryClient = useQueryClient();
+  return useQuery({
+    queryKey: teacherClassKeys.progress(classId, bookId, lessonId),
+    queryFn: () => {
+      // Try to get members from cache to avoid redundant query
+      const cachedMembers = queryClient.getQueryData<IClassMember[]>(
+        teacherClassKeys.members(classId)
+      );
+      return getLessonStudentProgress(classId, bookId, lessonId, cachedMembers);
+    },
+    enabled: !!classId && !!bookId && !!lessonId,
+  });
+};
+
+/**
+ * Hook to fetch quiz results for a class in a specific book
+ * @param dateFilter - Optional date to filter results. If null/undefined, returns all results.
+ */
+export const useClassQuizResults = (
+  classId: string,
+  bookId: string,
+  dateFilter?: Date | null
+) => {
+  const queryClient = useQueryClient();
+  const dateKey = dateFilter
+    ? dateFilter.toISOString().split("T")[0]
+    : "all-time";
+  return useQuery({
+    queryKey: ["classQuizResults", classId, bookId, dateKey],
+    queryFn: async () => {
+      // Try to get members from cache to avoid redundant query
+      const cachedMembers = queryClient.getQueryData<IClassMember[]>(
+        teacherClassKeys.members(classId)
+      );
+      // Check if classBookProgress is being refetched or invalidated
+      // If so, don't use cached data to ensure we get fresh data
+      const bookProgressQueryKey = ["classBookProgress", classId, bookId];
+      const bookProgressQueryState = queryClient.getQueryState(bookProgressQueryKey);
+      const isBookProgressStale = bookProgressQueryState?.isInvalidated ||
+        bookProgressQueryState?.dataUpdatedAt === undefined;
+
+      // Only use cached bookProgress if it's not stale
+      const cachedBookProgress = !isBookProgressStale
+        ? queryClient.getQueryData<Map<string, BookProgress>>(bookProgressQueryKey)
+        : undefined;
+
+      return getClassQuizResults(classId, bookId, dateFilter, cachedMembers, cachedBookProgress);
+    },
+    enabled: !!classId && !!bookId,
+  });
+};
+
+/**
+ * Hook to delete quiz results
+ */
+export const useDeleteQuizResults = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: deleteQuizResults,
+    onSuccess: async (_, quizResultIds) => {
+      toast.success(`Đã xóa ${quizResultIds.length} bài quiz thành công!`);
+
+      // Remove cached classBookProgress to force fresh fetch
+      // This ensures classQuizResults will get fresh data
+      queryClient.removeQueries({
+        queryKey: ["classBookProgress"],
+      });
+
+      // Remove cached classQuizResults to force fresh fetch
+      queryClient.removeQueries({
+        queryKey: ["classQuizResults"],
+      });
+
+      // Invalidate and refetch all related queries
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: ["classBookProgress"],
+          refetchType: 'active',
+        }),
+        queryClient.invalidateQueries({
+          queryKey: ["classQuizResults"],
+          refetchType: 'active',
+        }),
+        queryClient.invalidateQueries({
+          predicate: (query) => {
+            const key = query.queryKey;
+            return (
+              Array.isArray(key) &&
+              (key[0] === "classProgress" ||
+                key[0] === "completedLessons" ||
+                key[0] === "lessonStatuses" ||
+                (key.includes("progress") && key[0] !== "classBookProgress" && key[0] !== "classQuizResults"))
+            );
+          },
+          refetchType: 'active',
+        }),
+      ]);
+    },
+    onError: (error) => {
+      console.error("Error deleting quiz results:", error);
+      toast.error("Xóa bài quiz thất bại. Vui lòng thử lại.");
+    },
+  });
+};
+
+/**
+ * Hook to delete all quiz results for a class in a specific book
+ */
+export const useDeleteClassQuizResultsByBook = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ classId, bookId }: { classId: string; bookId: string }) =>
+      deleteClassQuizResultsByBook(classId, bookId),
+    onSuccess: (_, { classId, bookId }) => {
+      toast.success("Đã xóa tất cả bài quiz trong sách này thành công!");
+      // Invalidate all related queries including lessonStatus and completedLessons
+      queryClient.invalidateQueries({
+        predicate: (query) => {
+          const key = query.queryKey;
+          return (
+            Array.isArray(key) &&
+            (key[0] === "classQuizResults" ||
+              key[0] === "completedLessons" ||
+              key[0] === "lessonStatuses" ||
+              (key[0] === "classProgress" && key[2] === bookId) ||
+              key.includes("progress"))
+          );
+        },
+      });
+      // Invalidate specific query
+      queryClient.invalidateQueries({
+        queryKey: ["classQuizResults", classId, bookId],
+      });
+    },
+    onError: (error) => {
+      console.error("Error deleting quiz results by book:", error);
+      toast.error("Xóa bài quiz thất bại. Vui lòng thử lại.");
+    },
+  });
+};
+
+/**
+ * Hook to sync lessonStatus with quiz results for a class and book
+ * Useful for cleaning up data when lessonStatus.isCompleted = true but no quiz results exist
+ */
+export const useSyncLessonStatusForBook = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ classId, bookId }: { classId: string; bookId: string }) =>
+      syncLessonStatusForBook(classId, bookId),
+    onSuccess: (result, { bookId }) => {
+      toast.success(
+        `Đã đồng bộ ${result.updated} trạng thái bài học thành công!`
+      );
+      // Invalidate all related queries
+      queryClient.invalidateQueries({
+        predicate: (query) => {
+          const key = query.queryKey;
+          return (
+            Array.isArray(key) &&
+            (key[0] === "completedLessons" ||
+              key[0] === "lessonStatuses" ||
+              (key[0] === "classProgress" && key[2] === bookId) ||
+              key.includes("progress"))
+          );
+        },
+      });
+    },
+    onError: (error) => {
+      console.error("Error syncing lesson status:", error);
+      toast.error("Đồng bộ trạng thái bài học thất bại. Vui lòng thử lại.");
+    },
+  });
+};
+
+/**
+ * Hook to get quiz result counts by date for students in a class
+ * Returns a Map of studentId -> count of quiz results submitted on the specified date
+ */
+export const useStudentQuizCountsByDate = (
+  classId: string,
+  targetDate: Date
+) => {
+  return useQuery({
+    queryKey: ["studentQuizCountsByDate", classId, targetDate.toISOString().split("T")[0]],
+    queryFn: () => getStudentQuizCountsByDate(classId, targetDate),
+    enabled: !!classId,
+    staleTime: 1 * 60 * 1000, // 1 minute
+  });
+};
+
+/**
+ * Hook to get BookProgress for all students in a class for a specific book
+ */
+export const useClassBookProgress = (
+  classId: string,
+  bookId: string
+) => {
+  const queryClient = useQueryClient();
+  return useQuery({
+    queryKey: ["classBookProgress", classId, bookId],
+    queryFn: () => {
+      // Try to get members from cache to avoid redundant query
+      const cachedMembers = queryClient.getQueryData<IClassMember[]>(
+        teacherClassKeys.members(classId)
+      );
+      return getClassBookProgress(classId, bookId, cachedMembers);
+    },
+    enabled: !!classId && !!bookId,
+    staleTime: 2 * 60 * 1000, // 2 minutes
+  });
+};
+
+/**
+ * Hook to fetch class activity data for the last 7 days
+ */
+export const useClassActivityData = (classId: string) => {
+  const queryClient = useQueryClient();
+  return useQuery({
+    queryKey: ["classActivityData", classId],
+    queryFn: () => {
+      // Try to get members from cache to avoid redundant query
+      const cachedMembers = queryClient.getQueryData<IClassMember[]>(
+        teacherClassKeys.members(classId)
+      );
+      return getClassActivityData(classId, cachedMembers);
+    },
+    enabled: !!classId,
+    staleTime: 2 * 60 * 1000, // 2 minutes
+  });
+};
+
+
+
+/**
+ * Hook to fetch grammar tracking data for students in a class for a specific date
+ */
+export const useGrammarTrackingData = (classId: string, date: Date = new Date()) => {
+  const queryClient = useQueryClient();
+  return useQuery({
+    queryKey: ["grammarTrackingData", classId, date.toISOString().split("T")[0]],
+    queryFn: () => {
+      const cachedMembers = queryClient.getQueryData<IClassMember[]>(
+        teacherClassKeys.members(classId)
+      );
+      return getGrammarTrackingData(classId, date, cachedMembers);
+    },
+    enabled: !!classId,
+    staleTime: 1 * 60 * 1000,
+    refetchInterval: 2 * 60 * 1000,
+  });
+};
+
+/**
+ * Lịch sử xem từ watch_tracking — toàn thời gian hoặc lọc theo ngày / mediaType.
+ */
+export const useClassWatchTrackingData = (
+  classId: string,
+  options?: GetClassWatchTrackingOptions
+) => {
+  const queryClient = useQueryClient();
+  const dateKey = options?.date
+    ? options.date.toISOString().split("T")[0]
+    : "all";
+  const mediaKey = options?.mediaType ?? "all";
+
+  return useQuery({
+    queryKey: ["classWatchTracking", classId, dateKey, mediaKey],
+    queryFn: () => {
+      const cachedMembers = queryClient.getQueryData<IClassMember[]>(
+        teacherClassKeys.members(classId)
+      );
+      return getClassWatchTrackingData(classId, options, cachedMembers);
+    },
+    enabled: !!classId,
+    staleTime: 1 * 60 * 1000,
+    refetchInterval: 2 * 60 * 1000,
+  });
+};
+
+/**
+ * Hook to mark lessons as done with 95% accuracy for a student
+ * Improved: Uses batch processing to avoid Firestore transaction conflicts
+ */
+export const useMarkLessonsAsDone = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({
+      userId,
+      bookId,
+      lessonIds,
+      onProgress,
+    }: {
+      userId: string;
+      bookId: string;
+      lessonIds: number[];
+      onProgress?: (processed: number, total: number) => void;
+    }) => {
+      // Get words for all lessons to calculate totalWords
+      const allWords = await getLessonWords(bookId, lessonIds);
+
+      // Group words by lesson
+      const wordsByLesson = new Map<number, number>();
+      lessonIds.forEach((lessonId) => {
+        const words = allWords.filter((w) => w.lesson === lessonId);
+        wordsByLesson.set(lessonId, words.length);
+      });
+
+      // Filter out lessons with no words
+      const validLessonIds = lessonIds.filter((lessonId) => {
+        const totalWords = wordsByLesson.get(lessonId) || 0;
+        if (totalWords === 0) {
+          console.warn(`No words found for lesson ${lessonId}, skipping`);
+          return false;
+        }
+        return true;
+      });
+
+      if (validLessonIds.length === 0) {
+        throw new Error("Không có bài nào hợp lệ để đánh dấu");
+      }
+
+      // Batch processing: process 5 lessons at a time to avoid transaction conflicts
+      const BATCH_SIZE = 5;
+      const totalLessons = validLessonIds.length;
+      let processedCount = 0;
+      const failedLessons: number[] = [];
+      const maxRetries = 2;
+
+      // Process in batches
+      for (let i = 0; i < validLessonIds.length; i += BATCH_SIZE) {
+        const batch = validLessonIds.slice(i, i + BATCH_SIZE);
+
+        // Process batch sequentially to avoid conflicts
+        for (const lessonId of batch) {
+          let retryCount = 0;
+          let success = false;
+
+          while (retryCount <= maxRetries && !success) {
+            try {
+              const totalWords = wordsByLesson.get(lessonId) || 0;
+              const accuracy = 95;
+              const score = Math.round(totalWords * 0.95);
+
+              const resultData: Omit<QuizResult, "lastAttempt"> = {
+                userId,
+                bookId,
+                lessonId,
+                accuracy,
+                score,
+                totalWords,
+              };
+
+              const statusData: Omit<LessonStatus, "lastAttempt"> = {
+                userId,
+                bookId,
+                lessonId,
+                lastAccuracy: accuracy,
+              };
+
+              await updateBookProgressWithQuizResult(resultData, statusData);
+              success = true;
+              processedCount++;
+
+              // Report progress
+              if (onProgress) {
+                onProgress(processedCount, totalLessons);
+              }
+
+              // Small delay between lessons to reduce load
+              if (i + batch.indexOf(lessonId) < validLessonIds.length - 1) {
+                await new Promise((resolve) => setTimeout(resolve, 100));
+              }
+            } catch (error) {
+              retryCount++;
+              if (retryCount > maxRetries) {
+                console.error(`Failed to mark lesson ${lessonId} after ${maxRetries} retries:`, error);
+                failedLessons.push(lessonId);
+                processedCount++;
+                if (onProgress) {
+                  onProgress(processedCount, totalLessons);
+                }
+              } else {
+                // Exponential backoff for retries
+                await new Promise((resolve) => setTimeout(resolve, 200 * retryCount));
+              }
+            }
+          }
+        }
+
+        // Small delay between batches
+        if (i + BATCH_SIZE < validLessonIds.length) {
+          await new Promise((resolve) => setTimeout(resolve, 200));
+        }
+      }
+
+      if (failedLessons.length > 0) {
+        throw new Error(
+          `Đã đánh dấu ${totalLessons - failedLessons.length}/${totalLessons} bài. ` +
+          `Thất bại: ${failedLessons.join(", ")}`
+        );
+      }
+
+      return {
+        count: totalLessons,
+        failed: failedLessons.length,
+      };
+    },
+    onSuccess: (result) => {
+      if (result.failed > 0) {
+        toast.error(
+          `Đã đánh dấu ${result.count - result.failed}/${result.count} bài. ` +
+          `Có ${result.failed} bài thất bại.`
+        );
+      } else {
+        toast.success(`Đã đánh dấu ${result.count} bài là đã làm với 95%!`);
+      }
+      // Invalidate all related queries
+      queryClient.invalidateQueries({
+        predicate: (query) => {
+          const key = query.queryKey;
+          return (
+            Array.isArray(key) &&
+            (key[0] === "classBookProgress" ||
+              key[0] === "classQuizResults" ||
+              key[0] === "completedLessons" ||
+              key[0] === "lessonStatuses" ||
+              key.includes("progress"))
+          );
+        },
+      });
+    },
+    onError: (error) => {
+      console.error("Error marking lessons as done:", error);
+      const errorMessage = error instanceof Error ? error.message : "Đánh dấu bài thất bại. Vui lòng thử lại.";
+      toast.error(errorMessage);
+    },
+  });
+};
+
+/**
+ * Hook trả về trạng thái online cho danh sách học sinh.
+ * Online lấy từ global presence (RTDB) — `studentIds`/`classId` chỉ giữ cho
+ * tương thích chữ ký cũ.
+ */
+export const useStudentPresence = (
+  studentIds: string[],
+  classId: string
+) => {
+  void studentIds;
+  void classId;
+  const presenceMap = useGlobalPresenceMap();
+
+  const isOnline = useCallback(
+    (studentId: string): boolean => isPresenceOnline(presenceMap[studentId]),
+    [presenceMap]
+  );
+
+  return { presenceMap, isOnline };
+};
+
+/**
+ * Hook trả về presence cho thành viên lớp (students + teachers).
+ * Đọc từ global presence map (RTDB `/presence`).
+ */
+export const useClassMemberPresence = (
+  classId: string,
+  options?: { enabled?: boolean }
+): { presenceMap: PresenceMap; isOnline: (memberId: string) => boolean } => {
+  void classId;
+  const fullMap = useGlobalPresenceMap();
+  const enabled = options?.enabled ?? true;
+
+  const presenceMap = enabled ? fullMap : EMPTY_PRESENCE_MAP;
+
+  const isOnline = useCallback(
+    (memberId: string): boolean =>
+      enabled ? isPresenceOnline(presenceMap[memberId]) : false,
+    [presenceMap, enabled]
+  );
+
+  return { presenceMap, isOnline };
+};
+
+const EMPTY_PRESENCE_MAP: PresenceMap = {};
+
+/**
+ * Hook to send admiration to another student
+ */
+export const useSendAdmiration = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: sendAdmiration,
+    onSuccess: (_, variables) => {
+      const reactionIcon = getReactionIcon(variables.reactionType);
+      toast.success(`Đã gửi ${reactionIcon} tới ${variables.toStudentName}`);
+      // Invalidate currency balance for recipient
+      queryClient.invalidateQueries({
+        queryKey: ["currency", "balance", variables.toStudentId],
+      });
+    },
+    onError: (error: Error | unknown) => {
+      console.error("Error sending admiration:", error);
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Gửi ngưỡng mộ thất bại. Vui lòng thử lại.";
+      toast.error(errorMessage);
+    },
+  });
+};
+
+/**
+ * Helper function to get reaction icon (exported for use in AdmirationParticleEffect)
+ */
+export function getReactionIcon(reactionType?: string): string {
+  const icons: Record<string, string> = {
+    dislike: "👎",
+    haha: "😂",
+    like: "👍",
+    heart: "❤️",
+    wow: "😱",
+  };
+  return icons[reactionType || ""] || "❤️";
+}
+
+const RECORDING_FLAG_KEY = "__breadtransRecordingActive";
+
+function isRecordingActiveNow(): boolean {
+  if (typeof window === "undefined") return false;
+  const win = window as Window & { [RECORDING_FLAG_KEY]?: boolean };
+  return Boolean(win[RECORDING_FLAG_KEY]);
+}
+
+function isAnyAudioPlayingNow(): boolean {
+  if (typeof document === "undefined") return false;
+  const audioElements = document.querySelectorAll("audio");
+  for (const audio of audioElements) {
+    if (!audio.paused && !audio.ended) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function isMediaInteractionActiveNow(): boolean {
+  return isRecordingActiveNow() || isAnyAudioPlayingNow();
+}
+
+/**
+ * Hook to subscribe to admirations received by a student
+ * Returns the latest admiration for notification
+ */
+export const useAdmirationNotifications = (studentId: string | undefined) => {
+  const [latestAdmiration, setLatestAdmiration] = useState<IAdmiration | null>(null);
+  const previousAdmirationIdsRef = useRef<Set<string>>(new Set());
+  const { refetchProfile } = useAuth();
+
+  useEffect(() => {
+    if (!studentId) {
+      setLatestAdmiration(null);
+      return;
+    }
+
+    const pendingTimeouts: ReturnType<typeof setTimeout>[] = [];
+    let isInitialLoad = true;
+
+    const unsubscribe = subscribeToAdmirations(studentId, (admirations) => {
+      if (isInitialLoad) {
+        isInitialLoad = false;
+        // Store initial admiration IDs
+        previousAdmirationIdsRef.current = new Set(
+          admirations.map((a) => a.id)
+        );
+        return;
+      }
+
+      // Find new admirations (not in previous set)
+      const newAdmirations = admirations.filter(
+        (a) => !previousAdmirationIdsRef.current.has(a.id)
+      );
+
+      if (newAdmirations.length > 0) {
+        // Get the most recent one
+        const latest = newAdmirations[0];
+
+        if (
+          latest.type === "gameInvite" ||
+          ((latest.reactionValue ?? 0) === 0 && latest.roomId)
+        ) {
+          previousAdmirationIdsRef.current = new Set(
+            admirations.map((a) => a.id)
+          );
+          return;
+        }
+
+        // Always show admiration icon effect, including speaking screens.
+        setLatestAdmiration(latest);
+
+        const reactionIcon = getReactionIcon(latest.reactionType);
+        const value = latest.reactionValue ?? 1;
+
+        // Phát it-xu.mp3 khi bên nhận nhận admiration (cả admiration và reactStory)
+        const sound = new Audio("/sounds/it-xu.mp3");
+        sound.play().catch(() => {
+          // Ignore autoplay errors
+        });
+        sound.addEventListener("ended", () => {
+          sound.remove();
+        });
+        sound.addEventListener("error", () => {
+          sound.remove();
+        });
+
+        // Show toast notification with different message for story reaction
+        const isStoryReaction = latest.type === "reactStory";
+        const isSpeakingGrade = latest.type === "speakingGrade";
+        const message = isStoryReaction
+          ? value > 0
+            ? `${latest.fromStudentName} ${reactionIcon} story của bạn +${value} bánh mì`
+            : `${latest.fromStudentName} ${reactionIcon} story của bạn`
+          : isSpeakingGrade
+            ? value > 0
+              ? `${latest.fromStudentName} chấm bài nói ${reactionIcon} +${value} bánh mì`
+              : `${latest.fromStudentName} chấm bài nói ${reactionIcon}`
+            : `${latest.fromStudentName} ${reactionIcon} bạn +${value} bánh mì`;
+
+        // Get avatar from localStorage for toast
+        const userInfo = getUserInfoFromLocalStorage(latest.fromStudentId);
+        const senderAvatarUrl = userInfo?.avatarUrl || "";
+        const senderDisplayName = userInfo?.name || latest.fromStudentName;
+        const senderInitial = senderDisplayName.charAt(0).toUpperCase();
+
+        // Create custom icon with avatar using React.createElement
+        const customIcon = senderAvatarUrl ? (
+          React.createElement(
+            "div",
+            { className: "relative h-8 w-8 rounded-full overflow-hidden ring-1 ring-white shadow-sm" },
+            React.createElement("img", {
+              src: senderAvatarUrl,
+              alt: senderDisplayName,
+              className: "w-full h-full object-cover",
+            })
+          )
+        ) : (
+          React.createElement(
+            "div",
+            { className: "h-8 w-8 rounded-full flex items-center justify-center text-xs font-bold ring-1 ring-white shadow-sm bg-gradient-to-br from-gray-100 to-gray-200 text-gray-700" },
+            senderInitial
+          )
+        );
+
+        toast.success(message, {
+          icon: customIcon,
+          duration: 5000,
+        });
+
+        // Refetch profile to update bread count in header
+        // Add a delay to ensure server has updated the data
+        // The realtime listener will also update it automatically, but this ensures it happens
+        pendingTimeouts.push(
+          setTimeout(() => {
+            if (!isMediaInteractionActiveNow()) {
+              refetchProfile();
+            }
+          }, 3000)
+        );
+
+        pendingTimeouts.push(
+          setTimeout(() => {
+            setLatestAdmiration(null);
+          }, 5000)
+        );
+      }
+
+      // Update previous IDs
+      previousAdmirationIdsRef.current = new Set(
+        admirations.map((a) => a.id)
+      );
+    });
+
+    return () => {
+      pendingTimeouts.forEach(clearTimeout);
+      unsubscribe();
+    };
+  }, [studentId, refetchProfile]);
+
+  return latestAdmiration;
+};
+
+/**
+ * Hook to get today's admirations received by a student
+ * Only queries when enabled (e.g., when modal is open)
+ * Uses localStorage to cache and only query new admirations
+ */
+/**
+ * Get date key in YYYY-MM-DD format (Vietnam timezone)
+ */
+function getDateKey(date: Date = new Date()): string {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Ho_Chi_Minh",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(date);
+}
+
+/**
+ * Get date keys for last 7 days
+ */
+function getLast7DaysKeys(): string[] {
+  const keys: string[] = [];
+  for (let i = 0; i < 7; i++) {
+    const date = new Date();
+    date.setDate(date.getDate() - i);
+    keys.push(getDateKey(date));
+  }
+  return keys;
+}
+
+/**
+ * Cleanup localStorage: remove data older than 7 days (FIFO)
+ */
+function cleanupOldNotifications(studentId: string) {
+  if (typeof window === "undefined") return;
+
+  try {
+    const last7DaysKeys = getLast7DaysKeys();
+    const prefix = `admirationNotifications_${studentId}_`;
+
+    // Remove all keys that are not in the last 7 days
+    const keysToRemove: string[] = [];
+    for (let i = 0; i < window.localStorage.length; i++) {
+      const key = window.localStorage.key(i);
+      if (key && key.startsWith(prefix)) {
+        const dateKey = key.replace(prefix, "");
+        if (!last7DaysKeys.includes(dateKey)) {
+          keysToRemove.push(key);
+        }
+      }
+    }
+
+    keysToRemove.forEach((key) => {
+      window.localStorage.removeItem(key);
+    });
+  } catch (error) {
+    console.error("Error cleaning up old notifications:", error);
+  }
+}
+
+/**
+ * Load all notifications from last 7 days from localStorage
+ */
+function loadLast7DaysNotifications(studentId: string): {
+  admirations: IAdmiration[];
+  lastCreatedAt: Date | null;
+} {
+  if (typeof window === "undefined") {
+    return { admirations: [], lastCreatedAt: null };
+  }
+
+  try {
+    const last7DaysKeys = getLast7DaysKeys();
+    const prefix = `admirationNotifications_${studentId}_`;
+    const allAdmirations: IAdmiration[] = [];
+    let latestCreatedAt: Date | null = null;
+
+    // Load from all 7 days
+    for (const dateKey of last7DaysKeys) {
+      const storageKey = `${prefix}${dateKey}`;
+      const stored = window.localStorage.getItem(storageKey);
+
+      if (stored) {
+        try {
+          const parsed = JSON.parse(stored) as {
+            admirations: IAdmiration[];
+            lastCreatedAt?: string;
+            // backward compat
+            lastSavedTime?: string;
+          };
+
+          const admirations = parsed.admirations.map((a) => ({
+            ...a,
+            createdAt: new Date(a.createdAt),
+          }));
+
+          allAdmirations.push(...admirations);
+
+          const cursorISO =
+            parsed.lastCreatedAt ??
+            parsed.lastSavedTime ??
+            (admirations[0]?.createdAt ? admirations[0].createdAt.toISOString() : undefined);
+          if (cursorISO) {
+            const t = new Date(cursorISO);
+            if (!latestCreatedAt || t > latestCreatedAt) {
+              latestCreatedAt = t;
+            }
+          }
+        } catch (error) {
+          console.error(`Error parsing stored data for ${dateKey}:`, error);
+        }
+      }
+    }
+
+    // Remove duplicates by id and sort by createdAt desc
+    const unique = allAdmirations.filter(
+      (admiration, index, self) =>
+        index === self.findIndex((a) => a.id === admiration.id)
+    );
+    unique.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+
+    return {
+      admirations: unique,
+      lastCreatedAt: latestCreatedAt ?? unique[0]?.createdAt ?? null,
+    };
+  } catch (error) {
+    console.error("Error loading last 7 days notifications:", error);
+    return { admirations: [], lastCreatedAt: null };
+  }
+}
+
+export const useTodayAdmirationsReceived = (
+  studentId: string | undefined,
+  enabled: boolean = false
+) => {
+  const [cachedAdmirations, setCachedAdmirations] = useState<IAdmiration[]>([]);
+  const [, setLastCreatedAt] = useState<Date | null>(null);
+  const [isInitialized, setIsInitialized] = useState(false);
+
+  // Load from localStorage on mount or when studentId changes
+  useEffect(() => {
+    if (!studentId || typeof window === "undefined") {
+      setCachedAdmirations([]);
+      setLastCreatedAt(null);
+      setIsInitialized(true);
+      return;
+    }
+
+    // Cleanup old data first
+    cleanupOldNotifications(studentId);
+
+    // Load all notifications from last 7 days
+    const { admirations, lastCreatedAt: savedCreatedAt } =
+      loadLast7DaysNotifications(studentId);
+
+    setCachedAdmirations(admirations);
+    setLastCreatedAt(savedCreatedAt);
+    setIsInitialized(true);
+  }, [studentId]);
+
+  const queryResult = useQuery({
+    queryKey: ["todayAdmirationsReceived", studentId],
+    queryFn: async () => {
+      if (!studentId || typeof window === "undefined") return [];
+
+      // Read lastSavedTime directly from localStorage (from last 7 days)
+      const { admirations: savedAdmirations, lastCreatedAt: savedCreatedAt } =
+        loadLast7DaysNotifications(studentId);
+
+      // If we have cached data with lastSavedTime, only query new ones
+      if (savedCreatedAt && savedAdmirations.length > 0) {
+        // Query incrementally across days (not limited to "today only")
+        const newAdmirations = await getAdmirationsReceivedFromTime(
+          studentId,
+          savedCreatedAt
+        );
+
+        // If no new admirations, return cached
+        if (newAdmirations.length === 0) {
+          return savedAdmirations;
+        }
+
+        // Merge with cached (new ones first, then cached)
+        const merged = [...newAdmirations, ...savedAdmirations];
+
+        // Remove duplicates by id
+        const unique = merged.filter(
+          (admiration, index, self) =>
+            index === self.findIndex((a) => a.id === admiration.id)
+        );
+
+        // Sort by createdAt desc
+        unique.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+
+        return unique;
+      } else {
+        // First time: query all today's admirations
+        return await getTodayAdmirationsReceived(studentId);
+      }
+    },
+    enabled: enabled && !!studentId && isInitialized,
+    staleTime: 30 * 1000, // 30 seconds
+    // Use cached data as initial data to avoid flicker
+    initialData: cachedAdmirations.length > 0 ? cachedAdmirations : undefined,
+  });
+
+  // Save to localStorage when data changes (only if different from cache)
+  useEffect(() => {
+    if (!studentId || !queryResult.data || typeof window === "undefined") {
+      return;
+    }
+
+    // Don't save if it's the same as cache (avoid unnecessary writes)
+    if (queryResult.data.length === cachedAdmirations.length &&
+      queryResult.data.every((a, i) => a.id === cachedAdmirations[i]?.id)) {
+      return;
+    }
+
+    try {
+      // Cleanup old data first (FIFO: remove older than 7 days)
+      cleanupOldNotifications(studentId);
+
+      // Group admirations by date
+      const admirationsByDate = new Map<string, IAdmiration[]>();
+
+      queryResult.data.forEach((admiration) => {
+        const dateKey = getDateKey(admiration.createdAt);
+        if (!admirationsByDate.has(dateKey)) {
+          admirationsByDate.set(dateKey, []);
+        }
+        admirationsByDate.get(dateKey)!.push(admiration);
+      });
+
+      // Save each day's data separately
+      const newestCreatedAt = queryResult.data[0]?.createdAt ?? new Date();
+      const last7DaysKeys = getLast7DaysKeys();
+
+      for (const dateKey of last7DaysKeys) {
+        const admirations = admirationsByDate.get(dateKey) || [];
+        if (admirations.length > 0) {
+          const storageKey = `admirationNotifications_${studentId}_${dateKey}`;
+          window.localStorage.setItem(
+            storageKey,
+            JSON.stringify({
+              admirations: admirations,
+              lastCreatedAt: newestCreatedAt.toISOString(),
+            })
+          );
+        }
+      }
+
+      // Update cache state
+      setCachedAdmirations(queryResult.data);
+      setLastCreatedAt(newestCreatedAt);
+    } catch (error) {
+      console.error("Error saving cached admirations:", error);
+    }
+  }, [queryResult.data, studentId, cachedAdmirations]);
+
+  // Always return cached data first to avoid flicker, then update with query result
+  return {
+    ...queryResult,
+    data: queryResult.data || cachedAdmirations,
+    isLoading: queryResult.isLoading && !isInitialized,
+  };
+};
+
+type SaveQuizStoryVariables = {
+  classId: string;
+  userId: string;
+  bookId: string;
+  bookName?: string;
+  lessonIds: number[];
+  lessonNames?: string[];
+  score: number;
+  totalWords: number;
+  accuracy: number;
+  isCompleted: boolean;
+  studentName: string;
+  avatarUrl?: string;
+};
+
+/**
+ * Hook to save a quiz story (requires classId - lưu vào classes/{classId}.stories)
+ */
+export const useSaveQuizStory = () => {
+  const queryClient = useQueryClient();
+  return useMutation<Awaited<ReturnType<typeof saveQuizStory>>, Error, SaveQuizStoryVariables>({
+    mutationFn: (variables) => {
+      const { classId, userId, ...storyData } = variables;
+      return saveQuizStory(classId, userId, storyData);
+    },
+    onSuccess: () => {
+      toast.success("Đã up story của bạn!");
+      // Invalidate quiz stories queries
+      queryClient.invalidateQueries({
+        predicate: (query) => {
+          const key = query.queryKey;
+          return (
+            Array.isArray(key) &&
+            (key[0] === "quizStories" || key[0] === "classQuizStories")
+          );
+        },
+      });
+    },
+    onError: (error: Error | unknown) => {
+      console.error("Error saving quiz story:", error);
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Up story thất bại. Vui lòng thử lại.";
+      toast.error(errorMessage);
+    },
+  });
+};
+
+/**
+ * Hook to get quiz stories for a user in a class (last 7 days)
+ */
+export const useQuizStories = (
+  classId: string | undefined,
+  userId: string | undefined,
+  hours: number = QUIZ_STORY_WINDOW_HOURS
+) => {
+  return useQuery({
+    queryKey: ["quizStories", classId, userId, hours],
+    queryFn: () => getQuizStories(classId!, userId!, hours),
+    enabled: !!classId && !!userId,
+    staleTime: 30 * 1000, // 30 seconds
+    refetchInterval: 60 * 1000, // Refetch every minute
+  });
+};
+
+/**
+ * Hook to get quiz stories for a class (last 7 days)
+ */
+export const useClassQuizStories = (classId: string | undefined, hours: number = QUIZ_STORY_WINDOW_HOURS) => {
+  return useQuery({
+    queryKey: ["classQuizStories", classId, hours],
+    queryFn: () => getClassQuizStories(classId!, hours),
+    enabled: !!classId,
+    staleTime: 2 * 60 * 1000, // 2 phút - shared giữa Stories và prefetch
+    gcTime: 5 * 60 * 1000,
+    refetchOnMount: false, // tránh fetch thừa khi chuyển tab
+  });
+};
+
+const classQuizStoriesQueryOptions = (classId: string, hours: number) => ({
+  queryKey: ["classQuizStories", classId, hours] as const,
+  queryFn: () => getClassQuizStories(classId, hours),
+  staleTime: 2 * 60 * 1000,
+  gcTime: 5 * 60 * 1000,
+  refetchOnMount: false as const,
+});
+
+/**
+ * Nhiều lớp × cùng key với `useClassQuizStories` — cache dùng chung Home / Profile / AppDataProvider.
+ */
+export function useClassQuizStoriesMany(
+  classIds: string[],
+  hours: number = QUIZ_STORY_WINDOW_HOURS,
+  enabled: boolean = true
+) {
+  const stableIds = useMemo(
+    () => Array.from(new Set(classIds.filter(Boolean))).sort(),
+    [classIds]
+  );
+  return useQueries({
+    queries: stableIds.map((classId) => ({
+      ...classQuizStoriesQueryOptions(classId, hours),
+      enabled: enabled && !!classId,
+    })),
+  });
+}
+
+/**
+ * Hook to add a reaction to a quiz story
+ */
+export const useAddQuizStoryReaction = () => {
+  return useMutation({
+    mutationFn: ({
+      classId,
+      ownerUserId,
+      storyId,
+      reaction,
+    }: {
+      classId: string;
+      ownerUserId: string;
+      storyId: string;
+      reaction: { userId: string; userName: string; reactionType: "like" | "heart" | "wow" | "haha" | "dislike" };
+      suppressToast?: boolean;
+    }) => addQuizStoryReaction(classId, ownerUserId, storyId, reaction),
+    onSuccess: (result, variables) => {
+      // Không setQueriesData - UI dùng optimistic state trong component, sort chỉ chạy sau refetch
+
+      const suppressToast = variables.suppressToast;
+
+      if (result.breadDonated) {
+        if (!suppressToast) {
+          toast.success("Đã tặng bánh cho story!", {
+            duration: 3000,
+          });
+        }
+
+        // Play sound it-xu.mp3
+        const sound = new Audio("/sounds/it-xu.mp3");
+        sound.play().catch(() => {
+          // Ignore autoplay errors
+        });
+
+        // Cleanup audio element after it finishes playing
+        sound.addEventListener("ended", () => {
+          sound.remove();
+        });
+
+        // Also cleanup if there's an error
+        sound.addEventListener("error", () => {
+          sound.remove();
+        });
+
+        // Refetch profile to update bread count in header (bỏ qua vì user gửi react ko bị mất bánh)
+        // setTimeout(() => {
+        //   refetchProfile();
+        // }, 3000);
+      } else if (!suppressToast) {
+        toast.success("Đã thêm reaction!", {
+          duration: 2000,
+        });
+      }
+    },
+    onError: (error: Error | unknown) => {
+      console.error("Error adding quiz story reaction:", error);
+      const errorMessage = error instanceof Error ? error.message : "Thêm reaction thất bại. Vui lòng thử lại.";
+
+      // Check if error is about limit exceeded
+      if (errorMessage.includes("10")) {
+        toast.error("Bạn đã dùng hết 10 lượt có thưởng hôm nay. Vẫn có thể tương tác nhưng không tặng bánh nữa!");
+      } else {
+        toast.error(errorMessage);
+      }
+    },
+  });
+};
+
+/**
+ * Hook to remove a reaction from a quiz story
+ */
+export const useRemoveQuizStoryReaction = () => {
+  return useMutation({
+    mutationFn: ({ classId, ownerUserId, storyId, reactingUserId }: {
+      classId: string;
+      ownerUserId: string;
+      storyId: string;
+      reactingUserId: string;
+    }) => removeQuizStoryReaction(classId, ownerUserId, storyId, reactingUserId),
+    onSuccess: () => {
+      // Không setQueriesData - UI dùng optimistic state
+    },
+    onError: (error: Error | unknown) => {
+      console.error("Error removing quiz story reaction:", error);
+      toast.error("Xóa reaction thất bại. Vui lòng thử lại.");
+    },
+  });
+};
+
+/**
+ * Hook to get lastSaveStory timestamp for a user in a class
+ */
+export const useLastSaveStory = (classId: string | undefined, userId: string | undefined) => {
+  return useQuery({
+    queryKey: ["lastSaveStory", classId, userId],
+    queryFn: () => getLastSaveStory(classId!, userId!),
+    enabled: !!classId && !!userId,
+    staleTime: 30 * 1000, // 30 seconds
+    refetchInterval: 60 * 1000, // Refetch every minute
+  });
+};
